@@ -1,6 +1,12 @@
-= CSjS
+h1. Csster
 
-Generate CSS style rules within Javascript.
+Small libary to generate CSS style rules within Javascript.
+
+h2. Usage
+
+
+
+h2. Motivation
 
 This project comes from my frustration of trying to build standalone Javascript widgets. Web
 projects always involve the combination of HTML DOM, CSS and Javascript. It's often simpler to
@@ -15,5 +21,9 @@ tool completely unrelated to your component, written in some other language. Wou
 a unified approach be nice?
 
 
-= Similar projects
+h2. Similar projects
 http://revnode.com/oss/css/
+
+h2. Legal
+Copyright (c) 2010 Andrew J. Peterson
+All Rights Reserved.
