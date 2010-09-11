@@ -34,7 +34,7 @@ String.prototype.toDash = function() {
 };
 
 
-var CSSy = {
+var Csster = {
     propertyNames: ['accelerator',
         'azimuth',
         'background',
@@ -316,40 +316,26 @@ var CSSy = {
 
 
 
+Csster.propertyNamesHash = {};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-CSSy.propertyNamesHash = {};
-
-for (var i = 0; i < CSSy.propertyNames.length; i++) {
-    var name = CSSy.propertyNames[i];
-    CSSy.propertyNamesHash[name] = true;
+for (var i = 0; i < Csster.propertyNames.length; i++) {
+    var name = Csster.propertyNames[i];
+    Csster.propertyNamesHash[name] = true;
 }
 
 
-CSSy.propertyNameOf = function(p) {
+Csster.propertyNameOf = function(p) {
     name = p.toDash();
-    return CSSy.propertyNamesHash[name] ? name : null;
+    return Csster.propertyNamesHash[name] ? name : null;
 }
 
-CSSy.formatProperty = function(p, value) {
+Csster.formatProperty = function(p, value) {
     if (value && typeof value == 'number') value = '' + value + 'px';
-    return CSSy.propertyNameOf(p) + ": " + value + ";\r";
+    return Csster.propertyNameOf(p) + ": " + value + ";\r";
 }
 
 
-CSSy.formatSelectorAndProperties = function(selector, properties) {
+Csster.formatSelectorAndProperties = function(selector, properties) {
     var result = '';
 
     // Output selector...
@@ -366,8 +352,8 @@ CSSy.formatSelectorAndProperties = function(selector, properties) {
 
     // ...all properties
     for (var p in properties) {
-        if (CSSy.propertyNameOf(p)) {
-            result += CSSy.formatProperty(p, properties[p]);
+        if (Csster.propertyNameOf(p)) {
+            result += Csster.formatProperty(p, properties[p]);
             delete properties[p];
         }
     }
@@ -375,7 +361,7 @@ CSSy.formatSelectorAndProperties = function(selector, properties) {
 
     // now to sub-selectors
     for (var p in properties) {
-        result += CSSy.formatSelectorAndProperties(selector + ' ' + p, properties[p])
+        result += Csster.formatSelectorAndProperties(selector + ' ' + p, properties[p])
     }
 
     return result;
@@ -390,7 +376,7 @@ function resolveRuleHash(cssRule, parentSelector) {
     var result = '';
     for (key in cssRule) {
         var selector = parentSelector + key;
-        result += CSSy.formatSelectorAndProperties(selector, cssRule[key]);
+        result += Csster.formatSelectorAndProperties(selector, cssRule[key]);
     }
     return result;
 }

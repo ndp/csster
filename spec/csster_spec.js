@@ -13,34 +13,34 @@ describe('Array#flatten', function() {
     });
 });
 
-describe("CSSy", function() {
+describe("Csster", function() {
 
     describe('property name', function() {
         it('should convert fontFamily to font-family', function() {
-            expect(CSSy.propertyNameOf('fontFamily')).toEqual("font-family");
+            expect(Csster.propertyNameOf('fontFamily')).toEqual("font-family");
         });
         it('should return font-family without change', function() {
-            expect(CSSy.propertyNameOf('font-family')).toEqual("font-family");
+            expect(Csster.propertyNameOf('font-family')).toEqual("font-family");
         });
 
-        for (var i = 0; i < CSSy.propertyNames.length; i++) {
-            var name = CSSy.propertyNames[i];
+        for (var i = 0; i < Csster.propertyNames.length; i++) {
+            var name = Csster.propertyNames[i];
             it('should return ' + name + '', function() {
-                expect(CSSy.propertyNameOf(name)).toEqual(name);
+                expect(Csster.propertyNameOf(name)).toEqual(name);
             });
         }
         it('should return nil for invalid property names', function() {
-            expect(CSSy.propertyNameOf('abc')).toEqual(null);
-            expect(CSSy.propertyNameOf('#my_id')).toEqual(null);
-            expect(CSSy.propertyNameOf('p')).toEqual(null);
-            expect(CSSy.propertyNameOf('p.clas')).toEqual(null);
-            expect(CSSy.propertyNameOf('p.cls:active whatever')).toEqual(null);
+            expect(Csster.propertyNameOf('abc')).toEqual(null);
+            expect(Csster.propertyNameOf('#my_id')).toEqual(null);
+            expect(Csster.propertyNameOf('p')).toEqual(null);
+            expect(Csster.propertyNameOf('p.clas')).toEqual(null);
+            expect(Csster.propertyNameOf('p.cls:active whatever')).toEqual(null);
         });
     });
 
     describe('property', function() {
         it('should render font family', function() {
-            expect(CSSy.formatProperty('fontFamily', 'serif')).toEqual("font-family: serif;\r");
+            expect(Csster.formatProperty('fontFamily', 'serif')).toEqual("font-family: serif;\r");
         });
 
 
