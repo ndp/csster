@@ -26,6 +26,7 @@ a way to order the hashes. For example:
 </pre>
 
 Note that
+
 * property names are automatically converted to the correct format from camelcase. Feel free to quote them as well.
 * raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
 * any sort of selectors are allowed... they are just passed through to the stylesheet.
