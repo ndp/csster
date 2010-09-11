@@ -26,13 +26,12 @@ a way to order the hashes. For example:
 </pre>
 
 Note that
-* property names are automatically converted to the correct format from camelcase. Feel free
-  to quote them as well.
+* property names are automatically converted to the correct format from camelcase. Feel free to quote them as well.
 * raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
-* any sort of selectors are allowed... they are just passed through to the stylesheet
+* any sort of selectors are allowed... they are just passed through to the stylesheet.
 
-
-*Nesting* Csster supports nesting of rules to keep things more concise:
+h4. Nesting
+Csster supports nesting of rules to keep things more concise:
 <pre>
 {
     ul: {
@@ -48,7 +47,8 @@ The "li" property in this case might be a selector or might be a property name. 
 property names is used to identify properties right now, and otherwise it's considered a sub-selector.
 (Think about this.)
 
-*Macros* It's all Javascript, so macros and more complex functions are easy to write. Just create a function
+h4. Macros
+It's all Javascript, so macros and more complex functions are easy to write. Just create a function
 that returns a hash of values, for example:
 
 <pre>
