@@ -31,6 +31,8 @@ Note that
 <li>raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
 <li>any sort of selectors are allowed... they are just passed through to the stylesheet.
 </ul>
+</ul>
+</ul>
 
 h4. Nesting
 Csster supports nesting of rules to keep things more concise:
