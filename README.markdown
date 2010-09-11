@@ -4,6 +4,19 @@ Small libary to generate CSS style rules within Javascript.
 
 ## Usage
 
+<pre>
+require('csster.js'); // however you manage dependencies
+
+Csster({
+  h1: {
+    fontSize: 18,
+    color: 'red'
+  }
+});
+
+...
+</pre>
+
 ### Creating CSS Rules
 
 (to be written)
