@@ -367,6 +367,17 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
     return result;
 }
 
+Csster.insertStylesheet = function (s) {
+    var e = document.createElement('STYLE');
+    var a = document.createAttribute('type');
+    a.nodeValue = 'text/css';
+    e.setAttributeNode(a);
+    e.appendChild(document.createTextNode(s));
+    var head = document.getElementsByTagName('HEAD')[0];
+    head.appendChild(e);
+};
+
+
 /**
  *
  * @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
@@ -374,18 +385,23 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
  */
 function resolveRuleHash(cssRule, parentSelector) {
     var result = '';
-    for (key in cssRule) {
+    for (var key in cssRule) {
         var selector = parentSelector + key;
         result += Csster.formatSelectorAndProperties(selector, cssRule[key]);
     }
     return result;
 }
 
-function rules(rs) {
+Csster.formatRules = function(rs) {
     var result = '';
     rs = [rs].flatten();
     rs.each(function(r) {
         result += resolveRuleHash(r, '');
     });
     return result;
-}
+}      ;
+
+Csster.style = function(cssRules) {
+    var s = Csster.formatRules(cssRules);
+    Csster.insertStylesheet(s);
+};

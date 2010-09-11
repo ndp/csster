@@ -7,7 +7,7 @@ Small libary to generate CSS style rules within Javascript.
 <pre>
 require('csster.js'); // however you manage dependencies
 
-Csster({
+Csster.style({
   h1: {
     fontSize: 18,
     color: 'red'
@@ -17,13 +17,9 @@ Csster({
 ...
 </pre>
 
-### Creating CSS Rules
-
-(to be written)
-
 ### Format of CSS Rules
 
-CSS rules are passed either as arrays or hashes, arrays just being
+The *style* method accepts CSS rules passed either as arrays or hashes, arrays just being
 a way to order the hashes. For example:
 
 <pre>
@@ -89,7 +85,6 @@ To "mix these in", use the "macro" key:
 
 ## Todo
 
-* Figure out output/page integration strategy
 * Support more than one Macro
 * Some color math
 * Better name

@@ -15,7 +15,7 @@ describe('Array#flatten', function() {
 
 describe("Csster", function() {
 
-    describe('property name', function() {
+    describe('#propertyNameOf', function() {
         it('should convert fontFamily to font-family', function() {
             expect(Csster.propertyNameOf('fontFamily')).toEqual("font-family");
         });
@@ -38,72 +38,116 @@ describe("Csster", function() {
         });
     });
 
-    describe('property', function() {
+    describe('#formatProperty', function() {
         it('should render font family', function() {
             expect(Csster.formatProperty('fontFamily', 'serif')).toEqual("font-family: serif;\r");
+        });
+        it('should render raw number as "px" value', function() {
+            expect(Csster.formatProperty('height', 12)).toEqual("height: 12px;\r");
         });
 
 
     });
 
-    it("should output style rule from element name", function() {
-        expect(rules({
-            p:{
-                fontFamily: 'serif'
-            }
-        })).toEqual("p {\rfont-family: serif;\r}\r");
-    });
-    it("should output style rule from element.class name", function() {
-        expect(rules({
-            'div.cls':{
-                height: '235px'
-            }
-        })).toEqual("div.cls {\rheight: 235px;\r}\r");
-    });
-    it("should output multiple properties", function() {
-        expect(rules({
-            'div.cls':{
-                height: '235px',
-                width: '300px'
-            }
-        })).toEqual("div.cls {\rheight: 235px;\rwidth: 300px;\r}\r");
-    });
-    it("should output properties and sub-selectors", function() {
-        expect(rules({
-            ul:{
-                width: '300px',
-                li: {
-                    padding: '20px',
-                    marginLeft: '-20px'
+
+    describe('#formatRules', function() {
+        it("should output style rule from element name", function() {
+            expect(Csster.formatRules({
+                p:{
+                    fontFamily: 'serif'
+                }
+            })).toEqual("p {\rfont-family: serif;\r}\r");
+        });
+        it("should output style rule from element.class name", function() {
+            expect(Csster.formatRules({
+                'div.cls':{
+                    height: '235px'
+                }
+            })).toEqual("div.cls {\rheight: 235px;\r}\r");
+        });
+        it("should output multiple properties", function() {
+            expect(Csster.formatRules({
+                'div.cls':{
+                    height: '235px',
+                    width: '300px'
+                }
+            })).toEqual("div.cls {\rheight: 235px;\rwidth: 300px;\r}\r");
+        });
+        it("should output properties and sub-selectors", function() {
+            expect(Csster.formatRules({
+                ul:{
+                    width: '300px',
+                    li: {
+                        padding: '20px',
+                        marginLeft: '-20px'
+                    }
+                }
+            })
+                    ).
+                    toEqual("ul {\rwidth: 300px;\r}\rul li {\rpadding: 20px;\rmargin-left: -20px;\r}\r");
+        });
+
+        it("should output px when passed an integer", function() {
+            expect(Csster.formatRules({
+                'div.cls':{
+                    height: 235
+                }
+            })).toEqual("div.cls {\rheight: 235px;\r}\r");
+        });
+
+
+        it("should expand a macro property", function() {
+            function roundedCorners(radius) {
+                return {
+                    '-webkit-border-radius': radius,
+                    '-moz-border-radius': radius
                 }
             }
-        })
-                ).
-                toEqual("ul {\rwidth: 300px;\r}\rul li {\rpadding: 20px;\rmargin-left: -20px;\r}\r");
+
+            expect(Csster.formatRules({
+                'div.cls':{
+                    macro: roundedCorners(5),
+                    height: '235px'
+                }
+            })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\r}\r");
+        });
+
     });
 
-    it("should output px when passed an integer", function() {
-        expect(rules({
-            'div.cls':{
-                height: 235
-            }
-        })).toEqual("div.cls {\rheight: 235px;\r}\r");
+    describe('#insertStyleElement', function() {
+        var originalWidth;
+        beforeEach(function() {
+            originalWidth = document.getElementsByClassName('logo')[0].clientWidth;
+        });
+        it('should have no element style overrides for width', function() {
+            expect(document.getElementsByClassName('logo')[0].style.width).toEqual('');
+        });
+        describe('inserting the stylesheet', function() {
+            beforeEach(function() {
+                Csster.insertStylesheet('.logo { font-size: 150%;}');
+            });
+            it('should now be wider', function() {
+                expect(document.getElementsByClassName('logo')[0].clientWidth).toBeGreaterThan(originalWidth);
+            });
+        });
     });
 
-    function roundedCorners(radius) {
-        return {
-            '-webkit-border-radius': radius,
-            '-moz-border-radius': radius
-        }
-    }
-
-    it("should expand a macro property", function() {
-        expect(rules({
-            'div.cls':{
-                macro: roundedCorners(5),
-                height: '235px'
-            }
-        })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\r}\r");
+    describe('#style', function() {
+        var originalWidth;
+        beforeEach(function() {
+            originalWidth = document.getElementsByClassName('logo')[0].clientWidth;
+        });
+        it('should have no element style overrides for width', function() {
+            expect(document.getElementsByClassName('logo')[0].style.width).toEqual('');
+        });
+        describe('inserting the stylesheet', function() {
+            beforeEach(function() {
+                Csster.style({'.logo': { fontSize: '75%'}});
+            });
+            it('should now be wider', function() {
+                expect(document.getElementsByClassName('logo')[0].clientWidth).toBeLessThan(originalWidth);
+            });
+        });
     });
 
 
