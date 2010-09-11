@@ -4,6 +4,12 @@ Small libary to generate CSS style rules within Javascript.
 
 h2. Usage
 
+h3. Creating CSS Rules
+
+(to be written)
+
+h3. Format of CSS Rules
+
 CSS rules are passed either as arrays or hashes, arrays just being
 a way to order the hashes. For example:
 
@@ -13,7 +19,7 @@ a way to order the hashes. For example:
       margin: 5;
       padding: 0;
     }
-    'ul li': {
+    'ul li:first': {
       paddingLeft: 20px;
     }
 }
@@ -23,8 +29,10 @@ Note that
 * property names are automatically converted to the correct format from camelcase. Feel free
   to quote them as well.
 * raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
+* any sort of selectors are allowed... they are just passed through to the stylesheet
 
-Csster supports nesting of rules to keep things more concise:
+
+*Nesting* Csster supports nesting of rules to keep things more concise:
 <pre>
 {
     ul: {
@@ -40,7 +48,8 @@ The "li" property in this case might be a selector or might be a property name. 
 property names is used to identify properties right now, and otherwise it's considered a sub-selector.
 (Think about this.)
 
-It's all Javascript, so macros and more complex functions are easy to write. For example:
+*Macros* It's all Javascript, so macros and more complex functions are easy to write. Just create a function
+that returns a hash of values, for example:
 
 <pre>
     function roundedCorners(radius) {
@@ -61,9 +70,15 @@ To "mix these in", use the "macro" key:
       macro: roundedCorner(5);
     }
 }
-<pre>
+</pre>
 
 
+h2. Todo
+
+* Figure out output/page integration strategy
+* Support more than one Macro
+* Some color math
+* Better name
 
 
 h2. Motivation
