@@ -26,9 +26,11 @@ a way to order the hashes. For example:
 </pre>
 
 Note that
-* property names are automatically converted to the correct format from camelcase. Feel free to quote them as well.
-* raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
-* any sort of selectors are allowed... they are just passed through to the stylesheet.
+<ul>
+<li>property names are automatically converted to the correct format from camelcase. Feel free to quote them as well.
+<li>raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
+<li>any sort of selectors are allowed... they are just passed through to the stylesheet.
+</ul>
 
 h4. Nesting
 Csster supports nesting of rules to keep things more concise:
