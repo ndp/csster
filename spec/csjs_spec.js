@@ -90,4 +90,21 @@ describe("CSSy", function() {
         })).toEqual("div.cls {\rheight: 235px;\r}\r");
     });
 
+    function roundedCorners(radius) {
+        return {
+            '-webkit-border-radius': radius,
+            '-moz-border-radius': radius
+        }
+    }
+
+    it("should expand a macro property", function() {
+        expect(rules({
+            'div.cls':{
+                macro: roundedCorners(5),
+                height: '235px'
+            }
+        })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\r}\r");
+    });
+
+
 });
