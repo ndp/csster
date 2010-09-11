@@ -1,14 +1,14 @@
-h1. Csster
+# Csster
 
 Small libary to generate CSS style rules within Javascript.
 
-h2. Usage
+## Usage
 
-h3. Creating CSS Rules
+### Creating CSS Rules
 
 (to be written)
 
-h3. Format of CSS Rules
+### Format of CSS Rules
 
 CSS rules are passed either as arrays or hashes, arrays just being
 a way to order the hashes. For example:
@@ -26,15 +26,11 @@ a way to order the hashes. For example:
 </pre>
 
 Note that
-<ul>
-<li>property names are automatically converted to the correct format from camelcase. Feel free to quote them as well.
-<li>raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
-<li>any sort of selectors are allowed... they are just passed through to the stylesheet.
-</ul>
-</ul>
-</ul>
+* property names are automatically converted to the correct format from camelcase. Feel free to quote them as well.
+* raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
+* any sort of selectors are allowed... they are just passed through to the stylesheet.
 
-h4. Nesting
+#### Nesting
 Csster supports nesting of rules to keep things more concise:
 <pre>
 {
@@ -51,7 +47,7 @@ The "li" property in this case might be a selector or might be a property name. 
 property names is used to identify properties right now, and otherwise it's considered a sub-selector.
 (Think about this.)
 
-h4. Macros
+#### Macros
 It's all Javascript, so macros and more complex functions are easy to write. Just create a function
 that returns a hash of values, for example:
 
@@ -77,7 +73,7 @@ To "mix these in", use the "macro" key:
 </pre>
 
 
-h2. Todo
+## Todo
 
 * Figure out output/page integration strategy
 * Support more than one Macro
@@ -85,7 +81,7 @@ h2. Todo
 * Better name
 
 
-h2. Motivation
+## Motivation
 
 This project comes from my frustration of trying to build standalone Javascript widgets. Web
 projects always involve the combination of HTML DOM, CSS and Javascript. It's often simpler to
@@ -100,11 +96,11 @@ tool completely unrelated to your component, written in some other language. Wou
 a unified approach be nice?
 
 
-h2. Similar projects
+## Similar projects
 
 http://revnode.com/oss/css/
 
-h2. Legal
+## Legal
 
 Copyright (c) 2010 Andrew J. Peterson
 All Rights Reserved.
