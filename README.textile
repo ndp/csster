@@ -17,7 +17,7 @@ a way to order the hashes. For example:
       paddingLeft: 20px;
     }
 }
-<pre>
+</pre>
 
 Note that
 * property names are automatically converted to the correct format from camelcase. Feel free
@@ -34,7 +34,7 @@ Csster supports nesting of rules to keep things more concise:
       }
     }
 }
-<pre>
+</pre>
 
 The "li" property in this case might be a selector or might be a property name. A list of valid
 property names is used to identify properties right now, and otherwise it's considered a sub-selector.
