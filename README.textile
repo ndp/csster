@@ -4,6 +4,66 @@ Small libary to generate CSS style rules within Javascript.
 
 h2. Usage
 
+CSS rules are passed either as arrays or hashes, arrays just being
+a way to order the hashes. For example:
+
+<pre>
+{
+    ul: {
+      margin: 5;
+      padding: 0;
+    }
+    'ul li': {
+      paddingLeft: 20px;
+    }
+}
+<pre>
+
+Note that
+* property names are automatically converted to the correct format from camelcase. Feel free
+  to quote them as well.
+* raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
+
+Csster supports nesting of rules to keep things more concise:
+<pre>
+{
+    ul: {
+      margin: 5;
+      li: {
+        paddingLeft: 20;
+      }
+    }
+}
+<pre>
+
+The "li" property in this case might be a selector or might be a property name. A list of valid
+property names is used to identify properties right now, and otherwise it's considered a sub-selector.
+(Think about this.)
+
+It's all Javascript, so macros and more complex functions are easy to write. For example:
+
+<pre>
+    function roundedCorners(radius) {
+        return {
+            '-webkit-border-radius': radius,
+            '-moz-border-radius': radius,
+            'border-radius': radius
+        }
+    }
+</pre>
+
+To "mix these in", use the "macro" key:
+
+<pre>
+{
+    'div#featured_box': {
+      backgroundColor: '#394c89';
+      macro: roundedCorner(5);
+    }
+}
+<pre>
+
+
 
 
 h2. Motivation
@@ -22,8 +82,10 @@ a unified approach be nice?
 
 
 h2. Similar projects
+
 http://revnode.com/oss/css/
 
 h2. Legal
+
 Copyright (c) 2010 Andrew J. Peterson
 All Rights Reserved.
