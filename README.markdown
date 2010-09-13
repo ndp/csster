@@ -70,8 +70,11 @@ The "li" property in this case might be a selector or might be a property name. 
 property names is used to identify properties right now, and otherwise it's considered a sub-selector.
 (Think about this.)
 
+#### Functions
+Use Javascript to write necessary functions. function/color.js contains SASS-like functions: *darken*, *lighten*, etc.
+
 #### Macros
-It's all Javascript, so macros and more complex functions are easy to write. Just create a function
+It's all Javascript, so macros and more complex functions are easy to write. To mix in a set of values, create a function
 that returns a hash of values, for example:
 
 <pre>
