@@ -45,9 +45,10 @@ describe("Csster", function() {
         it('should render raw number as "px" value', function() {
             expect(Csster.formatProperty('height', 12)).toEqual("height: 12px;\r");
         });
-
-
     });
+
+    // :hover selectors (no space between pieces)
+    // > blah   direct decendent
 
 
     describe('#formatRules', function() {

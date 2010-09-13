@@ -85,9 +85,12 @@ To "mix these in", use the "macro" key:
 
 ## Todo
 
+* Support "has"
 * Support more than one Macro
 * Some color math
+* Fix license
 * Better name
+
 
 
 ## Motivation

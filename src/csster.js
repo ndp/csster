@@ -57,6 +57,7 @@ var Csster = {
         'border-left-color',
         'border-left-style',
         'border-left-width',
+        'border-radius',
         'border-right',
         'border-right-color',
         'border-right-style',
