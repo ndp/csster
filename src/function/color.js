@@ -70,6 +70,7 @@ String.prototype.darken = function(percent) {
 
 
 // [0..360, 0..100, 0.100]
+// see http://130.113.54.154/~monger/hsl-rgb.html
 String.prototype.toHSL = function() {
     var rgb = this.toRGB();
     var r = this.red() / 255,g = this.green() / 255,b = this.blue() / 255;

@@ -60,6 +60,9 @@ describe('color functions', function() {
         it('should convert blue to hsl', function() {
            expect('#0000ff'.toHSL()).toEqual([240,100,50]);
         });
+        it('should convert #800 to hsl', function() {
+           expect('#800'.toHSL()).toEqual([0, 100, 27]);
+        });
     });
 
     describe('hslToHtmlColor', function() {
@@ -74,6 +77,10 @@ describe('color functions', function() {
         it('should convert blue to hsl and back', function() {
             var hsl = '#0000ff'.toHSL();
            expect(hslToHtmlColor.apply(null,hsl).toHexColor()).toEqual('#0000ff');
+        });
+        it('should convert #800 to hsl and back', function() {
+            var hsl = '#800'.toHSL();
+           expect(hslToHtmlColor.apply(null,hsl).toHexColor()).toEqual('#880000');
         });
     });
 
