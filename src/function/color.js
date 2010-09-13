@@ -62,6 +62,12 @@ String.prototype.lighten = function(percent) {
     return hslToHtmlColor(newHSL);
 };
 
+String.prototype.darken = function(percent) {
+    var hsl = this.toHSL();
+    var newHSL = [hsl[0],hsl[1],Math.max(0, hsl[2] - percent)];
+    return hslToHtmlColor(newHSL);
+};
+
 
 // [0..360, 0..100, 0.100]
 String.prototype.toHSL = function() {

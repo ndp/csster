@@ -1,4 +1,16 @@
 /**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * WORK IN PROGRESS... LOTS OF STUFF FROM AROUND THE WEB. NOT USEFUL YET!
+ *
+ *
  Functions applied to property values.
  #lighten
  Makes a color lighter.
@@ -160,38 +172,7 @@ function hslToRgb(h, s, l) {
     return [r, g, b];
 }
 
-//convert hsl to an html color string
-function hslToHtmlColor(h, s, l) {
-    var rgb = hslToRgb(h, s, l);
-    return "#" + toHex(rgb[0] * 255) + toHex(rgb[1] * 255) + toHex(rgb[2] * 255);
-}
-
-//convert decimal to hex
-function toHex(decimal, places) {
-    if (places == undefined || isNaN(places))  places = 2;
-    var hex = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F");
-    var next = 0;
-    var hexidecimal = "";
-    decimal = Math.floor(decimal);
-    while (decimal > 0) {
-        next = decimal % 16;
-        decimal = Math.floor((decimal - next) / 16);
-        hexidecimal = hex[next] + hexidecimal;
-    }
-    while (hexidecimal.length < places) {
-        hexidecimal = "0" + hexidecimal;
-    }
-    return hexidecimal;
-}
-
-
-
-
-
-
-
-
-
+//convert hsl to an html
 
 
 

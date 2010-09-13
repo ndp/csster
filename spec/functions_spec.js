@@ -82,53 +82,33 @@ describe('color functions', function() {
             expect('#800'.lighten(0)).toEqual('#880000');
         });
         it('should set to white with 100', function() {
-            expect('#800'.lighten(100)).toEqual('#000000');
+            expect('#800'.lighten(100)).toEqual('#ffffff');
         });
         it('should do nothing if already white', function() {
-            expect('#fff'.lighten(20)).toEqual('#fff');
+            expect('#fff'.lighten(20)).toEqual('#ffffff');
         });
         it('should lighten 20%', function() {
             expect('#880000'.lighten(20)).toEqual('#ee0000');
+        });
+    });
+    describe('darken', function() {
+        it('should do nothing with zero', function() {
+            expect('#800'.darken(0)).toEqual('#880000');
+        });
+        it('should set to black with 100', function() {
+            expect('#800'.darken(100)).toEqual('#000000');
+        });
+        it('should do nothing if already black', function() {
+            expect('#000'.darken(20)).toEqual('#000000');
+        });
+        it('should darken 20%', function() {
+            expect('#880000'.darken(20)).toEqual('#220000');
         });
     });
 
 });
 
 
-//
-//it('should lighten_tests_bounds', function()  {
-//  assert_error_message("Amount -0.001 must be between 0% and 100% for `lighten'",
-//    "lighten(#123, -0.001)")
-//  assert_error_message("Amount 100.001 must be between 0% and 100% for `lighten'",
-//    "lighten(#123, 100.001)")
-//});
-//
-//it('should lighten_tests_types', function()  {
-//  assert_error_message("\"foo\" is not a color for `lighten'", "lighten(\"foo\", 10%)")
-//  assert_error_message("\"foo\" is not a number for `lighten'", "lighten(#fff, \"foo\")")
-//});
-//
-//it('should darken', function()  {
-//  expect(evaluate("darken(hsl(25, 100, 80), 30%)")).toEqual('#ff6a00');
-//  expect(evaluate("darken(#800, 20%)")).toEqual('#220000');
-//  assert_equal("black", evaluate("darken(#000, 20%)"))
-//  assert_equal("black", evaluate("darken(#800, 100%)"))
-//  expect(evaluate("darken(#800, 0%)")).toEqual('#880000');
-//  assert_equal("rgba(34, 0, 0, 0.5)", evaluate("darken(rgba(136, 0, 0, 0.5), 20%)"))
-//});
-//
-//it('should darken_tests_bounds', function()  {
-//  assert_error_message("Amount -0.001 must be between 0% and 100% for `darken'",
-//    "darken(#123, -0.001)")
-//  assert_error_message("Amount 100.001 must be between 0% and 100% for `darken'",
-//    "darken(#123, 100.001)")
-//});
-//
-//it('should darken_tests_types', function()  {
-//  assert_error_message("\"foo\" is not a color for `darken'", "darken(\"foo\", 10%)")
-//  assert_error_message("\"foo\" is not a number for `darken'", "darken(#fff, \"foo\")")
-//});
-//
 //it('should saturate', function()  {
 //  expect(evaluate("saturate(hsl(120, 30, 90), 20%)")).toEqual('#d9f2d9');
 //  expect(evaluate("saturate(#855, 20%)")).toEqual('#9e3f3f');
