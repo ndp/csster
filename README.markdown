@@ -1,6 +1,6 @@
 # Csster
 
-Small libary to generate CSS style rules within Javascript.
+Generate CSS style rules within Javascript.
 
 ## Usage
 
@@ -14,6 +14,19 @@ Csster.style({
   }
 });
 
+...
+</pre>
+
+Result, inserted in DOM automatically at the bottom of the &lt;head&gt; element:
+<pre>
+...
+<style type="text/stylesheet">
+h1 {
+font-size: 18px;
+color: red;
+}
+</style>
+</head>
 ...
 </pre>
 
