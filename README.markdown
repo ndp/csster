@@ -20,13 +20,13 @@ Csster.style({
 Result, inserted in DOM automatically at the bottom of the &lt;head&gt; element:
 <pre>
 ...
-<style type="text/stylesheet">
+&lt;style type="text/stylesheet"&gt;
 h1 {
 font-size: 18px;
 color: red;
 }
-</style>
-</head>
+&lt;/style&gt;
+&lt;/head&gt;
 ...
 </pre>
 
