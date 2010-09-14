@@ -70,90 +70,87 @@ String.prototype.darken = function(percent) {
 
 
 // [0..360, 0..100, 0.100]
-// see http://130.113.54.154/~monger/hsl-rgb.html
+// Ref. http://www.easyrgb.com/index.php?X=MATH&H=18#text18
 String.prototype.toHSL = function() {
     var rgb = this.toRGB();
     var r = this.red() / 255,g = this.green() / 255,b = this.blue() / 255;
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var deltaMax = max - min; // Delta RGB value
     var h, s, l = (max + min) / 2;
 
-    if (max == min) {
-        h = s = 0; // achromatic
+
+    if (deltaMax == 0) { // gray?, no chroma...
+        h = 0;                                // HSl results from 0 to 1
+        s = 0;
     } else {
-        var d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        switch (max) {
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
-        }
-        h /= 6;
+        // Chromatic data...
+        s = deltaMax / ( l < 0.5 ? ( max + min ) : ( 2 - max - min ));
+
+        var del_R = ( ( ( max - r ) / 6 ) + ( deltaMax / 2 ) ) / deltaMax;
+        var del_G = ( ( ( max - g ) / 6 ) + ( deltaMax / 2 ) ) / deltaMax;
+        var del_B = ( ( ( max - b ) / 6 ) + ( deltaMax / 2 ) ) / deltaMax;
+
+        if (r == max) h = del_B - del_G;
+        else if (g == max) h = ( 1 / 3 ) + del_R - del_B;
+        else if (b == max) h = ( 2 / 3 ) + del_G - del_R;
+
+        h = (h + 2) % 1;
     }
 
+
     var cache = this.colorCache();
-    cache.hsl = [Math.floor(h * 360), Math.floor(s * 100), Math.floor(l * 100)];
+    cache.hsl = [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
     return cache.hsl;
 };
 
 
 function hslToHtmlColor(h, s, l) {
+    if (isArray(h)) {
+        l = h[2] || 0;
+        s = h[1] || 0;
+        h = h[0] || 0;
+    }
+    //HSL from 0 to 1
+    s = s / 100;
+    l = l / 100;
+    h = h % 360;
 
-    var hsl2rgb = function(h, s, l) {
-        if (isArray(h)) {
-            l = h[2] || 0;
-            s = h[1] || 0;
-            h = h[0] || 0;
-        }
-        s = s / 100;
-        l = l / 100;
-        h = h % 360;
-
+    function hsl2rgb(h, s, l) {
+    // HSL 0 to 1
+    //RGB results from 0 to 255
         var r,g,b;
-        if (h < 120) {
-            r = (120 - h) / 60;
-            g = h / 60;
-            b = 0;
+
+        if (s == 0) {
+            r = l * 255;
+            g = l * 255;
+            b = l * 255;
         } else {
-            if (h < 240) {
-                r = 0;
-                g = (240 - h) / 60;
-                b = (h - 120) / 60;
-            } else {
-                r = (h - 240) / 60;
-                g = 0;
-                b = (360 - h) / 60;
-            }
+            var var_2 = (l < 0.5) ? l * ( 1 + s ) : (( l + s ) - ( s * l ));
+            var var_1 = 2 * l - var_2;
+
+            r = 255 * h2rgb(var_1, var_2, h + ( 1 / 3 ));
+            g = 255 * h2rgb(var_1, var_2, h);
+            b = 255 * h2rgb(var_1, var_2, h - ( 1 / 3 ));
         }
-        r = Math.min(r, 1);
-        g = Math.min(g, 1);
-        b = Math.min(b, 1);
-        r = 2 * s * r + (1 - s);
-        g = 2 * s * g + (1 - s);
-        b = 2 * s * b + (1 - s);
-        if (l < 0.5) {
-            r = l * r;
-            g = l * g;
-            b = l * b;
-        } else {
-            r = (1 - l) * r + 2 * l - 1;
-            g = (1 - l) * g + 2 * l - 1;
-            b = (1 - l) * b + 2 * l - 1;
-        }
-        r = Math.ceil(r * 255);
-        g = Math.ceil(g * 255);
-        b = Math.ceil(b * 255);
         return [r,g,b];
-    };
-
-
-    var rgb = hsl2rgb(h, s, l);
-
-    function hex2(n) {
-        var h = n.toString(16);
-        if (h.length == 1) h = '0' + h;
-        return h;
     }
 
+    function h2rgb(v1, v2, vH) {
+        if (vH < 0) vH += 1;
+        if (vH > 1) vH -= 1;
+        if (( 6 * vH ) < 1) return ( v1 + ( v2 - v1 ) * 6 * vH );
+        if (( 2 * vH ) < 1) return ( v2 );
+        if (( 3 * vH ) < 2) return ( v1 + ( v2 - v1 ) * ( ( 2 / 3 ) - vH ) * 6 );
+        return ( v1 );
+    }
+
+    function hex2(n) {
+        var h = Math.round(n).toString(16);
+        if (h.length == 1) h = '0' + h;
+        return h[0] + h[1];
+    }
+
+    var rgb = hsl2rgb(h, s, l);
     return "#" + hex2(rgb[0]) + hex2(rgb[1]) + hex2(rgb[2]);
 }
 
