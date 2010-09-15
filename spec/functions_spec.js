@@ -63,30 +63,33 @@ describe('color functions', function() {
         it('should convert #800 to hsl', function() {
            expect('#800'.toHSL()).toEqual([0, 100, 27]);
         });
+        it('should convert #336699 to hsl', function() {
+           expect('#336699'.toHSL()).toEqual([210,50,40]);
+        });
     });
 
     describe('hslToHtmlColor', function() {
         it('should convert white to hsl and back', function() {
-            var hsl = '#ffffff'.toHSL();
+            var hsl = [0,0,100];
            expect(hslToHtmlColor.apply(null,hsl)).toEqual('#ffffff');
         });
         it('should convert black to hsl and back', function() {
-            var hsl = '#000'.toHSL();
+            var hsl = [0,0,0];
            expect(hslToHtmlColor.apply(null,hsl).toHexColor()).toEqual('#000000');
         });
-        it('should convert blue to hsl and back', function() {
-            var hsl = '#0000ff'.toHSL();
+        it('should convert blue', function() {
+            var hsl = [240, 100, 50];
            expect(hslToHtmlColor.apply(null,hsl).toHexColor()).toEqual('#0000ff');
         });
-        it('should convert #800 to hsl and back', function() {
-            var hsl = '#800'.toHSL();
-           expect(hslToHtmlColor.apply(null,hsl).toHexColor()).toEqual('#880000');
+        it('should convert red', function() {
+            var hsl = [0, 100, 25];
+           expect(hslToHtmlColor.apply(null,hsl).toHexColor()).toMatch(/#800000/);
         });
     });
 
     describe('lighten', function() {
         it('should do nothing with zero', function() {
-            expect('#800'.lighten(0)).toEqual('#880000');
+            expect('#800'.lighten(0)).toMatch(/#8[89a]0000/);
         });
         it('should set to white with 100', function() {
             expect('#800'.lighten(100)).toEqual('#ffffff');
@@ -100,7 +103,7 @@ describe('color functions', function() {
     });
     describe('darken', function() {
         it('should do nothing with zero', function() {
-            expect('#800'.darken(0)).toEqual('#880000');
+            expect('#800'.darken(0)).toMatch(/#8[89a]0000/);
         });
         it('should set to black with 100', function() {
             expect('#800'.darken(100)).toEqual('#000000');
@@ -109,8 +112,72 @@ describe('color functions', function() {
             expect('#000'.darken(20)).toEqual('#000000');
         });
         it('should darken 20%', function() {
-            expect('#880000'.darken(20)).toEqual('#220000');
+            expect('#880000'.darken(20)).toMatch(/#2[234]0000/);
         });
+    });
+
+    describe('saturate', function() {
+        it('should do nothing with zero', function() {
+            expect('#800'.saturate(0)).toMatch(/#8[789a]0000/);
+        });
+        it('should saturate(hsl(120, 30%, 90%), 20%) => hsl(120, 50%, 90%)', function() {
+           expect(hslToHtmlColor(120, 30, 90).saturate(20)).toEqual('#D9F2D9')
+        });
+        it('should saturate(#855, 20%) => #9e3f3f', function() {
+           expect("#855".saturate(20)).toMatch(/#9[de]3f3f/)
+        });
+
+
+        it('should saturate(#xxx, xxx%) => #yyy', function() {
+           expect("#855".saturate(20)).toMatch(/#yyy/)
+        });
+
+        it('should saturate(#xxx, xxx%) => #d9f2d9', function() {
+           expect("#855".saturate(20)).toMatch(/#d9f2d9/)
+        });
+        it('should saturate(#xxx, xxx%) => #9e3f3f', function() {
+           expect("#855".saturate(20)).toMatch(/#9e3f3f/)
+        })
+        it('should saturate(#xxx, xxx%) => #000', function() {
+           expect("#000".saturate(20)).toMatch(/#000000/)
+        });
+        it('should saturate(#fff, 20%) => #ffffff', function() {
+           expect("#fff".saturate(20)).toMatch(/#ffffff/)
+        });
+        it('should saturate(#8a8%) => #33ff33', function() {
+           expect("#8a8".saturate(100)).toMatch(/#33ff33/)
+        });
+        it('should saturate(#8a8%) => #88aa88', function() {
+           expect("#8a8".saturate(0)).toMatch(/#88aa88/)
+        });
+
+
+        it('should saturate 120 30 90 to #e3e8e3', function() {
+            expect(hslToHtmlColor(120, 30, 90).saturate(-20)).toMatch(/#e3e8e3/);
+        });
+        it('should saturate 855 to #726b6b', function() {
+            expect('#855'.saturate(-20)).toMatch(/#726b6b/);
+        });
+        it('should saturate 000 to black', function() {
+            expect('#000'.saturate(-20)).toMatch(/#00000/);
+        });
+        it('should saturate 000 to white', function() {
+            expect('#fff'.saturate(-20)).toMatch(/#ffffff/);
+        });
+        it('should saturate 000 to white', function() {
+            expect('#8a8'.saturate(-100)).toMatch(/#999999/);
+        });
+        it('should saturate 000 to white', function() {
+            expect('#8a8'.saturate(0)).toMatch(/#88aa88/);
+        });
+
+        it('should desaturate(hsl(120, 30%, 90%), 20%) => hsl(120, 10%, 90%)', function() {
+           expect(hslToHtmlColor(120, 30, 90).saturate(-20)).toEqual('#E3E8E3')
+        });
+        it('should desaturate(#855, 20%) => #726b6b', function() {
+           expect("#855".saturate(-20)).toMatch(/#7[12]6[ab]6[ab]/)
+        });
+
     });
 
 });

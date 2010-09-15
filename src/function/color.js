@@ -2,7 +2,7 @@
  Use a singleton cache of all color strings we see.
  Each key points to a structure, which can have hex, rgb, etc. values in it.
  */
-var ColorCache = {}; // used for storing values associated with a string
+var ColorCache = {}; // immutable values-- used for storing values associated with a string
 
 var HTML4_COLORS = {
     'black'  : '#000000',
@@ -69,6 +69,17 @@ String.prototype.darken = function(percent) {
 };
 
 
+/**
+ * Increase or decrease the saturation of a color.
+ * @param percent positive values increase saturation, negative values desaturate.
+ */
+String.prototype.saturate = function(percent) {
+    var hsl = this.toHSL();
+    var newHSL = [hsl[0],Math.min(100, Math.max(0, hsl[1] + percent)), hsl[2]];
+    return hslToHtmlColor(newHSL);
+};
+
+
 // [0..360, 0..100, 0.100]
 // Ref. http://www.easyrgb.com/index.php?X=MATH&H=18#text18
 String.prototype.toHSL = function() {
@@ -116,8 +127,8 @@ function hslToHtmlColor(h, s, l) {
     h = h % 360;
 
     function hsl2rgb(h, s, l) {
-    // HSL 0 to 1
-    //RGB results from 0 to 255
+        // HSL 0 to 1
+        //RGB results from 0 to 255
         var r,g,b;
 
         if (s == 0) {
