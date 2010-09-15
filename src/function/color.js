@@ -59,13 +59,13 @@ String.prototype.blue = function() {
 String.prototype.lighten = function(percent) {
     var hsl = this.toHSL();
     var newHSL = [hsl[0],hsl[1],Math.min(100, hsl[2] + percent)];
-    return hslToHtmlColor(newHSL);
+    return hslToHexColor(newHSL);
 };
 
 String.prototype.darken = function(percent) {
     var hsl = this.toHSL();
     var newHSL = [hsl[0],hsl[1],Math.max(0, hsl[2] - percent)];
-    return hslToHtmlColor(newHSL);
+    return hslToHexColor(newHSL);
 };
 
 
@@ -76,7 +76,7 @@ String.prototype.darken = function(percent) {
 String.prototype.saturate = function(percent) {
     var hsl = this.toHSL();
     var newHSL = [hsl[0],Math.min(100, Math.max(0, hsl[1] + percent)), hsl[2]];
-    return hslToHtmlColor(newHSL);
+    return hslToHexColor(newHSL);
 };
 
 
@@ -86,36 +86,39 @@ String.prototype.toHSL = function() {
     var rgb = this.toRGB();
     var r = this.red() / 255,g = this.green() / 255,b = this.blue() / 255;
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
-    var deltaMax = max - min; // Delta RGB value
+    var d = max - min; // Delta RGB value
     var h, s, l = (max + min) / 2;
 
 
-    if (deltaMax == 0) { // gray?, no chroma...
+    if (d == 0) { // gray?, no chroma...
         h = 0;                                // HSl results from 0 to 1
         s = 0;
     } else {
         // Chromatic data...
-        s = deltaMax / ( l < 0.5 ? ( max + min ) : ( 2 - max - min ));
+        s = d / ( l < 0.5 ? ( max + min ) : ( 2 - max - min ));
 
-        var del_R = ( ( ( max - r ) / 6 ) + ( deltaMax / 2 ) ) / deltaMax;
-        var del_G = ( ( ( max - g ) / 6 ) + ( deltaMax / 2 ) ) / deltaMax;
-        var del_B = ( ( ( max - b ) / 6 ) + ( deltaMax / 2 ) ) / deltaMax;
+        var del_R = ( ( ( max - r ) / 6 ) + ( d / 2 ) ) / d;
+        var del_G = ( ( ( max - g ) / 6 ) + ( d / 2 ) ) / d;
+        var del_B = ( ( ( max - b ) / 6 ) + ( d / 2 ) ) / d;
 
         if (r == max) h = del_B - del_G;
         else if (g == max) h = ( 1 / 3 ) + del_R - del_B;
         else if (b == max) h = ( 2 / 3 ) + del_G - del_R;
 
-        h = (h + 2) % 1;
+        if (h < 0) h += 1;
+        if (h > 0) h -= 1;
     }
 
+    h = Math.round(h * 360);
+    if (h < 0) h += 360;
 
     var cache = this.colorCache();
-    cache.hsl = [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+    cache.hsl = [h, Math.round(s * 100), Math.round(l * 100)];
     return cache.hsl;
 };
 
 
-function hslToHtmlColor(h, s, l) {
+function hslToHexColor(h, s, l) {
     if (isArray(h)) {
         l = h[2] || 0;
         s = h[1] || 0;
