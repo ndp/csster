@@ -88,6 +88,19 @@ describe("Csster", function() {
                     toEqual("ul {\rwidth: 300px;\r}\rul li {\rpadding: 20px;\rmargin-left: -20px;\r}\r");
         });
 
+        it("should output properties without space when & used", function() {
+            expect(Csster.formatRules({
+                ul:{
+                    width: '300px',
+                    '&:hover': {
+                        padding: '20px'
+                    }
+                }
+            })
+                    ).
+                    toEqual("ul {\rwidth: 300px;\r}\rul:hover {\rpadding: 20px;\r}\r");
+        });
+
         it("should output px when passed an integer", function() {
             expect(Csster.formatRules({
                 'div.cls':{
