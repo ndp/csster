@@ -1,17 +1,3 @@
-describe('Array#flatten', function() {
-    it('should do nothing with empty array', function() {
-        expect([].flatten()).toEqual([]);
-    });
-    it('should do nothing with flat array', function() {
-        expect([1,2].flatten()).toEqual([1,2]);
-    });
-    it('should flatten one level', function() {
-        expect([1,[2]].flatten()).toEqual([1,2]);
-    });
-    it('should flatten N levels', function() {
-        expect([1,[2,[3,[4]]]].flatten()).toEqual([1,2,3,4]);
-    });
-});
 
 describe("Csster", function() {
 
@@ -121,25 +107,7 @@ describe("Csster", function() {
             return {color: 'red'};
         }
 
-        it("should expand a macro property", function() {
-
-            expect(Csster.formatRules({
-                'div.cls':{
-                    macro: roundedCorners(5),
-                    height: '235px'
-                }
-            })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\r}\r");
-        });
-        it("should expand a macros properties", function() {
-
-            expect(Csster.formatRules({
-                'div.cls':{
-                    macros: [roundedCorners(5), red()],
-                    height: '235px'
-                }
-            })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\rcolor: red}\r");
-        });
-        it("should expand a has property", function() {
+        it("should expand a 'has' property", function() {
 
             expect(Csster.formatRules({
                 'div.cls':{
@@ -148,7 +116,7 @@ describe("Csster", function() {
                 }
             })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\r}\r");
         });
-        it("should expand a has properties as array of hashes", function() {
+        it("should expand multiple values within a 'has' properties", function() {
 
             expect(Csster.formatRules({
                 'div.cls':{

@@ -311,12 +311,12 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
     result += ' {\r';
 
     // preprocess a macro, if one
-    var macros = properties['macro'];
-    if (macros) {
-        for (var mp in macros) {
-            properties[mp] = macros[mp];
+    var has = properties['has'];
+    if (has) {
+        for (var mp in has) {
+            properties[mp] = has[mp];
         }
-        delete properties['macro']
+        delete properties['has']
     }
 
     // ...all properties

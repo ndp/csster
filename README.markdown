@@ -60,7 +60,10 @@ Csster supports nesting of rules to keep things more concise:
     ul: {
       margin: 5;
       li: {
-        paddingLeft: 20;
+        paddingLeft: 20,
+        '&:hover': {
+          color: 'red'
+        }
       }
     }
 }
@@ -70,10 +73,18 @@ The "li" property in this case might be a selector or might be a property name. 
 property names is used to identify properties right now, and otherwise it's considered a sub-selector.
 (Think about this.)
 
-#### Functions
-Use Javascript to write necessary functions. function/color.js contains SASS-like functions: *darken*, *lighten*, etc.
+Csster supports SASS's "&" operator, to indicate that the selector should be combined with the parent selector.
+Instead of the default "any descendent" space character being inserted, no space is inserted.
 
-#### Macros
+#### Functions
+Use Javascript to write necessary functions.
+
+function/color.js contains SASS-like functions:
+*  *darken*(hex string, %) -- make color darker by given percent
+*  *lighten*(hex string, %) -- make color lighter by given percent
+*  *saturate*(hex string, %)  -- make color more saturated by given percent. Use negative values to *desaturate*. <code>saturate(c,-100)</code> renders in grayscale.
+
+#### Macros using "has" key
 It's all Javascript, so macros and more complex functions are easy to write. To mix in a set of values, create a function
 that returns a hash of values, for example:
 
@@ -87,21 +98,24 @@ that returns a hash of values, for example:
     }
 </pre>
 
-To "mix these in", use the "macro" key:
+To "mix these in", use the "has" key:
 
 <pre>
 {
     'div#featured_box': {
       backgroundColor: '#394c89';
-      macro: roundedCorner(5);
+      has: roundedCorner(5);
     }
 }
 </pre>
 
+Multiple mix-ins can be included by making that a list, eg. <code>has: [roundedCorners(5), dropShadow()]</code>.
+
+
+
 
 ## Todo
 
-* Support "has"
 * Support more than one Macro
 * Some color math
 * Fix license
