@@ -3,6 +3,7 @@ function isArray(object) {
 }
 
 
+// A R R A Y s
 Array.prototype.each = function each(iterator) {
     for (var i = 0; i < this.length;) {
         iterator(this[i], i++);
@@ -27,8 +28,9 @@ Array.prototype.flatten = function() {
     });
 };
 
-String.prototype.toDash = function() {
-    return this.replace(/([A-Z])/g, function($1) {
+
+function dasherize(s) {
+    return s.replace(/([A-Z])/g, function($1) {
         return "-" + $1.toLowerCase();
     });
 };

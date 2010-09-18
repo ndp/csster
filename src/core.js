@@ -1,5 +1,3 @@
-
-
 var Csster = {
     propertyNames: ['accelerator',
         'azimuth',
@@ -282,7 +280,6 @@ var Csster = {
 };
 
 
-
 Csster.propertyNamesHash = {};
 
 for (var i = 0; i < Csster.propertyNames.length; i++) {
@@ -291,15 +288,19 @@ for (var i = 0; i < Csster.propertyNames.length; i++) {
 }
 
 
+/*
+ Returns the CSS-correct lowercase property name, if it's recognized
+ as a property.
+ */
 Csster.propertyNameOf = function(p) {
-    name = p.toDash();
+    name = dasherize(p);
     return Csster.propertyNamesHash[name] ? name : null;
 }
 
 Csster.formatProperty = function(p, value) {
     if (value && typeof value == 'number') value = '' + value + 'px';
     return Csster.propertyNameOf(p) + ": " + value + ";\r";
-}
+};
 
 
 Csster.formatSelectorAndProperties = function(selector, properties) {
@@ -310,9 +311,10 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
     result += ' {\r';
 
     // preprocess a macro, if one
-    if (properties['macro']) {
-        for (var mp in properties['macro']) {
-            properties[mp] = properties['macro'][mp];
+    var macros = properties['macro'];
+    if (macros) {
+        for (var mp in macros) {
+            properties[mp] = macros[mp];
         }
         delete properties['macro']
     }

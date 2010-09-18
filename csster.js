@@ -3,6 +3,7 @@ function isArray(object) {
 }
 
 
+// A R R A Y s
 Array.prototype.each = function each(iterator) {
     for (var i = 0; i < this.length;) {
         iterator(this[i], i++);
@@ -27,13 +28,12 @@ Array.prototype.flatten = function() {
     });
 };
 
-String.prototype.toDash = function() {
-    return this.replace(/([A-Z])/g, function($1) {
+
+function dasherize(s) {
+    return s.replace(/([A-Z])/g, function($1) {
         return "-" + $1.toLowerCase();
     });
 };
-
-
 var Csster = {
     propertyNames: ['accelerator',
         'azimuth',
@@ -316,7 +316,6 @@ var Csster = {
 };
 
 
-
 Csster.propertyNamesHash = {};
 
 for (var i = 0; i < Csster.propertyNames.length; i++) {
@@ -325,15 +324,19 @@ for (var i = 0; i < Csster.propertyNames.length; i++) {
 }
 
 
+/*
+ Returns the CSS-correct lowercase property name, if it's recognized
+ as a property.
+ */
 Csster.propertyNameOf = function(p) {
-    name = p.toDash();
+    name = dasherize(p);
     return Csster.propertyNamesHash[name] ? name : null;
 }
 
 Csster.formatProperty = function(p, value) {
     if (value && typeof value == 'number') value = '' + value + 'px';
     return Csster.propertyNameOf(p) + ": " + value + ";\r";
-}
+};
 
 
 Csster.formatSelectorAndProperties = function(selector, properties) {
@@ -344,9 +347,10 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
     result += ' {\r';
 
     // preprocess a macro, if one
-    if (properties['macro']) {
-        for (var mp in properties['macro']) {
-            properties[mp] = properties['macro'][mp];
+    var macros = properties['macro'];
+    if (macros) {
+        for (var mp in macros) {
+            properties[mp] = macros[mp];
         }
         delete properties['macro']
     }
@@ -408,6 +412,7 @@ Csster.style = function(cssRules) {
     Csster.insertStylesheet(s);
 };/*
  * Functions that return a set of properties and their values.
+ * They can be inserted as style rules using "macro" property.
  */
 
 /**
@@ -421,35 +426,69 @@ Csster.style = function(cssRules) {
  * @param radius pixel measurement
  */
 function roundedCorners(side, radius) {
-  if (!radius) {
-    radius = side;
-    side = 'all';
+    if (!radius) {
+        radius = side || 10;
+        side = 'all';
+    }
+    if (side == 'all') {
+        return {
+            '-moz-border-radius': radius,
+            'border-radius': radius
+        }
+    } else {
+        var rules = {};
+        if (side == 'tl' || side == 'top' || side == 'left') {
+            rules['-moz-border-radius-topleft'] = radius;
+            rules['border-top-left-radius'] = radius;
+        }
+        if (side == 'tr' || side == 'top' || side == 'right') {
+            rules['-moz-border-radius-topright'] = radius;
+            rules['border-top-right-radius'] = radius;
+        }
+        if (side == 'bl' || side == 'bottom' || side == 'left') {
+            rules['-moz-border-radius-bottomleft'] = radius;
+            rules['border-bottom-left-radius'] = radius;
+        }
+        if (side == 'br' || side == 'bottom' || side == 'right') {
+            rules['-moz-border-radius-bottomright'] = radius;
+            rules['border-bottom-right-radius'] = radius;
+        }
+        return rules;
+    }
+}
+
+
+/*
+
+  function dropShadowAndRoundedCorners() {
+    return $.extend({}, {
+      '-moz-box-shadow': '5px 5px 5px #666',
+      '-webkit-box-shadow': '5px 5px 5px #666',
+      boxShadow: '5px 5px 5px #666'}, roundedCorners(10));
   }
-  if (side == 'all') {
+
+ */
+
+
+/**
+ Basic Phark image replacement, found here:
+ http://www.mezzoblue.com/tests/revised-image-replacement/
+
+ Supports sprites with option image positioning parameters (which default to 0).
+ These will generally be negative.
+
+ */
+function phark(width, height, img, imgXPosition, imgYPosition) {
     return {
-        '-moz-border-radius': radius,
-        'border-radius': radius
-    }
-  } else {
-    var rules = {};
-    if (side == 'tl' ||side == 'top' ||side == 'left') {
-      rules['-moz-border-radius-topleft'] = radius;
-      rules['border-top-left-radius'] = radius;
-    }
-    if (side == 'tr' ||side == 'top' ||side == 'right') {
-      rules['-moz-border-radius-topright'] = radius;
-      rules['border-top-right-radius'] = radius;
-    }
-    if (side == 'bl' ||side == 'bottom' ||side == 'left') {
-      rules['-moz-border-radius-bottomleft'] = radius;
-      rules['border-bottom-left-radius'] = radius;
-    }
-    if (side == 'br' ||side == 'bottom' ||side == 'right') {
-      rules['-moz-border-radius-bottomright'] = radius;
-      rules['border-bottom-right-radius'] = radius;
-    }
-    return rules;
-  }
+        display: 'block',
+        width: width,
+        height: height,
+        backgroundImage: 'url(' + img + ')',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: '' + (imgXPosition || 0) + 'px ' + (imgYPosition || 0) + 'px',
+        textIndent: -20000,
+        overflow: 'hidden'
+    };
 }
 /*
  Use a singleton cache of all color strings we see.

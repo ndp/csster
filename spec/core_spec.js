@@ -110,13 +110,18 @@ describe("Csster", function() {
         });
 
 
-        it("should expand a macro property", function() {
-            function roundedCorners(radius) {
-                return {
-                    '-webkit-border-radius': radius,
-                    '-moz-border-radius': radius
-                }
+        function roundedCorners(radius) {
+            return {
+                '-webkit-border-radius': radius,
+                '-moz-border-radius': radius
             }
+        }
+
+        function red() {
+            return {color: 'red'};
+        }
+
+        it("should expand a macro property", function() {
 
             expect(Csster.formatRules({
                 'div.cls':{
@@ -124,6 +129,33 @@ describe("Csster", function() {
                     height: '235px'
                 }
             })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\r}\r");
+        });
+        it("should expand a macros properties", function() {
+
+            expect(Csster.formatRules({
+                'div.cls':{
+                    macros: [roundedCorners(5), red()],
+                    height: '235px'
+                }
+            })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\rcolor: red}\r");
+        });
+        it("should expand a has property", function() {
+
+            expect(Csster.formatRules({
+                'div.cls':{
+                    has: roundedCorners(5),
+                    height: '235px'
+                }
+            })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\r}\r");
+        });
+        it("should expand a has properties as array of hashes", function() {
+
+            expect(Csster.formatRules({
+                'div.cls':{
+                    has: [roundedCorners(5), red()],
+                    height: '235px'
+                }
+            })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\rcolor: red}\r");
         });
 
     });

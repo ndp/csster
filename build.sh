@@ -1,1 +1,1 @@
-cat src/utils.js src/csster.js src/macro/macros.js src/function/color.js >csster.js
+cat src/utils.js src/core.js src/macros/macros.js src/functions/color.js >csster.js
