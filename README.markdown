@@ -81,9 +81,9 @@ Use Javascript to write necessary functions.
 
 function/color.js contains SASS-like functions:
 
-*  *darken*(hex string, %) -- make color darker by given percent
-*  *lighten*(hex string, %) -- make color lighter by given percent
-*  *saturate*(hex string, %)  -- make color more saturated by given percent. Use negative values to *desaturate*. <code>saturate(c,-100)</code> renders in grayscale.
+*  <code>darken(hex string, %)</code> -- make color darker by given percent
+*  <code>lighten(hex string, %)</code> -- make color lighter by given percent
+*  <code>saturate(hex string, %)</code>  -- make color more saturated by given percent. Use negative values to *desaturate*. <code>saturate(c,-100)</code> renders in grayscale.
 
 #### Macros using "has" key
 It's all Javascript, so macros and more complex functions are easy to write. To mix in a set of values, create a function
@@ -112,7 +112,12 @@ To "mix these in", use the "has" key:
 
 Multiple mix-ins can be included by making that a list, eg. <code>has: [roundedCorners(5), dropShadow()]</code>.
 
+There are a host of pre-made macros that may be useful:
 
+* <code>roundedCorners(radius)</code> -- add rounded corners on all sides
+* <code>roundedCorners(side, radius)</code> -- add rounded corners on specified side: <code>'top'</code>, <code>'left'</code>, <code>'bottom'</code> or <code>'right'</code>
+* <code>roundedCorners(corner, radius)</code> -- add rounded corners to a specified corner: <code>'tl'</code>, <code>'tr'</code>, <code>'bl'</code> or <code>'br'</code>
+* <code>phark(width, height, img, imgXPosition=0, imgYPosition=0)</code> -- standard phark image replacement with optional background image offset.
 
 
 ## Todo
