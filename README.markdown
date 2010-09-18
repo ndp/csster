@@ -80,6 +80,7 @@ Instead of the default "any descendent" space character being inserted, no space
 Use Javascript to write necessary functions.
 
 function/color.js contains SASS-like functions:
+
 *  *darken*(hex string, %) -- make color darker by given percent
 *  *lighten*(hex string, %) -- make color lighter by given percent
 *  *saturate*(hex string, %)  -- make color more saturated by given percent. Use negative values to *desaturate*. <code>saturate(c,-100)</code> renders in grayscale.
