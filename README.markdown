@@ -38,11 +38,11 @@ a way to order the hashes. For example:
 <pre>
 {
     ul: {
-      margin: 5;
-      padding: 0;
+      margin: 5,
+      padding: 0,
     }
     'ul li:first': {
-      paddingLeft: 20px;
+      paddingLeft: 20px
     }
 }
 </pre>
@@ -58,7 +58,7 @@ Csster supports nesting of rules to keep things more concise:
 <pre>
 {
     ul: {
-      margin: 5;
+      margin: 5,
       li: {
         paddingLeft: 20,
         '&:hover': {
@@ -83,7 +83,7 @@ function/color.js contains SASS-like functions:
 
 *  <code>darken(hex string, %)</code> -- make color darker by given percent
 *  <code>lighten(hex string, %)</code> -- make color lighter by given percent
-*  <code>saturate(hex string, %)</code>  -- make color more saturated by given percent. Use negative values to *desaturate*. <code>saturate(c,-100)</code> renders in grayscale.
+*  <code>saturate(hex string, %)</code>  -- make color more saturated by given percent. To *desaturate*, use negative values for the percent. Note that <code>saturate(c,-100)</code> renders in grayscale.
 
 #### Macros using "has" key
 It's all Javascript, so macros and more complex functions are easy to write. To mix in a set of values, create a function
@@ -104,8 +104,8 @@ To "mix these in", use the "has" key:
 <pre>
 {
     'div#featured_box': {
-      backgroundColor: '#394c89';
-      has: roundedCorner(5);
+      backgroundColor: '#394c89',
+      has: roundedCorner(5)
     }
 }
 </pre>
