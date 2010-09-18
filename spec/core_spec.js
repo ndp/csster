@@ -123,7 +123,7 @@ describe("Csster", function() {
                     has: [roundedCorners(5), red()],
                     height: '235px'
                 }
-            })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\rcolor: red}\r");
+            })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\rcolor: red;\r}\r");
         });
 
     });
