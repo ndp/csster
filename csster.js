@@ -625,9 +625,9 @@ function hslToHexColor(h, s, l) {
         h = h[0] || 0;
     }
     //HSL from 0 to 1
-    s = s / 100;
-    l = l / 100;
-    h = h % 360;
+    s = s / 100.0;
+    l = l / 100.0;
+    h = ((h+360) % 360.0) / 360;
 
     function hsl2rgb(h, s, l) {
         // HSL 0 to 1
