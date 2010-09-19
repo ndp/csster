@@ -118,12 +118,11 @@ There are a host of pre-made macros that may be useful:
 * <code>roundedCorners(side, radius)</code> -- add rounded corners on specified side: <code>'top'</code>, <code>'left'</code>, <code>'bottom'</code> or <code>'right'</code>
 * <code>roundedCorners(corner, radius)</code> -- add rounded corners to a specified corner: <code>'tl'</code>, <code>'tr'</code>, <code>'bl'</code> or <code>'br'</code>
 * <code>phark(width, height, img, imgXPosition=0, imgYPosition=0)</code> -- standard phark image replacement with optional background image offset.
+* <code>boxShadow([xoffset, yoffset], radius, color)</code>
 
 
 ## Todo
 
-* Some color math working better
-* Drop shadow
 * Fix license
 * Better name
 

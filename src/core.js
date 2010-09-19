@@ -109,6 +109,7 @@ var Csster = {
         '-moz-user-input',
         '-moz-user-modify',
         '-moz-user-select',
+        '-ms-filter',
         'orphans',
         'outline',
         'outline-color',

@@ -18,11 +18,26 @@ describe('macros', function() {
         });
     });
 
+    describe('boxShadow', function() {
+        var result;
+        beforeEach(function() {
+             result = boxShadow([2,3],4,'yellow');
+        });
+
+        it ('should have CSS3 rule', function() {
+            expect(result['boxShadow']).toEqual('2px 3px 4px yellow');
+        });
+        it ('should have webkit rule', function() {
+            expect(result['-webkit-box-shadow']).toEqual('2px 3px 4px yellow');
+        });
+        it ('should have mozilla rule', function() {
+            expect(result['-moz-box-shadow']).toEqual('2px 3px 4px yellow');
+        });
+
+    });
+
     describe('phark', function() {
 
-        it('should ', function() {
-            expect(phark()).toEqual({x:'xxx'});
-        })
         it('should throw exception if not given enough parameters', function() {
             expect(phark()).toThrow('parameter missing');
         })
