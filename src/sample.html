@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Example Graph</title>
+    <script src="../csster.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        $.fn.bubbleChart = function(options) {
+
+            Csster.style({
+                'table.bubble_chart': {
+                    position: 'relative',
+                    padding: 10,
+                    td: {
+                        div: {
+                            has: roundedCorners(15),
+                            height: 30,
+                            width: 30,
+                            overflow: 'hidden',
+                            backgroundColor: 'white',
+                            verticalAlign: 'middle',
+                            textAlign: 'center'
+                        }
+
+                    },
+                    thead: {
+                        td: {
+                            zIndex: 100,
+                            padding: '0 0 20px 0',
+                            color: 'white',
+                            fontSize: 9,
+                            fontFamily: 'verdana',
+                            textAlign: 'center',
+                            div: {
+                                marginLeft: 18
+                            }
+                        }
+
+                    },
+                    tbody: {
+                        td: {
+                            verticalAlign: 'bottom',
+                        }
+                    },
+
+                    th: {
+                        color: 'white',
+                        fontSize: 9,
+                        fontFamily: 'verdana'
+                    }
+                }
+
+            });
+
+            var $this = $(this);
+            var $graph = $('<table><thead><tr></tr><tr></tr></thead><tbody><tr></tr></tbody><tfoot><tr></tr></tfoot></table>').addClass('bubble_chart').appendTo($this);
+            var $tfoot = $graph.find('tfoot tr');
+            var $tbody = $graph.find('tbody tr');
+            $graph.css('backgroundColor', 'black').css('width', '' + (options.data.length * 30) + 'px');
+
+            var $thead = $graph.find('thead tr:last');
+            for (var cat in options.colors) {
+                var $div = $('<div>').css('backgroundColor', options.colors[cat] || 'gray');
+                $('<td colspan="2">').text(cat).append($div).appendTo($thead);
+            }
+
+            for (var k in options.data) {
+                var bucket = options.data[k];
+                $('<th>').text(k).appendTo($tfoot);
+                var $td = $('<td>').appendTo($tbody);
+                var items = [bucket].flatten();
+                for (var i = items.length - 1; i >= 0; i--) {
+                    $('<div>').attr('title', items[i]).css('backgroundColor', options.colors[items[i]] || 'gray').appendTo($td);
+                }
+
+            }
+        };
+
+        $(function() {
+
+
+            $('div').bubbleChart({data:{
+                1983: 'Basic',
+                1984: 'Basic',
+                1985: 'Fortran',
+                1986: 'C',
+                1987: 'C',
+                1988: 'C',
+                1989: 'C',
+                1990: 'C++',
+                1991: 'C++',
+                1992: 'C++',
+                1993: 'Obj.Pascal',
+                1994: 'Obj.Pascal',
+                1995: 'Obj.Pascal',
+                1996: 'Obj.Pascal',
+                1997: 'Obj.Pascal',
+                1998: 'Obj.Pascal',
+                1999: 'Obj.Pascal',
+                2000: ['PHP','C++'],
+                2001: ['SQL','PHP','C++'],
+                2002: ['Java','SQL','CSS','PHP','C++','TCL/tk'],
+                2003: ['Java','SQL','CSS','Perl','PHP'],
+                2004: ['Java','SQL','CSS','Perl','XML/XSLT'],
+                2005: ['Java','SQL','CSS','Javascript','Perl','XML/XSLT'],
+                2006: ['Java','SQL','CSS','Javascript','Perl','XML/XSLT'],
+                2007: ['Java','SQL','CSS','Javascript','XML/XSLT'],
+                2008: ['Ruby','Java','SQL','CSS','Javascript','XML/XSLT'],
+                2009: ['Ruby','Java','SQL','CSS','Javascript','XML/XSLT'],
+                2010: ['Ruby','Javascript','SQL','CSS','XML/XSLT']
+            },colors:{
+                'Java':'#0c60ae',  // blue from the logo
+                'Javascript':'teal',
+                'Ruby':'#b61414', // from ruby crystal icon
+                'Obj.Pascal':'purple',
+                'C++':'darkgreen',
+                'PHP':'#669', // from PHP.net
+                'Perl':'navy',
+                'SQL':'#e97b00', // from Mysql.org site
+                'C':'#7ea0d0',
+                'XML/XSLT': 'olive',
+                'CSS': 'yellow',
+                'Other': 'gray'
+            }});
+
+
+        });
+    </script>
+</head>
+<body>
+<h1>Programming Languages / Andrew J. Peterson</h1>
+
+<div></div>
+
+</body>
+</html>

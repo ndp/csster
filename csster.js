@@ -347,12 +347,15 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
     result += ' {\r';
 
     // preprocess a macro, if one
-    var macros = properties['macro'];
-    if (macros) {
-        for (var mp in macros) {
-            properties[mp] = macros[mp];
+    var has = properties['has'];
+    if (has) {
+        var a = [has].flatten(); // support single or multiple sets of properties
+        for (var i = 0; i<a.length; i++) {
+            for (var mp in a[i]) {
+                properties[mp] = a[i][mp];
+            }
         }
-        delete properties['macro']
+        delete properties['has']
     }
 
     // ...all properties
@@ -477,8 +480,13 @@ function roundedCorners(side, radius) {
  Supports sprites with option image positioning parameters (which default to 0).
  These will generally be negative.
 
+ width: width in pixels
+ height: height in pixels
+ img: url for the image, suitable for putting into a url() wrapper
+
  */
 function phark(width, height, img, imgXPosition, imgYPosition) {
+    if (typeof width=='undefined' || typeof height=='undefined' || typeof img =='undefined') throw "phark() requires width, height and img";
     return {
         display: 'block',
         width: width,
