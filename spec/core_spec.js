@@ -1,4 +1,3 @@
-
 describe("Csster", function() {
 
     describe('#propertyNameOf', function() {
@@ -59,6 +58,13 @@ describe("Csster", function() {
                     width: '300px'
                 }
             })).toEqual("div.cls {\rheight: 235px;\rwidth: 300px;\r}\r");
+        });
+        it('should throw an exception if discovers a bugus properties', function() {
+            expect(Csster.formatRules({
+                div: {
+                        bogus: 'property_value'
+                }
+            })).toThrow(true); //"unknown CSS property: bogus. Rule rejected."
         });
         it("should output properties and sub-selectors", function() {
             expect(Csster.formatRules({
@@ -124,6 +130,18 @@ describe("Csster", function() {
                     height: '235px'
                 }
             })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\rcolor: red;\r}\r");
+        });
+        it('should output everything within a has macro, not just valid properties', function() {
+            expect(Csster.formatRules({
+                div: {
+                    has: {
+                        bogus: 'property_value',
+                        sub: {
+                            color: 'red'
+                        }
+                    }
+                }
+            })).toEqual('alsdfjda')
         });
 
     });

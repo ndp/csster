@@ -33,6 +33,7 @@ var Csster = {
         'border-top-style',
         'border-top-width',
         'border-width',
+        'box-shadow',
         'bottom',
         'caption-side',
         'clear',
@@ -100,6 +101,7 @@ var Csster = {
         '-moz-border-right-colors',
         '-moz-border-bottom-colors',
         '-moz-border-left-colors',
+        '-moz-box-shadow',
         '-moz-opacity',
         '-moz-outline',
         '-moz-outline-color',
@@ -334,6 +336,9 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
 
     // now to sub-selectors
     for (p in properties) {
+        if (typeof properties[p] == 'string') {
+            throw new Error("Unknown property name: " + p + ". Rule rejected.");
+        }
         var subSelector = selector + (p[0] == '&' ? p.substr(1) : ' ' + p);
         result += Csster.formatSelectorAndProperties(subSelector, properties[p])
     }
