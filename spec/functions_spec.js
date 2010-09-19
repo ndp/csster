@@ -118,12 +118,11 @@ describe('color functions', function() {
         it('should do nothing with zero', function() {
             expect('#800'.saturate(0)).toMatch(/#8[789a]0000/);
         });
-        it('should saturate(hsl(120, 30%, 90%), 20%) => hsl(120, 50%, 90%)', function() {
+        it('should saturate(hsl(120, 30%, 90%), 20%)', function() {
            expect(hslToHexColor(120, 30, 90).saturate(20)).toEqual('#d9f2d9')
         });
         it('should saturate(#855, 20%) => #9e3f3f', function() {
            expect("#855".saturate(20)).toMatch(/#9[de]3f3f/)
-//           expect("#855".saturate(20)).toMatch(/#d9f2d9/)
         });
 
         it('should saturate(#000, 20%) => #000', function() {
@@ -147,7 +146,7 @@ describe('color functions', function() {
             expect('#855'.saturate(-20)).toMatch(/#716a6a/); // #726b6b
         });
         it('should desaturate 000 to black', function() {
-            expect('#000'.saturate(-20)).toMatch(/#00000/);
+            expect('#000'.saturate(-20)).toMatch(/#000000/);
         });
         it('should desaturate 000 to white', function() {
             expect('#fff'.saturate(-20)).toMatch(/#ffffff/);
@@ -155,12 +154,8 @@ describe('color functions', function() {
         it('should desaturate 000 to white', function() {
             expect('#8a8'.saturate(-100)).toMatch(/#999999/);
         });
-        it('should desaturate 000 to white', function() {
-            expect('#8a8'.saturate(0)).toMatch(/#88aa88/);
-        });
-
         it('should desaturate(#855, 20%) => #726b6b', function() {
-           expect("#855".saturate(-20)).toMatch(/#7[12]6[ab]6[ab]/)
+           expect("#855".saturate(-20)).toMatch(/#716a6a/)
         });
 
     });
