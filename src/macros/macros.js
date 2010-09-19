@@ -65,8 +65,13 @@ function roundedCorners(side, radius) {
  Supports sprites with option image positioning parameters (which default to 0).
  These will generally be negative.
 
+ width: width in pixels
+ height: height in pixels
+ img: url for the image, suitable for putting into a url() wrapper
+
  */
 function phark(width, height, img, imgXPosition, imgYPosition) {
+    if (typeof width=='undefined' || typeof height=='undefined' || typeof img =='undefined') throw "phark() requires width, height and img";
     return {
         display: 'block',
         width: width,

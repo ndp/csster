@@ -122,8 +122,8 @@ There are a host of pre-made macros that may be useful:
 
 ## Todo
 
-* Support more than one Macro
-* Some color math
+* Some color math working better
+* Drop shadow
 * Fix license
 * Better name
 

@@ -24,7 +24,7 @@ describe('macros', function() {
             expect(phark()).toEqual({x:'xxx'});
         })
         it('should throw exception if not given enough parameters', function() {
-            expect(phark()).toThrow()
+            expect(phark()).toThrow('parameter missing');
         })
 
     });
