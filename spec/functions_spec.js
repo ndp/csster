@@ -71,17 +71,17 @@ describe('color functions', function() {
     describe('hslToHexColor', function() {
         it('should convert white', function() {
             var hsl = [0,0,100];
-           expect(hslToHexColor.apply(null,hsl)).toEqual('#ffffff');
+           expect(Csster.hslToHexColor.apply(null,hsl)).toEqual('#ffffff');
         });
         it('should convert black', function() {
             var hsl = [0,0,0];
-           expect(hslToHexColor.apply(null,hsl).toHexColor()).toEqual('#000000');
+           expect(Csster.hslToHexColor.apply(null,hsl).toHexColor()).toEqual('#000000');
         });
         it('should convert blue', function() {
-           expect(hslToHexColor(240, 100, 50).toHexColor()).toEqual('#0000ff');
+           expect(Csster.hslToHexColor(240, 100, 50).toHexColor()).toEqual('#0000ff');
         });
         it('should convert red', function() {
-           expect(hslToHexColor(0, 100, 25).toHexColor()).toMatch(/#800000/);
+           expect(Csster.hslToHexColor(0, 100, 25).toHexColor()).toMatch(/#800000/);
         });
     });
 
@@ -119,7 +119,7 @@ describe('color functions', function() {
             expect('#800'.saturate(0)).toMatch(/#8[789a]0000/);
         });
         it('should saturate(hsl(120, 30%, 90%), 20%)', function() {
-           expect(hslToHexColor(120, 30, 90).saturate(20)).toEqual('#d9f2d9')
+           expect(Csster.hslToHexColor(120, 30, 90).saturate(20)).toEqual('#d9f2d9')
         });
         it('should saturate(#855, 20%) => #9e3f3f', function() {
            expect("#855".saturate(20)).toMatch(/#9[de]3f3f/)
@@ -140,7 +140,7 @@ describe('color functions', function() {
 
 
         it('should desaturate(hsl(120, 30%, 90%), 20%) => hsl(120, 10%, 90%)', function() {
-           expect(hslToHexColor(120, 30, 90).saturate(-20)).toEqual('#e3e8e3')
+           expect(Csster.hslToHexColor(120, 30, 90).saturate(-20)).toEqual('#e3e8e3')
         });
         it('should desaturate 855 to #726b6b', function() {
             expect('#855'.saturate(-20)).toMatch(/#716a6a/); // #726b6b
