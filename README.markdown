@@ -77,13 +77,21 @@ Csster supports SASS's "&" operator, to indicate that the selector should be com
 Instead of the default "any descendent" space character being inserted, no space is inserted.
 
 #### Functions
-Use Javascript to write necessary functions.
+Most manipulations will fall into Javascript's language support, as far as any math or looping. Use Javascript to write necessary functions.
 
-function/color.js contains SASS-like functions:
+function/color.js contains SASS-like color functions:
 
-*  <code>darken(hex string, %)</code> -- make color darker by given percent
-*  <code>lighten(hex string, %)</code> -- make color lighter by given percent
-*  <code>saturate(hex string, %)</code>  -- make color more saturated by given percent. To *desaturate*, use negative values for the percent. Note that <code>saturate(c,-100)</code> renders in grayscale.
+*  <code>"#ab342c".darken(%)</code> -- make color darker by given percent
+*  <code>"#ab342c".lighten(%)</code> -- make color lighter by given percent
+*  <code>"#ab342c".saturate(%)</code>  -- make color more saturated by given percent. To *desaturate*, use negative values for the percent. Note that <code>"#ab342c".saturate(-100)</code> renders in grayscale.
+
+There are also color conversion routines if you want to build your own manipulation.
+
+*  <code>"#ab342c".toRGB()</code>
+*  <code>"#ab342c".toHSL()</code>
+*  <code>Csster.hslToHexColor(h,s,l)</code>
+
+Opacity is currently not supported by the color model.
 
 #### Macros using "has" key
 It's all Javascript, so macros and more complex functions are easy to write. To mix in a set of values, create a function
