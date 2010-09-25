@@ -2,16 +2,16 @@
 
 Concisely generate CSS style rules within Javascript.  Features:
 
+* standard "object literal"/JSON format with good editor support
 * nesting to DRY up stylesheets
-* color functions
-* built-in macros for common CSS idioms
-* and plain old Javascript functions, looping, Math operations, etc.
-
+* color functions like <code>darken</code> and <code>saturate</code>
+* built-in macros for common CSS idioms like *clearfix*, *rounded corners*, *drop shadows*.
+* and all the plain old Javascript behavior: functions, data structures, looping, Math operations, etc.
 
 
 ## Usage
 
-*Installation* All code is packaged into a single Javascript file, [csster.js](http://ndpsoftware.com/csster/csster.js). The project is hosted on [GitHub](http://github.com/ndp/csster).
+All code is packaged into a single Javascript file download, [csster.js](http://ndpsoftware.com/csster/csster.js). The project itself is hosted on [GitHub](http://github.com/ndp/csster).
 
 <pre>
 require('csster.js'); // however you manage dependencies
@@ -124,7 +124,7 @@ To "mix these in", use the "has" key:
 }
 </pre>
 
-Multiple mix-ins can be included by making that a list, eg. <code>has: [roundedCorners(5), dropShadow()]</code>.
+Multiple macros can be included by making that a list, eg. <code>has: [roundedCorners(5), dropShadow()]</code>.
 
 It's all Javascript, so macros and more complex functions are easy to write. To mix in a set of values, create a function
 that returns a hash of values, for example:
@@ -141,10 +141,13 @@ that returns a hash of values, for example:
 
 [Demo of the color functions and macros](http://ndpsoftware.com/csster/demo.html)
 
+A macro's properties will be overwritten by properties within including selector (or later included macros), similar to how the cascade takes the last defined value.
+
+
 
 ## TDD
 
-The design was driven by the specs: (http://ndpsoftware.com/csster/spec_runner.html)
+The design was driven by [the specs](http://ndpsoftware.com/csster/spec_runner.html).
 
 
 ## Todo
