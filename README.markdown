@@ -4,7 +4,7 @@ Concisely generate CSS style rules within Javascript.
 
 ## Installation
 
-All code is packaged into a single Javascript file, [csster.js][http://ndpsoftware.com/csster/csster.js]. The latest is available on github.
+All code is packaged into a single Javascript file, [csster.js](http://ndpsoftware.com/csster/csster.js). The project is hosted on [GitHub](http://github.com/ndp/csster).
 
 ## Usage
 
@@ -134,12 +134,12 @@ that returns a hash of values, for example:
     }
 </pre>
 
+Demo of the visual effects: (http://ndpsoftware.com/csster/demo.html)
 
-## Links
 
-Demo of the visual effects: http://ndpsoftware.com/csster/demo.html
+## TDD
 
-Specs: http://ndpsoftware.com/csster/spec_runner.html
+The design was driven by the specs: (http://ndpsoftware.com/csster/spec_runner.html)
 
 
 ## Todo
