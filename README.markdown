@@ -153,10 +153,7 @@ The design was driven by [the specs](http://ndpsoftware.com/csster/spec_runner.h
 ## Todo
 
 * decompile existing stylesheets
-* support comma in rules
-* different way to concatenate selectors
 * jQuery rules
-* naming stylesheets so they can be updated.
 * Fix license
 * Better name
 
