@@ -1,12 +1,17 @@
 # Csster
 
-Concisely generate CSS style rules within Javascript.
+Concisely generate CSS style rules within Javascript.  Features:
 
-## Installation
+* nesting to DRY up stylesheets
+* color functions
+* built-in macros for common CSS idioms
+* and plain old Javascript functions, looping, Math operations, etc.
 
-All code is packaged into a single Javascript file, [csster.js](http://ndpsoftware.com/csster/csster.js). The project is hosted on [GitHub](http://github.com/ndp/csster).
+
 
 ## Usage
+
+*Installation* All code is packaged into a single Javascript file, [csster.js](http://ndpsoftware.com/csster/csster.js). The project is hosted on [GitHub](http://github.com/ndp/csster).
 
 <pre>
 require('csster.js'); // however you manage dependencies
@@ -134,7 +139,7 @@ that returns a hash of values, for example:
     }
 </pre>
 
-Demo of the visual effects: (http://ndpsoftware.com/csster/demo.html)
+[Demo of the color functions and macros](http://ndpsoftware.com/csster/demo.html)
 
 
 ## TDD
