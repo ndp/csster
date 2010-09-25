@@ -1,3 +1,12 @@
+// csster.js
+// Copyright (c) Andrew J. Peterson / ndpsoftware.com
+// All Rights Reserved
+// 
+// See http://github.com/ndp/csster
+// 
+// Generated Fri Sep 24 22:40:56 PDT 2010
+// 
+// 
 function isArray(object) {
     return typeof object === 'object' &&
             Object.prototype.toString.call(object) === '[object Array]';
