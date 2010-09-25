@@ -131,6 +131,11 @@ that returns a hash of values, for example:
 </pre>
 
 
+## Links
+
+Demo of the visual effects: [[http://ndpsoftware.com/csster/demo.html]]
+
+Specs: [[http://ndpsoftware.com/csster/spec_runner.html]]
 
 
 ## Todo
