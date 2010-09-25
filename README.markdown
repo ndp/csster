@@ -11,7 +11,7 @@ Concisely generate CSS style rules within Javascript.  Features:
 
 ## Usage
 
-All code is packaged into a single Javascript file download, [csster.js](http://ndpsoftware.com/csster/csster.js). The project itself is hosted on [GitHub](http://github.com/ndp/csster).
+All code is packaged into a single Javascript file download, [csster.js](http://ndpsoftware.com/csster/csster.js). There are no external dependencies. The project itself is hosted on [GitHub](http://github.com/ndp/csster).
 
 <pre>
 require('csster.js'); // however you manage dependencies
