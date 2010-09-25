@@ -4,7 +4,83 @@
 </head>
 <body>
 
-<div class="box shadowed"></div>
+<div class="box clearfix">
+    clearfix()
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+
+<div class="box shadowed">boxShadow([5,10], 5, 'green')</div>
+<div class="box rounded">roundedCorners(20)</div>
+<div class="box roundedLeft">roundedCorners('left', 10)</div>
+<div class="box roundedBottomLeft">roundedCorners('bl', 30)</div>
+<div class="box">verticalCentering(50)
+    <div class="smaller_box vcenter"></div>
+</div>
+<div class="box">horizontalCentering(50)
+    <div class="smaller_box hcenter"></div>
+</div>
+<div class="box swatches darken">
+    darken(10..100)
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+<div class="box swatches lighten">
+    lighten(10..100)
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+<div class="box swatches saturate">
+    saturate(10..100)
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+<div class="box swatches desaturate">
+    saturate(-10..-100)
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
 
 </body>
 
@@ -13,10 +89,159 @@
     Csster.style({
         '.box': {
             backgroundColor: 'blue',
-            width: 200,
-            height: 200
+            width: 300,
+            height: 60,
+            margin: 20,
+            'float': 'left',
+            paddingTop: 20,
+            textAlign: 'center',
+            color: 'yellow',
+            fontWeight: 'bold',
+            position: 'relative'
         },
-        '.shadowed': boxShadow([5,10], 5, 'green')
+        '.smaller_box': {
+            backgroundColor: 'green',
+            width: 50, height: 50
+        },
+        '.shadowed': boxShadow([5,10], 5, 'green'),
+        '.rounded': roundedCorners(20),
+        '.roundedLeft': roundedCorners('left', 10),
+        '.roundedBottomLeft': roundedCorners('bl', 30),
+        '.hcenter': horizontalCentering(50),
+        '.vcenter': verticalCentering(50),
+        '.clearfix': {
+            has: clearfix(),
+            height: 'auto',
+            div: {
+                'float': 'left',
+                margin: 10,
+                height: 80,width: 120,
+                backgroundColor: '#69c',
+                border: '1px dotted gray'
+            }
+        },
+
+        '.swatches': {
+            backgroundColor: '#69c',
+            'div': {width: 25, height: 18, 'float': 'left', margin: 3},
+            '&.lighten': {
+                'div:nth-child(1)': {
+                    backgroundColor: '#69c'.lighten(10)
+                },
+                'div:nth-child(2)': {
+                    backgroundColor: '#69c'.lighten(20)
+                },
+                'div:nth-child(3)': {
+                    backgroundColor: '#69c'.lighten(30)
+                },
+                'div:nth-child(4)': {
+                    backgroundColor: '#69c'.lighten(40)
+                },
+                'div:nth-child(5)': {
+                    backgroundColor: '#69c'.lighten(50)
+                },
+                'div:nth-child(6)': {
+                    backgroundColor: '#69c'.lighten(60)
+                },
+                'div:nth-child(7)': {
+                    backgroundColor: '#69c'.lighten(70)
+                },
+                'div:nth-child(8)': {
+                    backgroundColor: '#69c'.lighten(80)
+                },
+                'div:nth-child(9)': {
+                    backgroundColor: '#69c'.lighten(90)
+                }
+            },
+            '&.darken': {
+                'div:nth-child(1)': {
+                    backgroundColor: '#69c'.darken(10)
+                },
+                'div:nth-child(2)': {
+                    backgroundColor: '#69c'.darken(20)
+                },
+                'div:nth-child(3)': {
+                    backgroundColor: '#69c'.darken(30)
+                },
+                'div:nth-child(4)': {
+                    backgroundColor: '#69c'.darken(40)
+                },
+                'div:nth-child(5)': {
+                    backgroundColor: '#69c'.darken(50)
+                },
+                'div:nth-child(6)': {
+                    backgroundColor: '#69c'.darken(60)
+                },
+                'div:nth-child(7)': {
+                    backgroundColor: '#69c'.darken(70)
+                },
+                'div:nth-child(8)': {
+                    backgroundColor: '#69c'.darken(80)
+                },
+                'div:nth-child(9)': {
+                    backgroundColor: '#69c'.darken(90)
+                }
+            },
+            '&.saturate': {
+                'div:nth-child(1)': {
+                    backgroundColor: '#69c'.saturate(10)
+                },
+                'div:nth-child(2)': {
+                    backgroundColor: '#69c'.saturate(20)
+                },
+                'div:nth-child(3)': {
+                    backgroundColor: '#69c'.saturate(30)
+                },
+                'div:nth-child(4)': {
+                    backgroundColor: '#69c'.saturate(40)
+                },
+                'div:nth-child(5)': {
+                    backgroundColor: '#69c'.saturate(50)
+                },
+                'div:nth-child(6)': {
+                    backgroundColor: '#69c'.saturate(60)
+                },
+                'div:nth-child(7)': {
+                    backgroundColor: '#69c'.saturate(70)
+                },
+                'div:nth-child(8)': {
+                    backgroundColor: '#69c'.saturate(80)
+                },
+                'div:nth-child(9)': {
+                    backgroundColor: '#69c'.saturate(90)
+                }
+            },
+            '&.desaturate': {
+                'div:nth-child(1)': {
+                    backgroundColor: '#69c'.saturate(-10)
+                },
+                'div:nth-child(2)': {
+                    backgroundColor: '#69c'.saturate(-20)
+                },
+                'div:nth-child(3)': {
+                    backgroundColor: '#69c'.saturate(-30)
+                },
+                'div:nth-child(4)': {
+                    backgroundColor: '#69c'.saturate(-40)
+                },
+                'div:nth-child(5)': {
+                    backgroundColor: '#69c'.saturate(-50)
+                },
+                'div:nth-child(6)': {
+                    backgroundColor: '#69c'.saturate(-60)
+                },
+                'div:nth-child(7)': {
+                    backgroundColor: '#69c'.saturate(-70)
+                },
+                'div:nth-child(8)': {
+                    backgroundColor: '#69c'.saturate(-80)
+                },
+                'div:nth-child(9)': {
+                    backgroundColor: '#69c'.saturate(-90)
+                }
+            }
+
+        }
     });
 
 
