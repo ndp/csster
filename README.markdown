@@ -2,6 +2,10 @@
 
 Concisely generate CSS style rules within Javascript.
 
+## Installation
+
+All code is packaged into a single Javascript file, [csster.js][http://ndpsoftware.com/csster/csster.js]. The latest is available on github.
+
 ## Usage
 
 <pre>
@@ -133,9 +137,9 @@ that returns a hash of values, for example:
 
 ## Links
 
-Demo of the visual effects: [[http://ndpsoftware.com/csster/demo.html]]
+Demo of the visual effects: http://ndpsoftware.com/csster/demo.html
 
-Specs: [[http://ndpsoftware.com/csster/spec_runner.html]]
+Specs: http://ndpsoftware.com/csster/spec_runner.html
 
 
 ## Todo
