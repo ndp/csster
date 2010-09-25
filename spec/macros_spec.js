@@ -44,5 +44,64 @@ describe('macros', function() {
 
     });
 
+    describe('vertical centering', function() {
+        var rules;
+        beforeEach(function() {
+            rules = verticalCentering(10)
+        });
+        it('should set the height', function() {
+            expect(rules.height).toEqual(10);
+        });
+        it('should set top to 50%', function() {
+            expect(rules.top).toEqual('50%');
+        });
+        it('should set margin top to compensate for half of the height', function() {
+            expect(rules.marginTop).toEqual(-5);
+        });
+    });
+
+    describe('horizontal centering', function() {
+        var rules;
+        beforeEach(function() {
+            rules = horizontalCentering(100)
+        });
+        it('should set the width', function() {
+            expect(rules.width).toEqual(100);
+        });
+        it('should set top to 50%', function() {
+            expect(rules.left).toEqual('50%');
+        });
+        it('should set margin left to compensate for half of the width', function() {
+            expect(rules.marginLeft).toEqual(-50);
+        });
+    });
+
+    describe('clearfix', function() {
+        var rules;
+        beforeEach(function() {
+            rules = clearfix()
+        });
+        it('should set :after element to clear (which is why we are here)', function() {
+            expect(rules['&:after'].clear).toEqual('both');
+        });
+        it('should set content', function() {
+            expect(rules['&:after'].content).toEqual(' ');
+        });
+        it('should set visibility', function() {
+            expect(rules['&:after'].visibility).toEqual('hidden');
+        });
+        it('should set sizes to 0', function() {
+            expect(rules['&:after'].width).toEqual(0);
+            expect(rules['&:after'].height).toEqual(0);
+            expect(rules['&:after'].lineHeight).toEqual(0);
+            expect(rules['&:after'].fontSize).toEqual(0);
+        });
+        it('should set the element to inline-block (for IE?)', function() {
+            expect(rules.display).toEqual('inline-block');
+        });
+    });
+
+
+
 });
 

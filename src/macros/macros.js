@@ -76,8 +76,8 @@ function boxShadow(offsetOrDirection, radius, color) {
         '-moz-box-shadow': '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
         '-webkit-box-shadow': '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
         boxShadow: '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
-        '-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength="+strength+", Direction="+direction+", Color='" + color + "')",// IE 8
-        filter: "progid:DXImageTransform.Microsoft.Shadow(Strength="+strength+", Direction="+direction+", Color='" + color + "')" // IE 5.5 - 7
+        '-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=" + strength + ", Direction=" + direction + ", Color='" + color + "')",// IE 8
+        filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=" + strength + ", Direction=" + direction + ", Color='" + color + "')" // IE 5.5 - 7
     };
 }
 
@@ -107,4 +107,55 @@ function phark(width, height, img, imgXPosition, imgYPosition) {
         textIndent: -20000,
         overflow: 'hidden'
     };
+}
+
+
+function clearfix() {
+    return {
+        display: 'inline-block',
+        '&:after': {
+            content: ' ',
+            display: 'block',
+            width: 0,
+            height: 0,
+            lineHeight: 0,
+            fontSize: 0,
+            clear: 'both',
+            visibility: 'hidden'
+        }
+    };
+
+
+//.clearfix {display: inline-block;}  /* for IE/Mac */
+//
+//<!--[if IE]>
+//<style type="text/css">
+//  .clearfix {
+//    zoom: 1;     /* triggers hasLayout */
+//}  /* Only IE can see inside the conditional comment
+//and read this CSS rule. Don't ever use a normal HTML
+//comment inside the CC or it will close prematurely. */
+//</style>
+//<![endif]-->
+}
+
+
+// http://stackoverflow.com/questions/148251/css-centering-tricks
+function horizontalCentering(width) {
+    return {
+        width: width,
+        position: 'absolute',
+        left: '50%',
+        marginLeft: -(width / 2)
+    }
+}
+
+// http://stackoverflow.com/questions/148251/css-centering-tricks
+function verticalCentering(height) {
+    return {
+        height: height,
+        position: 'absolute',
+        top: '50%',
+        marginTop: -(height / 2)
+    }
 }

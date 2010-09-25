@@ -127,10 +127,17 @@ There are a host of pre-made macros that may be useful:
 * <code>roundedCorners(corner, radius)</code> -- add rounded corners to a specified corner: <code>'tl'</code>, <code>'tr'</code>, <code>'bl'</code> or <code>'br'</code>
 * <code>phark(width, height, img, imgXPosition=0, imgYPosition=0)</code> -- standard phark image replacement with optional background image offset.
 * <code>boxShadow([xoffset, yoffset], radius, color)</code>
+* <code>verticalCentering(height)</code> and <code>horizontalCentering(width)</code> -- center using the top 50% / margin-top -width/2 technique. See http://stackoverflow.com/questions/148251/css-centering-tricks
+* (code>clearfix()</code> -- iE7 and beyond clearfix
 
 
 ## Todo
 
+* decompile existing stylesheets
+* support comma in rules
+* different way to concatenate selectors
+* jQuery rules
+* naming stylesheets so they can be updated.
 * Fix license
 * Better name
 
