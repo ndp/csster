@@ -1,6 +1,6 @@
 # Csster
 
-Generate CSS style rules within Javascript.
+Concisely generate CSS style rules within Javascript.
 
 ## Usage
 
@@ -50,7 +50,7 @@ a way to order the hashes. For example:
 Note that
 
 * property names are automatically converted to the correct format from camelcase. Feel free to quote them as well.
-* raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
+* all raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
 * any sort of selectors are allowed... they are just passed through to the stylesheet.
 
 #### Nesting
@@ -71,7 +71,6 @@ Csster supports nesting of rules to keep things more concise:
 
 The "li" property in this case might be a selector or might be a property name. A list of valid
 property names is used to identify properties right now, and otherwise it's considered a sub-selector.
-(Think about this.)
 
 Csster supports SASS's "&" operator, to indicate that the selector should be combined with the parent selector.
 Instead of the default "any descendent" space character being inserted, no space is inserted.
@@ -103,7 +102,7 @@ There are a host of pre-made macros that may be useful:
 * <code>phark(width, height, img, imgXPosition=0, imgYPosition=0)</code> -- standard phark image replacement with optional background image offset.
 * <code>boxShadow([xoffset, yoffset], radius, color)</code>
 * <code>verticalCentering(height)</code> and <code>horizontalCentering(width)</code> -- center using the top 50% / margin-top -width/2 technique. See http://stackoverflow.com/questions/148251/css-centering-tricks
-* (code>clearfix()</code> -- iE7 and beyond clearfix
+* <code>clearfix()</code> -- standard clearfix
 
 To "mix these in", use the "has" key:
 
