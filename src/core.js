@@ -360,7 +360,7 @@ Csster.insertStylesheet = function (rules) {
     // convert rules to textual string
     var s = '';
     for (var i = 0; i < rules.length; i++) {
-        s += rules[i].sel + '{' + rules[i].props + '};';
+        s += rules[i].sel + ' { ' + rules[i].props + '}\r';
         // IE http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
 //            try {
 //                ss.addRule(rules[i].sel, rules[i].props);
@@ -379,7 +379,7 @@ Csster.insertStylesheet = function (rules) {
         e.appendChild(document.createTextNode(s));
     } catch(e) {
         var ss = document.styleSheets[document.styleSheets.length - 1];
-        ss.cssText = s;
+        ss.cssText = '' + ss.cssText + s;
     }
 
 //        for (var i = 0; i < rules.length; i++) {
