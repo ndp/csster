@@ -21,8 +21,10 @@ function roundedCorners(side, radius) {
     if (side == 'all') {
         return {
             '-moz-border-radius': radius,
-            'border-radius': radius,
-            '-webkit-border-radius': radius
+            '-webkit-border-radius': radius,
+            borderRadius: radius
+//            behavior: 'url(src/border-radius.htc)',
+//            position: 'relative',zoom: '1'
         }
     } else {
         var rules = {};
