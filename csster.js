@@ -4,7 +4,7 @@
 // 
 // See http://github.com/ndp/csster
 // 
-// Generated Mon Sep 27 23:40:59 PDT 2010
+// Generated Tue Sep 28 09:31:33 PDT 2010
 // 
 // 
 function isArray(object) {
@@ -396,7 +396,7 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
 
         var subs = p.split(',');
         for (var s = 0; s < subs.length; s++) {
-            subs[s] = selector + (subs[s][0] == '&' ? subs[s].substr(1) : ' ' + subs[s]);
+            subs[s] = selector + ((subs[s].substr(0,1) == '&') ? subs[s].substr(1) : ' ' + subs[s]);
         }
         rules.push(Csster.formatSelectorAndProperties(subs.join(','), properties[p]));
     }
@@ -656,10 +656,12 @@ function verticalCentering(height) {
     };
 
     String.prototype.toHexColor = function() {
-        if (this[0] == '#' && this.length == 7) {
+        if (this.substr(0, 1) == '#' && this.length == 7) {
             colorCache(this)['hex'] = '' + this;
-        } else if (this[0] == '#' && this.length == 4) {
-            colorCache(this)['hex'] = '#' + this[1] + this[1] + this[2] + this[2] + this[3] + this[3];
+        } else if (this.substr(0, 1) == '#' && this.length == 4) {
+            colorCache(this)['hex'] = '#' + this.substr(1, 1) + this.substr(1, 1) +
+                    this.substr(2, 1) + this.substr(2, 1) +
+                    this.substr(3, 1) + this.substr(3, 1);
         } else {
             colorCache(this)['hex'] = HTML4_COLORS[this];
         }
@@ -786,7 +788,7 @@ function verticalCentering(height) {
         function hex2(n) {
             var h = Math.round(n).toString(16);
             if (h.length == 1) h = '0' + h;
-            return h[0] + h[1];
+            return h.substr(0, 1) + h.substr(1, 1);
         }
 
         var rgb = hsl2rgb(h, s, l);

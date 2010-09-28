@@ -190,41 +190,54 @@ describe("Csster", function() {
 
     });
 
-    describe('#insertStyleElement', function() {
-        var originalWidth;
+    describe("Everything together", function() {
+        var logo;
         beforeEach(function() {
-            originalWidth = document.getElementsByClassName('logo')[0].clientWidth;
+            var divs = document.getElementsByTagName('DIV');
+            for (var i = 0; i<divs.length; i++) {
+               if (divs[i].className == 'logo') {
+                   logo = divs[i];
+               }
+            }
         });
-        it('should have no element style overrides for width', function() {
-            expect(document.getElementsByClassName('logo')[0].style.width).toEqual('');
-        });
-        describe('inserting the stylesheet', function() {
+        describe('#insertStyleElement', function() {
+            var originalWidth;
             beforeEach(function() {
-                Csster.insertStylesheet([{sel:'.logo',props:'font-size: 150%;'}]);
+                originalWidth = logo.clientWidth;
             });
-            it('should now be wider', function() {
-                expect(document.getElementsByClassName('logo')[0].clientWidth).toBeGreaterThan(originalWidth);
+            it('should have no element style overrides for width', function() {
+                expect(logo.style.width).toEqual('');
+            });
+            describe('inserting the stylesheet', function() {
+                beforeEach(function() {
+                    Csster.insertStylesheet([{sel:'.logo',props:'font-size: 150%;'}]);
+                });
+                it('should now be wider', function() {
+                    expect(logo.clientWidth).toBeGreaterThan(originalWidth);
+                });
             });
         });
+
+        describe('#style', function() {
+            var originalWidth;
+            beforeEach(function() {
+                originalWidth = logo.clientWidth;
+            });
+            it('should have no element style overrides for width', function() {
+                expect(logo.style.width).toEqual('');
+            });
+            describe('inserting the stylesheet', function() {
+                beforeEach(function() {
+                    Csster.style({'.logo': { fontSize: '75%'}});
+                });
+                it('should now be wider', function() {
+                    expect(logo.clientWidth).toBeLessThan(originalWidth);
+                });
+            });
+        });
+
     });
 
-    describe('#style', function() {
-        var originalWidth;
-        beforeEach(function() {
-            originalWidth = document.getElementsByClassName('logo')[0].clientWidth;
-        });
-        it('should have no element style overrides for width', function() {
-            expect(document.getElementsByClassName('logo')[0].style.width).toEqual('');
-        });
-        describe('inserting the stylesheet', function() {
-            beforeEach(function() {
-                Csster.style({'.logo': { fontSize: '75%'}});
-            });
-            it('should now be wider', function() {
-                expect(document.getElementsByClassName('logo')[0].clientWidth).toBeLessThan(originalWidth);
-            });
-        });
-    });
 
 
 });

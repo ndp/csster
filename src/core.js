@@ -348,7 +348,7 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
 
         var subs = p.split(',');
         for (var s = 0; s < subs.length; s++) {
-            subs[s] = selector + (subs[s][0] == '&' ? subs[s].substr(1) : ' ' + subs[s]);
+            subs[s] = selector + ((subs[s].substr(0,1) == '&') ? subs[s].substr(1) : ' ' + subs[s]);
         }
         rules.push(Csster.formatSelectorAndProperties(subs.join(','), properties[p]));
     }
