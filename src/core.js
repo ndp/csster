@@ -357,9 +357,21 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
 }
 
 Csster.insertStylesheet = function (rules) {
+    if (document.styleSheets.length == 0) {
+        var e = document.createElement('STYLE');
+        var a = document.createAttribute('type');
+        a.nodeValue = 'text/css';
+        e.setAttributeNode(a);
+        var head = document.getElementsByTagName('HEAD')[0];
+        head.appendChild(e);
+    }
     var ss = document.styleSheets[document.styleSheets.length - 1];
     for (var i = 0; i < rules.length; i++) {
-        ss.insertRule(rules[i].sel + "{" + rules[i].props + "}", ss.cssRules.length);
+        if (ss.addRule) {  // IE http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
+            ss.addRule(rules[i].sel, rules[i].props);
+        } else {
+            ss.insertRule(rules[i].sel + "{" + rules[i].props + "}", ss.cssRules.length);
+        }
     }
 };
 
