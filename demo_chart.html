@@ -6,7 +6,7 @@
     <script src="src/core.js" type="text/javascript"></script>
     <script src="src/functions/color.js" type="text/javascript"></script>
     <script src="src/macros/macros.js" type="text/javascript"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
     <script type="text/javascript">
 
         $.fn.bubbleChart = function(options) {
@@ -43,7 +43,7 @@
                     },
                     tbody: {
                         td: {
-                            verticalAlign: 'bottom',
+                            verticalAlign: 'bottom'
                         }
                     },
 
@@ -60,7 +60,10 @@
             var $graph = $('<table><thead><tr></tr><tr></tr></thead><tbody><tr></tr></tbody><tfoot><tr></tr></tfoot></table>').addClass('bubble_chart').appendTo($this);
             var $tfoot = $graph.find('tfoot tr');
             var $tbody = $graph.find('tbody tr');
-            $graph.css('backgroundColor', 'black').css('width', '' + (options.data.length * 30) + 'px');
+            $graph.css('backgroundColor', 'black');
+            var count = 0;
+            for (d in options.data) count++;
+            $graph.css('width', count * 30);
 
             var $thead = $graph.find('thead tr:last');
             for (var cat in options.colors) {
