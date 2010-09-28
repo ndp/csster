@@ -42,14 +42,14 @@ describe("Csster", function() {
                 p:{
                     fontFamily: 'serif'
                 }
-            })).toEqual("p {\rfont-family: serif;\r}\r");
+            })).toEqual([{sel:"p",props:"font-family: serif;\r"}]);
         });
         it("should output style rule from element.class name", function() {
             expect(Csster.formatRules({
                 'div.cls':{
                     height: '235px'
                 }
-            })).toEqual("div.cls {\rheight: 235px;\r}\r");
+            })).toEqual([{sel:"div.cls",props:"height: 235px;\r"}]);
         });
         it("should output multiple properties", function() {
             expect(Csster.formatRules({
@@ -57,14 +57,17 @@ describe("Csster", function() {
                     height: '235px',
                     width: '300px'
                 }
-            })).toEqual("div.cls {\rheight: 235px;\rwidth: 300px;\r}\r");
+            })).toEqual([{sel:"div.cls",props:"height: 235px;\rwidth: 300px;\r"}]);
         });
         it('should throw an exception if discovers a bugus properties', function() {
-            expect(Csster.formatRules({
-                div: {
-                        bogus: 'property_value'
-                }
-            })).toThrow(true); //"unknown CSS property: bogus. Rule rejected."
+            expect(
+                  function() {
+                      Csster.formatRules({
+                          div: {
+                              bogus: 'property_value'
+                          }
+                      })
+                  }).toThrow('Unknown CSS property "bogus". Rule rejected.');
         });
         it("should output properties and sub-selectors", function() {
             expect(Csster.formatRules({
@@ -77,7 +80,10 @@ describe("Csster", function() {
                 }
             })
                     ).
-                    toEqual("ul {\rwidth: 300px;\r}\rul li {\rpadding: 20px;\rmargin-left: -20px;\r}\r");
+                    toEqual([
+                {sel:"ul",props:"width: 300px;\r"},
+                {sel:"ul li", props:"padding: 20px;\rmargin-left: -20px;\r"}
+            ]);
         });
 
         it("should output properties without space when & used", function() {
@@ -90,7 +96,10 @@ describe("Csster", function() {
                 }
             })
                     ).
-                    toEqual("ul {\rwidth: 300px;\r}\rul:hover {\rpadding: 20px;\r}\r");
+                    toEqual([
+                {sel:"ul", props: "width: 300px;\r"},
+                {sel: "ul:hover", props: "padding: 20px;\r"}
+            ]);
         });
 
         it("should output px when passed an integer", function() {
@@ -98,7 +107,7 @@ describe("Csster", function() {
                 'div.cls':{
                     height: 235
                 }
-            })).toEqual("div.cls {\rheight: 235px;\r}\r");
+            })).toEqual([{sel:"div.cls", props:"height: 235px;\r"}]);
         });
 
 
@@ -120,7 +129,7 @@ describe("Csster", function() {
                     has: roundedCorners(5),
                     height: '235px'
                 }
-            })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\r}\r");
+            })).toEqual([{sel:"div.cls",props:"height: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\r"}]);
         });
         it("should expand multiple values within a 'has' properties", function() {
 
@@ -129,19 +138,22 @@ describe("Csster", function() {
                     has: [roundedCorners(5), red()],
                     height: '235px'
                 }
-            })).toEqual("div.cls {\rheight: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\rcolor: red;\r}\r");
+            })).toEqual([{sel:'div.cls',props:"height: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\rcolor: red;\r"}]);
         });
-        it('should output everything within a has macro, not just valid properties', function() {
-            expect(Csster.formatRules({
-                div: {
-                    has: {
-                        bogus: 'property_value',
-                        sub: {
-                            color: 'red'
-                        }
-                    }
-                }
-            })).toEqual('alsdfjda')
+        it('should process everything within a has macro, not just valid properties', function() {
+            expect(
+                  function() {
+                      Csster.formatRules({
+                          div: {
+                              has: {
+                                  bogus: 'property_value',
+                                  sub: {
+                                      color: 'red'
+                                  }
+                              }
+                          }
+                      })
+                  }).toThrow('Unknown CSS property "bogus". Rule rejected.')
         });
 
     });
@@ -156,7 +168,7 @@ describe("Csster", function() {
         });
         describe('inserting the stylesheet', function() {
             beforeEach(function() {
-                Csster.insertStylesheet('.logo { font-size: 150%;}');
+                Csster.insertStylesheet([{sel:'.logo',props:'font-size: 150%;'}]);
             });
             it('should now be wider', function() {
                 expect(document.getElementsByClassName('logo')[0].clientWidth).toBeGreaterThan(originalWidth);

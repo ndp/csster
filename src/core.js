@@ -309,11 +309,6 @@ Csster.formatProperty = function(p, value) {
 
 
 Csster.formatSelectorAndProperties = function(selector, properties) {
-    var result = '';
-
-    // Output selector...
-    result += selector;
-    result += ' {\r';
 
     // preprocess a macro, if one
     var has = properties['has'];
@@ -328,55 +323,53 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
     }
 
     // ...all properties that look like properties
+    // Output selector...
+    var rule = {sel: selector, props: ''};
     for (var p in properties) {
         if (Csster.propertyNameOf(p)) {
-            result += Csster.formatProperty(p, properties[p]);
+            rule.props += Csster.formatProperty(p, properties[p]);
             delete properties[p];
         }
     }
-    result += "}\r";
 
     // ... finally, sub-selectors
+    var rules = [rule];
     for (p in properties) {
         if (typeof properties[p] == 'string') {
-            throw new Error("Unknown property name: " + p + ". Rule rejected.");
+            throw "Unknown CSS property \"" + p + "\". Rule rejected.";
         }
         var subSelector = selector + (p[0] == '&' ? p.substr(1) : ' ' + p);
-        result += Csster.formatSelectorAndProperties(subSelector, properties[p])
+        rules.push(Csster.formatSelectorAndProperties(subSelector, properties[p]));
     }
 
-    return result;
+    return rules;
 }
 
-Csster.insertStylesheet = function (s) {
-    var e = document.createElement('STYLE');
-    var a = document.createAttribute('type');
-    a.nodeValue = 'text/css';
-    e.setAttributeNode(a);
-    e.appendChild(document.createTextNode(s));
-    var head = document.getElementsByTagName('HEAD')[0];
-    head.appendChild(e);
+Csster.insertStylesheet = function (rules) {
+    var ss = document.styleSheets[document.styleSheets.length - 1];
+    for (var i = 0; i < rules.length; i++ ) {
+        ss.insertRule(rules[i].sel + "{" + rules[i].props + "}", ss.cssRules.length);
+    }
 };
 
 
 Csster.formatRules = function(rs) {
-    rs = [rs].flatten();
 
     // @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
-    Csster.resolveRuleHash = function(cssRule, parentSelector) {
-        var result = '';
+    var resolveRuleHash = function(cssRule) {
+        var result = [];
         for (var key in cssRule) {
-            var selector = parentSelector + key;
-            result += Csster.formatSelectorAndProperties(selector, cssRule[key]);
+            result.push(Csster.formatSelectorAndProperties(key, cssRule[key]));
         }
         return result;
-    }
+    };
 
-    var result = '';
-    rs.each(function(r) {
-        result += Csster.resolveRuleHash(r, '');
+
+    var result = [];
+    [rs].flatten().each(function(r) {
+        result.push(resolveRuleHash(r));
     });
-    return result;
+    return result.flatten();
 };
 
 Csster.style = function(cssRules) {
