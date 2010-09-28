@@ -145,10 +145,15 @@ that returns a hash of values, for example:
     }
 </pre>
 
-[Demo of the color functions and macros](http://ndpsoftware.com/csster/demo.html)
-[Demo of using to build a chart](http://ndpsoftware.com/csster/demo_chart.html)
-
 A macro's properties will be overwritten by properties within including selector (or later included macros), similar to how the cascade takes the last defined value.
+
+
+## Links
+
+* [Demo of the color functions and macros](http://ndpsoftware.com/csster/demo.html)
+* [Demo of using to build a chart](http://ndpsoftware.com/csster/demo_chart.html)
+* [Blog post](http://ndpsoft.blogspot.com/2010/09/introducing-csster.html)
+
 
 
 
