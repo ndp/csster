@@ -348,7 +348,7 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
 
         var subs = p.split(',');
         for (var s = 0; s < subs.length; s++) {
-            subs[s] = selector + ((subs[s].substr(0,1) == '&') ? subs[s].substr(1) : ' ' + subs[s]);
+            subs[s] = selector + ((subs[s].substr(0, 1) == '&') ? subs[s].substr(1) : ' ' + subs[s]);
         }
         rules.push(Csster.formatSelectorAndProperties(subs.join(','), properties[p]));
     }
@@ -357,23 +357,36 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
 }
 
 Csster.insertStylesheet = function (rules) {
-    if (document.styleSheets.length == 0) {
-        var e = document.createElement('STYLE');
-        var a = document.createAttribute('type');
-        a.nodeValue = 'text/css';
-        e.setAttributeNode(a);
-        var head = document.getElementsByTagName('HEAD')[0];
-        head.appendChild(e);
-    }
-    var ss = document.styleSheets[document.styleSheets.length - 1];
+    // convert rules to textual string
+    var s = '';
     for (var i = 0; i < rules.length; i++) {
-        if (ss.addRule) {  // IE http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
-            ss.addRule(rules[i].sel, rules[i].props);
-        } else {
-            ss.insertRule(rules[i].sel + "{" + rules[i].props + "}", ss.cssRules.length);
-        }
+        s += rules[i].sel + '{' + rules[i].props + '};';
+        // IE http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
+//            try {
+//                ss.addRule(rules[i].sel, rules[i].props);
+//            } catch (e) {
+//                alert('can not use selector ' + rules[i].sel);
+//            }
     }
-};
+
+    var e = document.createElement('STYLE');
+    var a = document.createAttribute('type');
+    a.nodeValue = 'text/css';
+    e.setAttributeNode(a);
+    var head = document.getElementsByTagName('HEAD')[0];
+    head.appendChild(e);
+    try {
+        e.appendChild(document.createTextNode(s));
+    } catch(e) {
+        var ss = document.styleSheets[document.styleSheets.length - 1];
+        ss.cssText = s;
+    }
+
+//        for (var i = 0; i < rules.length; i++) {
+//            ss.insertRule(rules[i].sel + "{" + rules[i].props + "}", ss.cssRules.length);
+//        }
+
+}
 
 
 Csster.compressSelectors = function(rules) {
