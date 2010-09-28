@@ -335,11 +335,16 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
     // ... finally, sub-selectors
     var rules = [rule];
     for (p in properties) {
+
         if (typeof properties[p] == 'string') {
             throw "Unknown CSS property \"" + p + "\". Rule rejected.";
         }
-        var subSelector = selector + (p[0] == '&' ? p.substr(1) : ' ' + p);
-        rules.push(Csster.formatSelectorAndProperties(subSelector, properties[p]));
+
+        var subs = p.split(',');
+        for (var s = 0; s<subs.length; s++) {
+            subs[s] = selector + (subs[s][0] == '&' ? subs[s].substr(1) : ' ' + subs[s]);
+        }
+        rules.push(Csster.formatSelectorAndProperties(subs.join(','), properties[p]));
     }
 
     return rules;

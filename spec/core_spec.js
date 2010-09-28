@@ -32,11 +32,9 @@ describe("Csster", function() {
         });
     });
 
-    // :hover selectors (no space between pieces)
-    // > blah   direct decendent
-
 
     describe('#formatRules', function() {
+
         it("should output style rule from element name", function() {
             expect(Csster.formatRules({
                 p:{
@@ -44,6 +42,7 @@ describe("Csster", function() {
                 }
             })).toEqual([{sel:"p",props:"font-family: serif;\r"}]);
         });
+
         it("should output style rule from element.class name", function() {
             expect(Csster.formatRules({
                 'div.cls':{
@@ -51,6 +50,7 @@ describe("Csster", function() {
                 }
             })).toEqual([{sel:"div.cls",props:"height: 235px;\r"}]);
         });
+
         it("should output multiple properties", function() {
             expect(Csster.formatRules({
                 'div.cls':{
@@ -59,6 +59,7 @@ describe("Csster", function() {
                 }
             })).toEqual([{sel:"div.cls",props:"height: 235px;\rwidth: 300px;\r"}]);
         });
+
         it('should throw an exception if discovers a bugus properties', function() {
             expect(
                   function() {
@@ -69,6 +70,7 @@ describe("Csster", function() {
                       })
                   }).toThrow('Unknown CSS property "bogus". Rule rejected.');
         });
+
         it("should output properties and sub-selectors", function() {
             expect(Csster.formatRules({
                 ul:{
@@ -85,6 +87,22 @@ describe("Csster", function() {
                 {sel:"ul li", props:"padding: 20px;\rmargin-left: -20px;\r"}
             ]);
         });
+
+        it("should handle commas in nested selectors", function() {
+             expect(Csster.formatRules({
+                 ul:{
+                     width: '300px',
+                     'li.even,li.odd': {
+                         padding: '20px'
+                     }
+                 }
+             })
+                     ).
+                     toEqual([
+                 {sel:"ul",props:"width: 300px;\r"},
+                 {sel:"ul li.even,ul li.odd", props:"padding: 20px;\r"}
+             ]);
+         });
 
         it("should output properties without space when & used", function() {
             expect(Csster.formatRules({
