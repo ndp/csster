@@ -58,7 +58,7 @@ a way to order the hashes. For example:
 
 Note that
 
-* property names are automatically converted to the correct format from camelcase. Feel free to quote them as well.
+* property names are automatically converted to hyphenated format from camelcase, so in many cases you can omit the quotation marks. ('float' needs to quoted since it's a reserved word.)
 * all raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
 * any sort of selectors are allowed... they are just passed through to the stylesheet.
 
@@ -83,6 +83,12 @@ property names is used to identify properties right now, and otherwise it's cons
 
 Csster supports SASS's "&" operator, to indicate that the selector should be combined with the parent selector.
 Instead of the default "any descendent" space character being inserted, no space is inserted.
+
+Combined rules (with commas) are expanded as expected, so nested rules with commas have their parents expanded.
+
+By default, rules with multiple '#'s are simplified. For example, '#a #b #c' becomes '#c'. Usually this is what you will want, but if you need the specificity you can turn this off with <code>Csster.shortCircuitIds = false</code>
+
+
 
 #### Functions
 Most manipulations will fall into Javascript's language support, as far as any math or looping. Use Javascript to write necessary functions.
@@ -140,6 +146,7 @@ that returns a hash of values, for example:
 </pre>
 
 [Demo of the color functions and macros](http://ndpsoftware.com/csster/demo.html)
+[Demo of using to build a chart](http://ndpsoftware.com/csster/demo_chart.html)
 
 A macro's properties will be overwritten by properties within including selector (or later included macros), similar to how the cascade takes the last defined value.
 
