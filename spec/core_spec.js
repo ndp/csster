@@ -128,6 +128,20 @@ describe("Csster", function() {
             })).toEqual([{sel:"div.cls", props:"height: 235px;\r"}]);
         });
 
+        it('should not remove redundant ids', function() {
+            Csster.shortCircuitIds = false;
+            expect(Csster.formatRules({
+                    '#a #b #c': {width: 235}
+            })).toEqual([{sel:"#a #b #c", props:"width: 235px;\r"}]);
+        });
+
+        it('should remove redundant ids', function() {
+            Csster.shortCircuitIds = true;
+            expect(Csster.formatRules({
+                    '#a #b #c': {width: 235}
+            })).toEqual([{sel:"#c", props:"width: 235px;\r"}]);
+        });
+
 
         function roundedCorners(radius) {
             return {

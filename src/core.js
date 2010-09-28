@@ -1,5 +1,11 @@
 if (!Csster) {
-    var Csster = {}
+    var Csster = {
+        /**
+         * Remove redundant parents from selectors that include more than one ID
+         * selector.  eg.  #page #top => "#top"
+         */
+        shortCircuitIds: true
+    }
 }
 
 Csster.propertyNames = ['accelerator',
@@ -341,7 +347,7 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
         }
 
         var subs = p.split(',');
-        for (var s = 0; s<subs.length; s++) {
+        for (var s = 0; s < subs.length; s++) {
             subs[s] = selector + (subs[s][0] == '&' ? subs[s].substr(1) : ' ' + subs[s]);
         }
         rules.push(Csster.formatSelectorAndProperties(subs.join(','), properties[p]));
@@ -352,11 +358,19 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
 
 Csster.insertStylesheet = function (rules) {
     var ss = document.styleSheets[document.styleSheets.length - 1];
-    for (var i = 0; i < rules.length; i++ ) {
+    for (var i = 0; i < rules.length; i++) {
         ss.insertRule(rules[i].sel + "{" + rules[i].props + "}", ss.cssRules.length);
     }
 };
 
+
+Csster.compressSelectors = function(rules) {
+    for (var i = 0; i < rules.length; i++) {
+        while (rules[i].sel.match(/.*#.*#.*/)) {
+            rules[i].sel = rules[i].sel.replace(/^.*#.*#/, '#');
+        }
+    }
+};
 
 Csster.formatRules = function(rs) {
 
@@ -374,7 +388,11 @@ Csster.formatRules = function(rs) {
     [rs].flatten().each(function(r) {
         result.push(resolveRuleHash(r));
     });
-    return result.flatten();
+    result = result.flatten();
+    if (Csster.shortCircuitIds) {
+        Csster.compressSelectors(result);
+    }
+    return result;
 };
 
 Csster.style = function(cssRules) {
