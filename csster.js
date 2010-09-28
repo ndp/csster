@@ -4,7 +4,7 @@
 // 
 // See http://github.com/ndp/csster
 // 
-// Generated Tue Sep 28 10:35:41 PDT 2010
+// Generated Tue Sep 28 16:27:22 PDT 2010
 // 
 // 
 function isArray(object) {
@@ -129,8 +129,8 @@ Csster.propertyNames = ['accelerator',
     'layout-grid-line',
     'layout-grid-mode',
     'layout-grid-type',
-    'left',
     'letter-spacing',
+    'left',
     'line-break',
     'line-height',
     'list-style',
@@ -336,7 +336,8 @@ Csster.propertyNames = ['accelerator',
     'word-break',
     'word-spacing',
     'word-wrap',
-    'writing-mode'];
+    'writing-mode',
+    'zoom'];
 
 
 // Quick way to look up whether a property is "official"
@@ -434,6 +435,7 @@ Csster.insertStylesheet = function (rules) {
 //            ss.insertRule(rules[i].sel + "{" + rules[i].props + "}", ss.cssRules.length);
 //        }
 
+//    oncontentready('v08vnSVo78t4JfjH');
 }
 
 
@@ -496,8 +498,10 @@ function roundedCorners(side, radius) {
     if (side == 'all') {
         return {
             '-moz-border-radius': radius,
-            'border-radius': radius,
-            '-webkit-border-radius': radius
+            '-webkit-border-radius': radius,
+            borderRadius: radius
+//            behavior: 'url(src/border-radius.htc)',
+//            position: 'relative',zoom: '1'
         }
     } else {
         var rules = {};
