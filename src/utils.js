@@ -37,3 +37,26 @@ function dasherize(s) {
         return "-" + $1.toLowerCase();
     });
 }
+
+
+// H A S H e s
+//  mergeHashInto(hashA, hashB, hashC...)
+// merge all properties from B, C into hash A.
+function mergeHashInto(r) {
+    for (var i = 1; i < arguments.length; i++) {
+        for (var k in arguments[i]) {
+            r[k] = arguments[i][k];
+        }
+    }
+    return r;
+}
+
+function mergeHashes() {
+    var result = {};
+    for (var i = 0; i < arguments.length; i++) {
+        for (var k in arguments[i]) {
+            result[k] = arguments[i][k];
+        }
+    }
+    return result;
+}

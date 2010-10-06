@@ -318,14 +318,24 @@ Csster.formatProperty = function(p, value) {
 Csster.formatSelectorAndProperties = function(selector, properties) {
 
     // preprocess a macro, if one
-    var has = properties['has'];
-    if (has) {
+    function extractHas(has) {
+        var props = {};
         var a = [has].flatten(); // support single or multiple sets of properties
         for (var i = 0; i < a.length; i++) {
             for (var mp in a[i]) {
-                properties[mp] = a[i][mp];
+                if (mp == 'has') {
+                    mergeHashInto(props, extractHas(a[i][mp]));
+                } else {
+                    props[mp] = a[i][mp];
+                }
             }
         }
+        return props;
+    }
+
+    var has = properties['has'];
+    if (has) {
+        mergeHashInto(properties, extractHas(has));
         delete properties['has']
     }
 

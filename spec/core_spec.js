@@ -172,6 +172,14 @@ describe("Csster", function() {
                 }
             })).toEqual([{sel:'div.cls',props:"height: 235px;\r-webkit-border-radius: 5px;\r-moz-border-radius: 5px;\rcolor: red;\r"}]);
         });
+        it("should expand has within a has within a 'has' properties", function() {
+
+            expect(Csster.formatRules({
+                'div.cls':{
+                    has: { has: {height: '235px'} }
+                }
+            })).toEqual([{sel:'div.cls',props:"height: 235px;\r"}]);
+        });
         it('should process everything within a has macro, not just valid properties', function() {
             expect(
                   function() {
