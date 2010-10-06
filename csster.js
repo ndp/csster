@@ -4,7 +4,7 @@
 // 
 // See http://github.com/ndp/csster
 // 
-// Generated Tue Sep 28 16:30:22 PDT 2010
+// Generated Tue Oct  5 20:59:33 PDT 2010
 // 
 // 
 function isArray(object) {
@@ -45,6 +45,29 @@ function dasherize(s) {
     return s.replace(/([A-Z])/g, function($1) {
         return "-" + $1.toLowerCase();
     });
+}
+
+
+// H A S H e s
+//  mergeHashInto(hashA, hashB, hashC...)
+// merge all properties from B, C into hash A.
+function mergeHashInto(r) {
+    for (var i = 1; i < arguments.length; i++) {
+        for (var k in arguments[i]) {
+            r[k] = arguments[i][k];
+        }
+    }
+    return r;
+}
+
+function mergeHashes() {
+    var result = {};
+    for (var i = 0; i < arguments.length; i++) {
+        for (var k in arguments[i]) {
+            result[k] = arguments[i][k];
+        }
+    }
+    return result;
 }
 if (!Csster) {
     var Csster = {
@@ -366,14 +389,24 @@ Csster.formatProperty = function(p, value) {
 Csster.formatSelectorAndProperties = function(selector, properties) {
 
     // preprocess a macro, if one
-    var has = properties['has'];
-    if (has) {
+    function extractHas(has) {
+        var props = {};
         var a = [has].flatten(); // support single or multiple sets of properties
         for (var i = 0; i < a.length; i++) {
             for (var mp in a[i]) {
-                properties[mp] = a[i][mp];
+                if (mp == 'has') {
+                    mergeHashInto(props, extractHas(a[i][mp]));
+                } else {
+                    props[mp] = a[i][mp];
+                }
             }
         }
+        return props;
+    }
+
+    var has = properties['has'];
+    if (has) {
+        mergeHashInto(properties, extractHas(has));
         delete properties['has']
     }
 
