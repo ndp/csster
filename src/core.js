@@ -314,6 +314,7 @@ Csster.propertyNames = ['accelerator',
     'word-spacing',
     'word-wrap',
     'writing-mode',
+    'z-index',
     'zoom'];
 
 

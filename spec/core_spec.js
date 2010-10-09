@@ -14,6 +14,10 @@ describe("Csster", function() {
                 expect(Csster.propertyNameOf(name)).toEqual(name);
             });
         }
+        it('should return z-index', function() {
+            expect(Csster.propertyNameOf('zIndex')).toEqual('z-index');
+        });
+
         it('should return nil for invalid property names', function() {
             expect(Csster.propertyNameOf('abc')).toEqual(null);
             expect(Csster.propertyNameOf('#my_id')).toEqual(null);
