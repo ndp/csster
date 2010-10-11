@@ -98,7 +98,7 @@ describe('userAgent', function() {
             expect(Csster.browser.mozilla).toBeUndefined();
         });
     }
-    if (/^Mozilla/.test(navigator.userAgent)) {
+    if (/^Mozilla/.test(navigator.userAgent) && !/AppleWebKit/.test(navigator.userAgent)) {
         it("should report that it's not running in webkit", function() {
             expect(Csster.browser.webkit).toBeUndefined();
         });
