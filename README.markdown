@@ -153,16 +153,20 @@ A macro's properties will be overwritten by properties within including selector
 
 Csster is built as an extensible system.
 
-### <code>Csster.addPropertyNames</code>
+### Adding Custom Property Names
+<code>Csster.addPropertyNames</code>
 Any non-standard property names you'd like to be considered valid. The build-in tool rejects non-standard property names.
 
-### <code>Csster.propertyPreprocessors</code>
+### Pre-proces rules
+<code>Csster.propertyPreprocessors</code>
 Functions called before properties are expanded. Callback is provided a hash of properties to values, which it modifies in any way it wants.
 
-### <code>Csster.rulesPostProcessors</code>
+### Post-processing
+<code>Csster.rulesPostProcessors</code>
 Functions called after rules are processed, but before they are output. Called with an array of processed rules.
 
-### <code>Csster.insertStylesheet</code>
+### Inserting into the DOM
+<code>Csster.insertStylesheet</code>
 Function that outputs a set of rules into the DOM.
 
 ## Contributing
