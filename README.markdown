@@ -148,6 +148,19 @@ that returns a hash of values, for example:
 A macro's properties will be overwritten by properties within including selector (or later included macros), similar to how the cascade takes the last defined value.
 
 
+
+## Extending Csster
+
+Csster is built as an extensible system.
+
+* <code>Csster.addPropertyNames</code> -- any non-standard property names you'd like to be considered "valid". The build-in tool rejects non-standard property names (or in some cases will think they are selectors).
+
+
+## Contributing
+
+Fork and submit changed back on Github.
+
+
 ## Links
 
 * [Demo of the color functions and macros](http://ndpsoftware.com/csster/demo.html)
