@@ -167,7 +167,7 @@ Function that outputs a set of rules into the DOM is <code>Csster.insertStyleshe
 
 ## Contributing
 
-Fork and submit changed back on Github.
+Fork on Github and send back a merge request.
 
 
 ## Links
