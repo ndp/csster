@@ -1,3 +1,7 @@
+if (!Csster) {
+    var Csster = {}
+}
+
 function isArray(object) {
     return typeof object === 'object' &&
             Object.prototype.toString.call(object) === '[object Array]';

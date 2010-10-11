@@ -1,39 +1,55 @@
 if (!Csster) {
-    var Csster = {
-        /**
-         * Remove redundant parents from selectors that include more than one ID
-         * selector.  eg.  #page #top => "#top"
-         */
-        shortCircuitIds: true
-    }
+    var Csster = {}
 }
 
+/**
+ * Remove redundant parents from selectors that include more than one ID
+ * selector.  eg.  #page #top => "#top"
+ */
+Csster.shortCircuitIds = true;
+
+
+// Lifted from jQuery: http://docs.jquery.com/Utilities/jQuery.browser
 Csster.browser = {};
-
 (function() {
-	// Lifted from jQuery: http://docs.jquery.com/Utilities/jQuery.browser
-	function uaMatch( ua ) {
-		ua = ua.toLowerCase();
+    function uaMatch(ua) {
+        ua = ua.toLowerCase();
 
-		var match = /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
-			/(opera)(?:.*version)?[ \/]([\w.]+)/.exec( ua ) ||
-			/(msie) ([\w.]+)/.exec( ua ) ||
-			!/compatible/.test( ua ) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec( ua ) ||
-		  	[];
+        var match = /(webkit)[ \/]([\w.]+)/.exec(ua) ||
+                /(opera)(?:.*version)?[ \/]([\w.]+)/.exec(ua) ||
+                /(msie) ([\w.]+)/.exec(ua) ||
+                !/compatible/.test(ua) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec(ua) ||
+                [];
 
-		return { browser: match[1] || "", version: match[2] || "0" };
-	}
-
+        return { browser: match[1] || "", version: match[2] || "0" };
+    }
 
     var browserMatch = uaMatch(navigator.userAgent);
-    if ( browserMatch.browser ) {
+    if (browserMatch.browser) {
         Csster.browser[ browserMatch.browser ] = true;
         Csster.browser.version = browserMatch.version;
     }
 })();
 
 
-Csster.propertyNames = ['accelerator',
+/**
+ * Add more valid properties to the list of valid property names.
+ */
+Csster.addPropertyNames = function(propertyNames) {
+    if (!Csster.propertyNamesHash) {
+        Csster.propertyNamesHash = {};
+    }
+    for (var a = 0; a < arguments.length; a++) {
+      var names = [arguments[a]].flatten();
+      for (var i = 0; i < names.length; i++) {
+          var name = names[i];
+          Csster.propertyNamesHash[name] = true;
+      }
+    }
+};
+
+
+Csster.addPropertyNames(['accelerator',
     'azimuth',
     'background',
     'background-attachment',
@@ -125,27 +141,8 @@ Csster.propertyNames = ['accelerator',
     'max-width',
     'min-height',
     'min-width',
-    '-moz-binding',
-    '-moz-border-radius',
-    '-moz-border-radius-topleft',
-    '-moz-border-radius-topright',
-    '-moz-border-radius-bottomright',
-    '-moz-border-radius-bottomleft',
-    '-moz-border-top-colors',
-    '-moz-border-right-colors',
-    '-moz-border-bottom-colors',
-    '-moz-border-left-colors',
-    '-moz-box-shadow',
-    '-moz-opacity',
-    '-moz-outline',
-    '-moz-outline-color',
-    '-moz-outline-style',
-    '-moz-outline-width',
-    '-moz-user-focus',
-    '-moz-user-input',
-    '-moz-user-modify',
-    '-moz-user-select',
     '-ms-filter',
+    'opacity',
     'orphans',
     'outline',
     'outline-color',
@@ -171,13 +168,8 @@ Csster.propertyNames = ['accelerator',
     'play-during',
     'position',
     'quotes',
-    '-replace',
     'richness',
     'right',
-    'ruby-align',
-    'ruby-overhang',
-    'ruby-position',
-    '-set-link-source',
     'size',
     'speak',
     'speak-header',
@@ -207,11 +199,42 @@ Csster.propertyNames = ['accelerator',
     'text-underline-position',
     'top',
     'unicode-bidi',
-    '-use-link-source',
     'vertical-align',
     'visibility',
     'voice-family',
     'volume',
+    'white-space',
+    'widows',
+    'width',
+    'word-break',
+    'word-spacing',
+    'word-wrap',
+    'writing-mode',
+    'z-index',
+    'zoom']);
+Csster.addPropertyNames([
+    '-moz-binding',
+    '-moz-border-radius',
+    '-moz-border-radius-topleft',
+    '-moz-border-radius-topright',
+    '-moz-border-radius-bottomright',
+    '-moz-border-radius-bottomleft',
+    '-moz-border-top-colors',
+    '-moz-border-right-colors',
+    '-moz-border-bottom-colors',
+    '-moz-border-left-colors',
+    '-moz-box-shadow',
+    '-moz-opacity',
+    '-moz-outline',
+    '-moz-outline-color',
+    '-moz-outline-style',
+    '-moz-outline-width',
+    '-moz-user-focus',
+    '-moz-user-input',
+    '-moz-user-modify',
+    '-moz-user-select'
+]);
+Csster.addPropertyNames([
     '-webkit-animation',
     '-webkit-animation-delay',
     '-webkit-animation-direction',
@@ -306,24 +329,8 @@ Csster.propertyNames = ['accelerator',
     '-webkit-transition-timing-function',
     '-webkit-user-drag',
     '-webkit-user-modify',
-    '-webkit-user-select',
-    'white-space',
-    'widows',
-    'width',
-    'word-break',
-    'word-spacing',
-    'word-wrap',
-    'writing-mode',
-    'z-index',
-    'zoom'];
+    '-webkit-user-select']);
 
-
-// Quick way to look up whether a property is "official"
-Csster.propertyNamesHash = {};
-for (var i = 0; i < Csster.propertyNames.length; i++) {
-    var name = Csster.propertyNames[i];
-    Csster.propertyNamesHash[name] = true;
-}
 
 
 /*
@@ -341,7 +348,7 @@ Csster.formatProperty = function(p, value) {
 };
 
 
-Csster.formatSelectorAndProperties = function(selector, properties) {
+function expandMacros(properties){
 
     // preprocess a macro, if one
     function extractHas(has) {
@@ -364,22 +371,29 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
         mergeHashInto(properties, extractHas(has));
         delete properties['has']
     }
+}
+
+
+
+Csster.expandAndFlatten = function(selector, properties) {
+
+    expandMacros(properties);
 
     // ...all properties that look like properties
     // Output selector...
-    var rule = {sel: selector, props: ''};
+    props = {};
     for (var p in properties) {
         if (Csster.propertyNameOf(p)) {
-            rule.props += Csster.formatProperty(p, properties[p]);
+            props[p] =  properties[p];
             delete properties[p];
         }
     }
 
     // ... finally, sub-selectors
-    var rules = [rule];
+    var rules = [{sel: selector, props: props}];
     for (p in properties) {
 
-        if (typeof properties[p] == 'string') {
+        if (typeof properties[p] === 'string' || typeof properties[p] === 'number') {
             throw "Unknown CSS property \"" + p + "\". Rule rejected.";
         }
 
@@ -387,17 +401,29 @@ Csster.formatSelectorAndProperties = function(selector, properties) {
         for (var s = 0; s < subs.length; s++) {
             subs[s] = selector + ((subs[s].substr(0, 1) == '&') ? subs[s].substr(1) : ' ' + subs[s]);
         }
-        rules.push(Csster.formatSelectorAndProperties(subs.join(','), properties[p]));
+        rules.push(Csster.expandAndFlatten(subs.join(','), properties[p]));
     }
 
     return rules;
 }
 
+
+Csster.formatProperties = function(props) {
+  var result = '';
+  for (var p in props) {
+    result += Csster.formatProperty(p, props[p]);
+  }
+  return result;
+};
+
+
 Csster.insertStylesheet = function (rules) {
     // convert rules to textual string
     var s = '';
     for (var i = 0; i < rules.length; i++) {
-        s += rules[i].sel + ' { ' + rules[i].props + '}\r';
+        s += rules[i].sel + ' { ';
+        s += Csster.formatProperties(rules[i].props);
+        s += '}\r';
         // IE http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
 //            try {
 //                ss.addRule(rules[i].sel, rules[i].props);
@@ -435,31 +461,31 @@ Csster.compressSelectors = function(rules) {
     }
 };
 
-Csster.formatRules = function(rs) {
+Csster.processRules = function(rs) {
 
     // @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
     var resolveRuleHash = function(cssRule) {
         var result = [];
         for (var key in cssRule) {
-            result.push(Csster.formatSelectorAndProperties(key, cssRule[key]));
+            result.push(Csster.expandAndFlatten(key, cssRule[key]));
         }
         return result;
     };
 
 
-    var result = [];
+    var rules = [];
     [rs].flatten().each(function(r) {
-        result.push(resolveRuleHash(r));
+        rules.push(resolveRuleHash(r));
     });
-    result = result.flatten();
+    rules = rules.flatten();
     if (Csster.shortCircuitIds) {
-        Csster.compressSelectors(result);
+        Csster.compressSelectors(rules);
     }
-    return result;
+    return rules;
 };
 
 Csster.style = function(cssRules) {
-    var s = Csster.formatRules(cssRules);
+    var s = Csster.processRules(cssRules);
     Csster.insertStylesheet(s);
 };
 
