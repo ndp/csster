@@ -4,7 +4,7 @@
 // 
 // See http://github.com/ndp/csster
 // 
-// Generated Sun Oct 10 21:44:30 PDT 2010
+// Generated Mon Oct 11 21:12:39 PDT 2010
 // 
 // 
 if (!Csster) {
@@ -139,6 +139,8 @@ Csster.addPropertyNames(['accelerator',
   'behavior',
   'border',
   'border-bottom',
+  'border-bottom-right-radius',
+  'border-bottom-left-radius',
   'border-bottom-color',
   'border-bottom-style',
   'border-bottom-width',
@@ -159,6 +161,8 @@ Csster.addPropertyNames(['accelerator',
   'border-top-color',
   'border-top-style',
   'border-top-width',
+  'border-top-left-radius',
+  'border-top-right-radius',
   'border-width',
   'box-shadow',
   'bottom',
@@ -268,6 +272,7 @@ Csster.addPropertyNames(['accelerator',
   'text-decoration',
   'text-indent',
   'text-justify',
+  'text-offset',
   'text-overflow',
   'text-shadow',
   'text-transform',
