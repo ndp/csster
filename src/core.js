@@ -6,7 +6,6 @@ if (!Csster) {
  * Remove redundant parents from selectors that include more than one ID
  * selector.  eg.  #page #top => "#top"
  */
-Csster.shortCircuitIds = true;
 Csster.propertyPreprocessors = [];
 Csster.rulesPostProcessors = [];
 
@@ -349,8 +348,12 @@ Csster.propertyNameOf = function(p) {
 }
 
 Csster.formatProperty = function(p, value) {
-  if (value && typeof value == 'number') value = '' + value + 'px';
-  return Csster.propertyNameOf(p) + ": " + value + ";\r";
+  p = Csster.propertyNameOf(p);
+  if (value && typeof value == 'number' &&
+       p != 'z-index' && p != 'opacity' && p != 'zoom') {
+       value = '' + value + 'px';
+  }
+  return p + ": " + value + ";\r";
 };
 
 
@@ -362,6 +365,8 @@ Csster.preprocessProperties = function(properties) {
 
 
 Csster.expandAndFlatten = function(selector, properties) {
+
+  //selector = selector.trim();
 
   Csster.preprocessProperties(properties);
 
@@ -387,7 +392,7 @@ Csster.expandAndFlatten = function(selector, properties) {
 
     var subs = p.split(',');
     for (var s = 0; s < subs.length; s++) {
-      subs[s] = selector + ((subs[s].substr(0, 1) == '&') ? subs[s].substr(1) : ' ' + subs[s]);
+      subs[s] = selector + ((subs[s].substr(0, 1) == '&') ? subs[s].substr(1) : ' ' + subs[s].trim());
     }
     rules.push(Csster.expandAndFlatten(subs.join(','), properties[p]));
   }
@@ -397,6 +402,8 @@ Csster.expandAndFlatten = function(selector, properties) {
 
 
 Csster.insertStylesheet = function (rules) {
+
+  // IE doesn't seem to matter:  http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
 
   var formatProperties = function(props) {
     var result = '';
@@ -412,12 +419,6 @@ Csster.insertStylesheet = function (rules) {
     s += rules[i].sel + ' { ';
     s += formatProperties(rules[i].props);
     s += '}\r';
-    // IE http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
-//            try {
-//                ss.addRule(rules[i].sel, rules[i].props);
-//            } catch (e) {
-//                alert('can not use selector ' + rules[i].sel);
-//            }
   }
 
   var e = document.createElement('STYLE');
@@ -432,22 +433,8 @@ Csster.insertStylesheet = function (rules) {
     var ss = document.styleSheets[document.styleSheets.length - 1];
     ss.cssText = '' + ss.cssText + s;
   }
-
-//        for (var i = 0; i < rules.length; i++) {
-//            ss.insertRule(rules[i].sel + "{" + rules[i].props + "}", ss.cssRules.length);
-//        }
-
-//    oncontentready('v08vnSVo78t4JfjH');
 }
 
-
-Csster.compressSelectors = function(rules) {
-  for (var i = 0; i < rules.length; i++) {
-    while (rules[i].sel.match(/.*#.*#.*/)) {
-      rules[i].sel = rules[i].sel.replace(/^.*#.*#/, '#');
-    }
-  }
-};
 
 Csster.processRules = function(input) {
 
@@ -478,47 +465,10 @@ Csster.postProcessRules = function(rules) {
 };
 
 
-
 Csster.style = function(cssRules) {
   var s = Csster.processRules(cssRules);
   Csster.insertStylesheet(s);
 };
-
-
-// Returns a function to process macros with the given property key
-Csster.macroPreprocessor = function(macroPropertyName) {
-  return   function(properties) {
-    function extractMacros(p) {
-      var props = {};
-      var a = [p].flatten(); // support single or multiple sets of properties
-      for (var i = 0; i < a.length; i++) {
-        for (var mp in a[i]) {
-          if (mp == macroPropertyName) {
-            mergeHashInto(props, extractMacros(a[i][mp]));
-          } else {
-            props[mp] = a[i][mp];
-          }
-        }
-      }
-      return props;
-    }
-
-    var macros = properties[macroPropertyName];
-    if (macros) {
-      mergeHashInto(properties, extractMacros(macros));
-      delete properties[macroPropertyName]
-    }
-  }
-};
-
-Csster.propertyPreprocessors.push(Csster.macroPreprocessor('has'));
-
-
-Csster.rulesPostProcessors.push(function(rules) {
-  if (Csster.shortCircuitIds) {
-    Csster.compressSelectors(rules);
-  }
-});
 
 
 

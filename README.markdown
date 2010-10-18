@@ -86,7 +86,6 @@ Instead of the default "any descendent" space character being inserted, no space
 
 Combined rules (with commas) are expanded as expected, so nested rules with commas have their parents expanded.
 
-By default, rules with multiple '#'s are simplified. For example, '#a #b #c' becomes '#c'. Usually this is what you will want, but if you need the specificity you can turn this off with <code>Csster.shortCircuitIds = false</code>
 
 
 
@@ -161,6 +160,9 @@ Functions called before properties are processed stored in <code>Csster.property
 
 ### Post-processing
 Functions called after rules are processed stored in <code>Csster.rulesPostProcessors</code>. Called with an array of processed rules. Can be used to eliminate duplicates, modify selectors, etc. Standard list simplifies overly complex selectors with multiple IDs.
+
+A convenient built-in function is <code>compressSelectors</code>. Using this processor, rules with multiple '#'s are simplified. For example, '#a #b #c' becomes '#c'. Usually this is what you will want, so include it with <code>Csster.rulePostProcessors.push(Csster.compressSelectors);</code>.
+
 
 ### Inserting into the DOM
 Function that outputs a set of rules into the DOM is <code>Csster.insertStylesheet</code> and can be replaced if desired.

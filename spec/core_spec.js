@@ -36,7 +36,13 @@ describe("Csster", function() {
       expect(Csster.formatProperty('height', 12)).toEqual("height: 12px;\r");
     });
     it('should understand opacity', function() {
-      expect(Csster.formatProperty('opacity', .5)).toEqual("opacity: 0.5px;\r");
+      expect(Csster.formatProperty('opacity', .5)).toEqual("opacity: 0.5;\r");
+    });
+    it('should understand zoom', function() {
+      expect(Csster.formatProperty('zoom', 1)).toEqual("zoom: 1;\r");
+    });
+    it('should understand z-index', function() {
+      expect(Csster.formatProperty('z-index', 1000)).toEqual("z-index: 1000;\r");
     });
   });
 
@@ -120,11 +126,11 @@ describe("Csster", function() {
       ]);
     });
 
-    it("should handle commas in nested selectors", function() {
+    it("should handle commas and spaces in nested selectors", function() {
       expect(Csster.processRules({
         ul:{
           width: '300px',
-          'li.even,li.odd': {
+          'li.even, li.odd': {
             padding: '20px'
           }
         }
@@ -133,6 +139,23 @@ describe("Csster", function() {
               toEqual([
         { sel : 'ul', props : { width : '300px' } },
         { sel : 'ul li.even,ul li.odd', props : { padding : '20px' } }
+      ]);
+    });
+
+    it("should handle commas within pseudo-classes", function() {
+        var processed = Csster.processRules({
+            div: {
+                'a:link,a:visited,a:hover':{
+                    color: 'blue'
+                }
+            }
+        });
+        expect(processed.length).toEqual(2);
+        expect(processed[1].sel).toEqual('div a:link,div a:visited,div a:hover');
+        expect(processed).
+              toEqual([
+        { sel : 'div', props : { } },
+        { sel : 'div a:link,div a:visited,div a:hover', props : { color : 'blue' } }
       ]);
     });
 
@@ -149,64 +172,15 @@ describe("Csster", function() {
               toEqual([ { sel : 'ul', props : { width : '300px' } }, { sel : 'ul:hover', props : { padding : '20px' } } ]);
     });
 
-    it('should not remove redundant ids', function() {
-      Csster.shortCircuitIds = false;
+    it('should post-process rules', function() {
+      Csster.rulesPostProcessors.push(function(rules) {rules[0]['sel'] = '#a'});
       expect(Csster.processRules({
         '#a #b #c': {width: 235}
-      })).toEqual([ { sel : '#a #b #c', props : { width : 235 } } ]);
-    });
-
-    it('should remove redundant ids', function() {
-      Csster.shortCircuitIds = true;
-      expect(Csster.processRules({
-        '#a #b #c': {width: 235}
-      })).toEqual([
-        {sel:"#c", props: {width: 235}}
-      ]);
+      })).toEqual([ { sel : '#a', props : { width : 235 } } ]);
+      Csster.rulesPostProcessors.pop();
     });
 
 
-    function roundedCorners(radius) {
-      return {
-        '-webkit-border-radius': radius,
-        '-moz-border-radius': radius
-      }
-    }
-
-    function red() {
-      return {color: 'red'};
-    }
-
-    it("should expand a 'has' property", function() {
-
-      expect(Csster.processRules({
-        'div.cls':{
-          has: roundedCorners(5),
-          height: '235px'
-        }
-      })).toEqual([ { sel : 'div.cls', props : { height : '235px', '-webkit-border-radius' : 5, '-moz-border-radius' : 5 } } ]);
-    });
-    it("should expand multiple values within a 'has' properties", function() {
-
-      expect(Csster.processRules({
-        'div.cls':{
-          has: [roundedCorners(5), red()],
-          height: '235px'
-        }
-      })).toEqual([
-        {sel:'div.cls',props:{ height : '235px', '-webkit-border-radius' : 5, '-moz-border-radius' : 5,color: 'red'}}
-      ]);
-    });
-    it("should expand has within a has within a 'has' properties", function() {
-
-      expect(Csster.processRules({
-        'div.cls':{
-          has: { has: {height: '235px'} }
-        }
-      })).toEqual([
-        {sel:'div.cls',props:{"height": "235px"}}
-      ]);
-    });
     it('should process everything within a has macro, not just valid properties', function() {
       expect(
             function() {
