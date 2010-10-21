@@ -75,7 +75,7 @@
                 var bucket = options.data[k];
                 $('<th>').text(k).appendTo($tfoot);
                 var $td = $('<td>').appendTo($tbody);
-                var items = [bucket].flatten();
+                var items = arrayFlatten([bucket]);
                 for (var i = items.length - 1; i >= 0; i--) {
                     $('<div>').attr('title', items[i]).css('backgroundColor', options.colors[items[i]] || 'gray').appendTo($td);
                 }

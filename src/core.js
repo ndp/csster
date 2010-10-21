@@ -41,7 +41,7 @@ Csster.addPropertyNames = function(propertyNames) {
     Csster.propertyNamesHash = {};
   }
   for (var a = 0; a < arguments.length; a++) {
-    var names = [arguments[a]].flatten();
+    var names = arrayFlatten([arguments[a]]);
     for (var i = 0; i < names.length; i++) {
       var name = names[i];
       Csster.propertyNamesHash[name] = true;
@@ -449,10 +449,10 @@ Csster.processRules = function(input) {
 
 
   var rules = [];
-  [input].flatten().each(function(r) {
+  arrayEach(arrayFlatten([input]),function(r) {
     rules.push(resolveRuleHash(r));
   });
-  rules = rules.flatten();
+  rules = arrayFlatten(rules);
 
   Csster.postProcessRules(rules);
   return rules;

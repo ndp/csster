@@ -10,25 +10,25 @@ function isArray(object) {
 
 // A R R A Y s
 // "each_with_index" from Ruby style
-Array.prototype.each = function each(iterator) {
-    for (var i = 0; i < this.length;) {
-        iterator(this[i], i++);
+function arrayEach(a, iterator) {
+    for (var i = 0; i < a.length;) {
+        iterator(a[i], i++);
     }
-    return this;
+    return a;
 };
 
 
-Array.prototype.inject = function inject(memo, iterator) {
-    this.each(function(value, index) {
+function arrayInject(a, memo, iterator) {
+    arrayEach(a, function(value, index) {
         memo = iterator(memo, value, index);
     });
     return memo;
 };
 
-Array.prototype.flatten = function() {
-    return this.inject([], function(array, value) {
+function arrayFlatten(a) {
+    return arrayInject(a, [], function(array, value) {
         if (isArray(value))
-            return array.concat(value.flatten());
+            return array.concat(arrayFlatten(value));
         array.push(value);
         return array;
     });

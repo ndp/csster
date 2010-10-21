@@ -9,7 +9,7 @@ Csster.macroPreprocessor = function(macroPropertyName) {
   return   function(properties) {
     function extractMacros(p) {
       var props = {};
-      var a = [p].flatten(); // support single or multiple sets of properties
+      var a = arrayFlatten([p]); // support single or multiple sets of properties
       for (var i = 0; i < a.length; i++) {
         for (var mp in a[i]) {
           if (mp == macroPropertyName) {

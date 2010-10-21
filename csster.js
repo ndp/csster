@@ -4,7 +4,7 @@
 // 
 // See http://github.com/ndp/csster
 // 
-// Generated Mon Oct 18 09:20:37 PDT 2010
+// Generated Thu Oct 21 10:19:45 PDT 2010
 // 
 // 
 if (!Csster) {
@@ -19,25 +19,25 @@ function isArray(object) {
 
 // A R R A Y s
 // "each_with_index" from Ruby style
-Array.prototype.each = function each(iterator) {
-    for (var i = 0; i < this.length;) {
-        iterator(this[i], i++);
+function arrayEach(a, iterator) {
+    for (var i = 0; i < a.length;) {
+        iterator(a[i], i++);
     }
-    return this;
+    return a;
 };
 
 
-Array.prototype.inject = function inject(memo, iterator) {
-    this.each(function(value, index) {
+function arrayInject(a, memo, iterator) {
+    arrayEach(a, function(value, index) {
         memo = iterator(memo, value, index);
     });
     return memo;
 };
 
-Array.prototype.flatten = function() {
-    return this.inject([], function(array, value) {
+function arrayFlatten(a) {
+    return arrayInject(a, [], function(array, value) {
         if (isArray(value))
-            return array.concat(value.flatten());
+            return array.concat(arrayFlatten(value));
         array.push(value);
         return array;
     });
@@ -116,7 +116,7 @@ Csster.addPropertyNames = function(propertyNames) {
     Csster.propertyNamesHash = {};
   }
   for (var a = 0; a < arguments.length; a++) {
-    var names = [arguments[a]].flatten();
+    var names = arrayFlatten([arguments[a]]);
     for (var i = 0; i < names.length; i++) {
       var name = names[i];
       Csster.propertyNamesHash[name] = true;
@@ -524,10 +524,10 @@ Csster.processRules = function(input) {
 
 
   var rules = [];
-  [input].flatten().each(function(r) {
+  arrayEach(arrayFlatten([input]),function(r) {
     rules.push(resolveRuleHash(r));
   });
-  rules = rules.flatten();
+  rules = arrayFlatten(rules);
 
   Csster.postProcessRules(rules);
   return rules;
@@ -901,7 +901,7 @@ Csster.macroPreprocessor = function(macroPropertyName) {
   return   function(properties) {
     function extractMacros(p) {
       var props = {};
-      var a = [p].flatten(); // support single or multiple sets of properties
+      var a = arrayFlatten([p]); // support single or multiple sets of properties
       for (var i = 0; i < a.length; i++) {
         for (var mp in a[i]) {
           if (mp == macroPropertyName) {
