@@ -4,7 +4,7 @@
 // 
 // See http://github.com/ndp/csster
 // 
-// Generated Thu Oct 21 10:19:45 PDT 2010
+// Generated Thu Oct 21 10:41:04 PDT 2010
 // 
 // 
 if (!Csster) {
@@ -438,6 +438,9 @@ Csster.preprocessProperties = function(properties) {
   }
 }
 
+Csster.trimString = function(s) {
+    return s.replace(/^\s*/, "").replace(/\s*$/, "");
+}
 
 Csster.expandAndFlatten = function(selector, properties) {
 
@@ -467,7 +470,9 @@ Csster.expandAndFlatten = function(selector, properties) {
 
     var subs = p.split(',');
     for (var s = 0; s < subs.length; s++) {
-      subs[s] = selector + ((subs[s].substr(0, 1) == '&') ? subs[s].substr(1) : ' ' + subs[s].trim());
+      var str = subs[s];
+      var ampRule = (str.substr(0, 1) == '&');
+      subs[s] = selector + (ampRule ? str.substr(1) : ' ' + Csster.trimString(str));
     }
     rules.push(Csster.expandAndFlatten(subs.join(','), properties[p]));
   }
