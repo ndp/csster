@@ -6,6 +6,7 @@ Concisely generate CSS style rules within Javascript.  Features:
 * nesting to DRY up stylesheets
 * color functions like <code>darken</code> and <code>saturate</code>
 * built-in macros for common CSS idioms like *clearfix*, *rounded corners*, *drop shadows*.
+* extension points for custom behavior or cross-browser support.
 * and all the plain old Javascript behavior: functions, data structures, looping, Math operations, etc.
 
 
