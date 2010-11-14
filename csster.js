@@ -4,7 +4,7 @@
 // 
 // See http://github.com/ndp/csster
 // 
-// Generated Thu Oct 21 10:41:04 PDT 2010
+// Generated Sun Nov 14 15:28:45 PST 2010
 // 
 // 
 if (!Csster) {
@@ -640,20 +640,20 @@ function boxShadow(offsetOrDirection, radius, color) {
 }
 
 /**
- Basic Phark image replacement, found here:
+ Basic Phark image replacement, defined here:
  http://www.mezzoblue.com/tests/revised-image-replacement/
 
  Supports sprites with option image positioning parameters (which default to 0).
- These will generally be negative.
+ These values will (generally) be negative.
 
  width: width in pixels
  height: height in pixels
  img: url for the image, suitable for putting into a url() wrapper
 
  */
-function phark(width, height, img, imgXPosition, imgYPosition) {
+function imageReplacement(width, height, img, imgXPosition, imgYPosition) {
     if (typeof width == 'undefined' || typeof height == 'undefined' || typeof img == 'undefined') {
-        throw "phark() requires width, height and img";
+        throw "imageReplacement() requires width, height and img";
     }
     return {
         display: 'block',
@@ -669,7 +669,7 @@ function phark(width, height, img, imgXPosition, imgYPosition) {
 
 
 function clearfix() {
-    return {
+    css = {
         display: 'inline-block',
         '&:after': {
             content: ' ',
@@ -682,19 +682,10 @@ function clearfix() {
             visibility: 'hidden'
         }
     };
-
-
-//.clearfix {display: inline-block;}  /* for IE/Mac */
-//
-//<!--[if IE]>
-//<style type="text/css">
-//  .clearfix {
-//    zoom: 1;     /* triggers hasLayout */
-//}  /* Only IE can see inside the conditional comment
-//and read this CSS rule. Don't ever use a normal HTML
-//comment inside the CC or it will close prematurely. */
-//</style>
-//<![endif]-->
+    if (Csster.browser.msie) {
+     css['zoom'] = '1'
+    }
+    return css;
 }
 
 
