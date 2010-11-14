@@ -113,7 +113,7 @@ function imageReplacement(width, height, img, imgXPosition, imgYPosition) {
 
 
 function clearfix() {
-    return {
+    css = {
         display: 'inline-block',
         '&:after': {
             content: ' ',
@@ -126,19 +126,10 @@ function clearfix() {
             visibility: 'hidden'
         }
     };
-
-
-//.clearfix {display: inline-block;}  /* for IE/Mac */
-//
-//<!--[if IE]>
-//<style type="text/css">
-//  .clearfix {
-//    zoom: 1;     /* triggers hasLayout */
-//}  /* Only IE can see inside the conditional comment
-//and read this CSS rule. Don't ever use a normal HTML
-//comment inside the CC or it will close prematurely. */
-//</style>
-//<![endif]-->
+    if (Csster.browser.msie) {
+     css['zoom'] = '1'
+    }
+    return css;
 }
 
 
