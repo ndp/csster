@@ -114,7 +114,7 @@ There are a host of pre-made macros that may be useful:
 * <code>roundedCorners(radius)</code> -- add rounded corners on all sides
 * <code>roundedCorners(side, radius)</code> -- add rounded corners on specified side: <code>'top'</code>, <code>'left'</code>, <code>'bottom'</code> or <code>'right'</code>
 * <code>roundedCorners(corner, radius)</code> -- add rounded corners to a specified corner: <code>'tl'</code>, <code>'tr'</code>, <code>'bl'</code> or <code>'br'</code>
-* <code>phark(width, height, img, imgXPosition=0, imgYPosition=0)</code> -- standard phark image replacement with optional background image offset.
+* <code>imageReplacement(width, height, img, imgXPosition=0, imgYPosition=0)</code> -- phark image replacement with optional background image offset.
 * <code>boxShadow([xoffset, yoffset], radius, color)</code>
 * <code>verticalCentering(height)</code> and <code>horizontalCentering(width)</code> -- center using the top 50% / margin-top -width/2 technique. See http://stackoverflow.com/questions/148251/css-centering-tricks
 * <code>clearfix()</code> -- standard clearfix

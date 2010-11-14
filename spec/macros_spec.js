@@ -36,10 +36,10 @@ describe('macros', function() {
 
     });
 
-    describe('phark', function() {
+    describe('imageReplacement', function() {
 
         it('should throw exception if not given enough parameters', function() {
-            expect(function() {phark()}).toThrow("phark() requires width, height and img");
+            expect(function() {imageReplacement()}).toThrow("imageReplacement() requires width, height and img");
         })
 
     });
