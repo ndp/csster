@@ -148,6 +148,22 @@ that returns a hash of values, for example:
 A macro's properties will be overwritten by properties within including selector (or later included macros), similar to how the cascade takes the last defined value.
 
 
+## jQuery Integration
+
+If jQuery is loaded first, Csster provides a "csster" method:
+
+<pre>
+   $('.sidebar').csster({ border: '5px solid green', padding: 10 });
+</pre>
+
+As expected, this adds a rule to the document with the ".sidebar" selector.
+In general, this can be called identically to the <code>css()</code> function.
+This is useful is the DOM on the page is dynamic and when a rule is more efficient than applying
+a style repeatedly to all the DOM nodes.
+
+There are a few limitations: Currently a "context" is not supported.
+And be careful, since not all jQuery selectors are valid CSS selectors--
+nothing is done to convert or report unsupported selectors (just like regular CSS).
 
 ## Extending Csster
 
@@ -164,6 +180,23 @@ Functions called after rules are processed stored in <code>Csster.rulesPostProce
 
 A convenient built-in function is <code>compressSelectors</code>. Using this processor, rules with multiple '#'s are simplified. For example, '#a #b #c' becomes '#c'. Usually this is what you will want, so include it with <code>Csster.rulePostProcessors.push(Csster.compressSelectors);</code>.
 
+This is used to write custom browser overrides. For example, this one makes opacity work for IE:
+
+<pre>
+  Csster.rulesPostProcessors.push(function ieOpacity(rules) {
+    // http://www.smashingmagazine.com/2010/04/28/css3-solutions-for-internet-explorer/
+    if (Csster.browser.msie) {
+      for (var i = 0; i < rules.length; i++) {
+        var rule = rules[i];
+        var value = rule.props['opacity']
+        if (value) {
+          value = Math.round(value * 100.0);
+          rules[i].props['filter'] = 'progid:DXImageTransform.Microsoft.Alpha(opacity=' + value + ')';
+        }
+      }
+    }
+  });
+</pre>
 
 ### Inserting into the DOM
 Function that outputs a set of rules into the DOM is <code>Csster.insertStylesheet</code> and can be replaced if desired.
