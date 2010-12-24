@@ -223,9 +223,7 @@ The design was driven by [the specs](http://ndpsoftware.com/csster/spec_runner.h
 ## Todo
 
 * decompile existing stylesheets
-* jQuery rules
 * Fix license
-* Better name
 
 
 
