@@ -186,7 +186,7 @@ This is used to write custom browser overrides. For example, this one makes opac
   Csster.rulesPostProcessors.push(function ieOpacity(rules) {
     // http://www.smashingmagazine.com/2010/04/28/css3-solutions-for-internet-explorer/
     if (Csster.browser.msie) {
-      for (var i = 0; i < rules.length; i++) {
+      for (var i = 0; i &lt; rules.length; i++) {
         var rule = rules[i];
         var value = rule.props['opacity']
         if (value) {
