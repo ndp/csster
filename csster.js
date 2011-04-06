@@ -4,7 +4,7 @@
 // 
 // See http://github.com/ndp/csster
 // 
-// Generated Thu Dec 23 21:27:14 PST 2010
+// Generated Tue Apr  5 23:57:01 PDT 2011
 // 
 // 
 if (!Csster) {
@@ -939,3 +939,13 @@ Csster.compressSelectors = function(rules) {
 };
 
 Csster.propertyPreprocessors.push(Csster.macroPreprocessor('has'));
+if (typeof jQuery != 'undefined') {
+    (function($) {
+        $.fn.csster = function(rules) {
+            var newRules = {};
+            newRules[this.selector] = rules;
+            Csster.style(newRules);
+            return this;
+        }
+    })(jQuery);
+}
