@@ -1,7 +1,5 @@
 # Csster
 
-<iframe src="https://docs.google.com/present/embed?id=dfm357b6_49c4d3fpdm&interval=15" frameborder="0" width="410" height="342"></iframe>
-
 Concisely generate CSS style rules within Javascript.  Features:
 
 * standard "object literal"/JSON format with good editor support
@@ -10,6 +8,8 @@ Concisely generate CSS style rules within Javascript.  Features:
 * built-in macros for common CSS idioms like *clearfix*, *rounded corners*, *drop shadows*.
 * extension points for custom behavior or cross-browser support.
 * and all the plain old Javascript behavior: functions, data structures, looping, Math operations, etc.
+
+Slideshow introduction: https://docs.google.com/present/view?id=dfm357b6_49c4d3fpdm&interval=15
 
 
 ## Usage
