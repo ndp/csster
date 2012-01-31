@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION="1.0.0"
+VERSION="1.0.1"
 
 echo "// csster.js" >csster.js
 echo "// version $VERSION" >>csster.js
