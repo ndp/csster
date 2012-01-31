@@ -14,6 +14,12 @@ Slideshow introduction: https://docs.google.com/present/view?id=dfm357b6_49c4d3f
 
 ## Usage
 
+### Node NPM Install
+
+<pre>npm install csster</pre>
+
+### Browser Client
+
 All code is packaged into a single Javascript file download, [csster.js](http://ndpsoftware.com/csster/csster.js). There are no external dependencies. The project itself is hosted on [GitHub](http://github.com/ndp/csster).
 
 <pre>
