@@ -225,7 +225,6 @@ The design was driven by [the specs](http://ndpsoftware.com/csster/spec_runner.h
 ## Todo
 
 * decompile existing stylesheets
-* Fix license
 
 
 
@@ -250,5 +249,6 @@ http://revnode.com/oss/css/
 
 ## Legal
 
-Copyright (c) 2010 Andrew J. Peterson
-All Rights Reserved.
+Copyright (c) 2010-2012 Andrew J. Peterson
+[Apache License](https://github.com/ndp/csster/raw/master/LICENSE)
+
