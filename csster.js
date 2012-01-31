@@ -1,11 +1,11 @@
 // csster.js
-// version 1.0.1
+// version 1.0.2
 // Copyright (c) Andrew J. Peterson / ndpsoftware.com
 // All Rights Reserved
 // 
 // See http://github.com/ndp/csster
 // 
-// Generated Mon Jan 30 21:53:34 PST 2012
+// Generated Mon Jan 30 22:06:29 PST 2012
 // 
 // 
 if (!Csster) {
@@ -768,7 +768,7 @@ function linearGradient(startingPoint, color1, color2, etc) {
 //        });
 //        g = g + e;
 //        g = g.substr(0, g.length - 1) + ")";
-        return g
+//        return g
 //    generateWebkitGradient:function() {
 //        var j = c.gradientProps,l = "-webkit-gradient(" + j.type + "," + c.fetchGradientStart() + "," + c.fetchGradientEnd() + ",",g = "";
 //        var e = a.getPalette(),f = e.length,k,m;

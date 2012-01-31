@@ -211,7 +211,7 @@ function linearGradient(startingPoint, color1, color2, etc) {
 //        });
 //        g = g + e;
 //        g = g.substr(0, g.length - 1) + ")";
-        return g
+//        return g
 //    generateWebkitGradient:function() {
 //        var j = c.gradientProps,l = "-webkit-gradient(" + j.type + "," + c.fetchGradientStart() + "," + c.fetchGradientEnd() + ",",g = "";
 //        var e = a.getPalette(),f = e.length,k,m;

@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION="1.0.1"
+VERSION="1.0.2"
 
 echo "// csster.js" >csster.js
 echo "// version $VERSION" >>csster.js
@@ -15,7 +15,7 @@ cat src/utils.js src/core.js src/macros/macros.js src/functions/color.js src/fil
 
 
 echo '{' >package.json
-echo '  "name": "Csster",' >>package.json
+echo '  "name": "csster",' >>package.json
 echo '  "description": "Csster: Write CSS in JS or Coffeescript, with macros, color math, etc.",' >>package.json
 echo "  \"version\": \"$VERSION\"," >>package.json
 echo '  "keywords": ["css", "color"],' >>package.json
