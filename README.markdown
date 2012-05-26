@@ -14,11 +14,27 @@ Slideshow introduction: https://docs.google.com/present/view?id=dfm357b6_49c4d3f
 
 ## Usage
 
+
+### Rails/Bundler Installation
+
+Add this line to your application's Gemfile:
+
+    gem 'csster'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install csster
+
+
 ### Node NPM Install
 
 <pre>npm install csster</pre>
 
-### Browser Client
+### Manual Install for Browser Client
 
 All code is packaged into a single Javascript file download, [csster.js](http://ndpsoftware.com/csster/csster.js). There are no external dependencies. The project itself is hosted on [GitHub](http://github.com/ndp/csster).
 
@@ -211,7 +227,11 @@ Function that outputs a set of rules into the DOM is <code>Csster.insertStyleshe
 
 ## Contributing
 
-Fork on Github and send back a merge request.
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
 
 
 ## Links
