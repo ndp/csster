@@ -17,6 +17,7 @@
 <div class="box rounded">roundedCorners(20)</div>
 <div class="box roundedLeft">roundedCorners('left', 10)</div>
 <div class="box roundedBottomLeft">roundedCorners('bl', 30)</div>
+<div class="box gradient">background: linearGradient('top', 'red','maroon', 'red')</div>
 <div class="box">verticalCentering(50)
     <div class="smaller_box vcenter"></div>
 </div>
@@ -89,21 +90,20 @@
     Csster.style({
         '.box': {
             backgroundColor: '#6c9',
-            width: 300,
-            height: 60,
+            width: 200,
+            height: 50,
             margin: 20,
             'float': 'left',
-            paddingTop: 20,
+            paddingTop: 10,
             textAlign: 'center',
             color: 'yellow',
-            fontWeight: 'bold',
-            position: 'relative',
-            fontFamily: 'verdana',
-            fontSize: 12
+            font: '10px bold "verdana"',
+            position: 'relative'
         },
         '.smaller_box': {
-            backgroundColor: 'green',
-            width: 50, height: 50
+            backgroundColor: 'black',
+            opacity:.2,
+            width: 20, height: 20
         },
         '.shadowed': boxShadow([5,10], 5, 'green'),
         '.rounded': roundedCorners(20),
@@ -111,6 +111,9 @@
         '.roundedBottomLeft': roundedCorners('bl', 30),
         '.hcenter': horizontalCentering(50),
         '.vcenter': verticalCentering(50),
+        '.gradient': {
+            background: linearGradient('top', 'red','maroon', 'red')
+        },
         '.clearfix': {
             has: clearfix(),
             height: 'auto',
@@ -125,7 +128,7 @@
 
         '.swatches': {
             backgroundColor: '#69c',
-            'div': {width: 25, height: 18, 'float': 'left', margin: 3},
+            'div': {width: 15, height: 15, 'float': 'left', margin: 3},
             '&.lighten': {
                 'div:nth-child(1)': {
                     backgroundColor: '#69c'.lighten(10)
