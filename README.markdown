@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/ndp/csster.png)](http://travis-ci.org/ndp/csster)
 # Csster
 
 Concisely generate CSS style rules within Javascript.  Features:
