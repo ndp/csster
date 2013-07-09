@@ -1,0 +1,357 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Csster by ndp</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/ndp/csster">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/ndp/csster/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/ndp/csster/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Csster</h1>
+          <p>Javascript library to generate CSS styles similar to SASS</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/ndp">ndp</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a name="csster" class="anchor" href="#csster"><span class="octicon octicon-link"></span></a>Csster</h1>
+
+<p>Concisely generate CSS style rules within Javascript.  Features:</p>
+
+<ul>
+<li>standard "object literal"/JSON format with good editor support</li>
+<li>nesting to DRY up stylesheets</li>
+<li>color functions like <code>darken</code> and <code>saturate</code>
+</li>
+<li>built-in macros for common CSS idioms like <em>clearfix</em>, <em>rounded corners</em>, <em>drop shadows</em>.</li>
+<li>extension points for custom behavior or cross-browser support.</li>
+<li>and all the plain old Javascript behavior: functions, data structures, looping, Math operations, etc.</li>
+</ul><p>Slideshow introduction: <a href="https://docs.google.com/present/view?id=dfm357b6_49c4d3fpdm&amp;interval=15">https://docs.google.com/present/view?id=dfm357b6_49c4d3fpdm&amp;interval=15</a></p>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a name="railsbundler-installation" class="anchor" href="#railsbundler-installation"><span class="octicon octicon-link"></span></a>Rails/Bundler Installation</h3>
+
+<p>Add this line to your application's Gemfile:</p>
+
+<pre><code>gem 'csster'
+</code></pre>
+
+<p>And then execute:</p>
+
+<pre><code>$ bundle
+</code></pre>
+
+<p>Or install it yourself as:</p>
+
+<pre><code>$ gem install csster
+</code></pre>
+
+<h3>
+<a name="node-npm-install" class="anchor" href="#node-npm-install"><span class="octicon octicon-link"></span></a>Node NPM Install</h3>
+
+<pre>npm install csster</pre>
+
+<h3>
+<a name="manual-install-for-browser-client" class="anchor" href="#manual-install-for-browser-client"><span class="octicon octicon-link"></span></a>Manual Install for Browser Client</h3>
+
+<p>All code is packaged into a single Javascript file download, <a href="http://ndpsoftware.com/csster/csster.js">csster.js</a>. There are no external dependencies. The project itself is hosted on <a href="http://github.com/ndp/csster">GitHub</a>.</p>
+
+<pre>
+require('csster.js'); // however you manage dependencies
+
+Csster.style({
+  h1: {
+    fontSize: 18,
+    color: 'red'
+  }
+});
+
+...
+</pre>
+
+<p>Result, inserted in DOM automatically at the bottom of the &lt;head&gt; element:</p>
+
+<pre>
+...
+&lt;style type="text/stylesheet"&gt;
+h1 {
+font-size: 18px;
+color: red;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+...
+</pre>
+
+<h3>
+<a name="format-of-css-rules" class="anchor" href="#format-of-css-rules"><span class="octicon octicon-link"></span></a>Format of CSS Rules</h3>
+
+<p>The <em>style</em> method accepts CSS rules passed either as arrays or hashes, arrays just being
+a way to order the hashes. For example:</p>
+
+<pre>
+{
+    ul: {
+      margin: 5,
+      padding: 0,
+    }
+    'ul li:first': {
+      paddingLeft: 20px
+    }
+}
+</pre>
+
+<p>Note that</p>
+
+<ul>
+<li>property names are automatically converted to hyphenated format from camelcase, so in many cases you can omit the quotation marks. ('float' needs to quoted since it's a reserved word.)</li>
+<li>all raw numbers are assumed to be "pixels" (or "px"), and rendered as such.</li>
+<li>any sort of selectors are allowed... they are just passed through to the stylesheet.</li>
+</ul><h4>
+<a name="nesting" class="anchor" href="#nesting"><span class="octicon octicon-link"></span></a>Nesting</h4>
+
+<p>Csster supports nesting of rules to keep things more concise:</p>
+
+<pre>
+{
+    ul: {
+      margin: 5,
+      li: {
+        paddingLeft: 20,
+        '&amp;:hover': {
+          color: 'red'
+        }
+      }
+    }
+}
+</pre>
+
+<p>The "li" property in this case might be a selector or might be a property name. A list of valid
+property names is used to identify properties right now, and otherwise it's considered a sub-selector.</p>
+
+<p>Csster supports SASS's "&amp;" operator, to indicate that the selector should be combined with the parent selector.
+Instead of the default "any descendent" space character being inserted, no space is inserted.</p>
+
+<p>Combined rules (with commas) are expanded as expected, so nested rules with commas have their parents expanded.</p>
+
+<h4>
+<a name="functions" class="anchor" href="#functions"><span class="octicon octicon-link"></span></a>Functions</h4>
+
+<p>Most manipulations will fall into Javascript's language support, as far as any math or looping. Use Javascript to write necessary functions.</p>
+
+<p>function/color.js contains SASS-like color functions:</p>
+
+<ul>
+<li> <code>"#ab342c".darken(%)</code> -- make color darker by given percent</li>
+<li> <code>"#ab342c".lighten(%)</code> -- make color lighter by given percent</li>
+<li> <code>"#ab342c".saturate(%)</code>  -- make color more saturated by given percent. To <em>desaturate</em>, use negative values for the percent. Note that <code>"#ab342c".saturate(-100)</code> renders in grayscale.</li>
+</ul><p>There are also color conversion routines if you want to build your own manipulation.</p>
+
+<ul>
+<li> <code>"#ab342c".toRGB()</code>
+</li>
+<li> <code>"#ab342c".toHSL()</code>
+</li>
+<li> <code>Csster.hslToHexColor(h,s,l)</code>
+</li>
+</ul><p>Opacity is currently not supported by the color model.</p>
+
+<h4>
+<a name="macros-using-has-key" class="anchor" href="#macros-using-has-key"><span class="octicon octicon-link"></span></a>Macros using "has" key</h4>
+
+<p>There are a host of pre-made macros that may be useful:</p>
+
+<ul>
+<li>
+<code>roundedCorners(radius)</code> -- add rounded corners on all sides</li>
+<li>
+<code>roundedCorners(side, radius)</code> -- add rounded corners on specified side: <code>'top'</code>, <code>'left'</code>, <code>'bottom'</code> or <code>'right'</code>
+</li>
+<li>
+<code>roundedCorners(corner, radius)</code> -- add rounded corners to a specified corner: <code>'tl'</code>, <code>'tr'</code>, <code>'bl'</code> or <code>'br'</code>
+</li>
+<li>
+<code>imageReplacement(width, height, img, imgXPosition=0, imgYPosition=0)</code> -- phark image replacement with optional background image offset.</li>
+<li><code>boxShadow([xoffset, yoffset], radius, color)</code></li>
+<li>
+<code>verticalCentering(height)</code> and <code>horizontalCentering(width)</code> -- center using the top 50% / margin-top -width/2 technique. See <a href="http://stackoverflow.com/questions/148251/css-centering-tricks">http://stackoverflow.com/questions/148251/css-centering-tricks</a>
+</li>
+<li>
+<code>clearfix()</code> -- standard clearfix</li>
+</ul><p>To "mix these in", use the "has" key:</p>
+
+<pre>
+{
+    'div#featured_box': {
+      backgroundColor: '#394c89',
+      has: roundedCorner(5)
+    }
+}
+</pre>
+
+<p>Multiple macros can be included by making that a list, eg. <code>has: [roundedCorners(5), dropShadow()]</code>.</p>
+
+<p>It's all Javascript, so macros and more complex functions are easy to write. To mix in a set of values, create a function
+that returns a hash of values, for example:</p>
+
+<pre>
+    function roundedCorners(radius) {
+        return {
+            '-webkit-border-radius': radius,
+            '-moz-border-radius': radius,
+            'border-radius': radius
+        }
+    }
+</pre>
+
+<p>A macro's properties will be overwritten by properties within including selector (or later included macros), similar to how the cascade takes the last defined value.</p>
+
+<h2>
+<a name="jquery-integration" class="anchor" href="#jquery-integration"><span class="octicon octicon-link"></span></a>jQuery Integration</h2>
+
+<p>If jQuery is loaded first, Csster provides a "csster" method:</p>
+
+<pre>
+   $('.sidebar').csster({ border: '5px solid green', padding: 10 });
+</pre>
+
+<p>As expected, this adds a rule to the document with the ".sidebar" selector.
+In general, this can be called identically to the <code>css()</code> function.
+This is useful is the DOM on the page is dynamic and when a rule is more efficient than applying
+a style repeatedly to all the DOM nodes.</p>
+
+<p>There are a few limitations: Currently a "context" is not supported.
+And be careful, since not all jQuery selectors are valid CSS selectors--
+nothing is done to convert or report unsupported selectors (just like regular CSS).</p>
+
+<h2>
+<a name="extending-csster" class="anchor" href="#extending-csster"><span class="octicon octicon-link"></span></a>Extending Csster</h2>
+
+<p>Csster is built as an extensible system.</p>
+
+<h3>
+<a name="adding-custom-property-names" class="anchor" href="#adding-custom-property-names"><span class="octicon octicon-link"></span></a>Adding Custom Property Names</h3>
+
+<p>Use <code>Csster.addPropertyNames</code> to add any non-standard property names you'd like to be considered valid. The build-in tool rejects non-standard property names, although by default popular "-moz" and "-webkit" properties are added.</p>
+
+<h3>
+<a name="pre-process-rules" class="anchor" href="#pre-process-rules"><span class="octicon octicon-link"></span></a>Pre-process rules</h3>
+
+<p>Functions called before properties are processed stored in <code>Csster.propertyPreprocessors</code>. Callback is provided a hash of properties to values, which it modifies in any way it wants. This is used to interpret macros.</p>
+
+<h3>
+<a name="post-processing" class="anchor" href="#post-processing"><span class="octicon octicon-link"></span></a>Post-processing</h3>
+
+<p>Functions called after rules are processed stored in <code>Csster.rulesPostProcessors</code>. Called with an array of processed rules. Can be used to eliminate duplicates, modify selectors, etc. Standard list simplifies overly complex selectors with multiple IDs.</p>
+
+<p>A convenient built-in function is <code>compressSelectors</code>. Using this processor, rules with multiple '#'s are simplified. For example, '#a #b #c' becomes '#c'. Usually this is what you will want, so include it with <code>Csster.rulePostProcessors.push(Csster.compressSelectors);</code>.</p>
+
+<p>This is used to write custom browser overrides. For example, this one makes opacity work for IE:</p>
+
+<pre>
+  Csster.rulesPostProcessors.push(function ieOpacity(rules) {
+    // http://www.smashingmagazine.com/2010/04/28/css3-solutions-for-internet-explorer/
+    if (Csster.browser.msie) {
+      for (var i = 0; i &lt; rules.length; i++) {
+        var rule = rules[i];
+        var value = rule.props['opacity']
+        if (value) {
+          value = Math.round(value * 100.0);
+          rules[i].props['filter'] = 'progid:DXImageTransform.Microsoft.Alpha(opacity=' + value + ')';
+        }
+      }
+    }
+  });
+</pre>
+
+<h3>
+<a name="inserting-into-the-dom" class="anchor" href="#inserting-into-the-dom"><span class="octicon octicon-link"></span></a>Inserting into the DOM</h3>
+
+<p>Function that outputs a set of rules into the DOM is <code>Csster.insertStylesheet</code> and can be replaced if desired.</p>
+
+<h2>
+<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<ol>
+<li>Fork it</li>
+<li>Create your feature branch (<code>git checkout -b my-new-feature</code>)</li>
+<li>Commit your changes (<code>git commit -am 'Add some feature'</code>)</li>
+<li>Push to the branch (<code>git push origin my-new-feature</code>)</li>
+<li>Create new Pull Request</li>
+</ol><h2>
+<a name="links" class="anchor" href="#links"><span class="octicon octicon-link"></span></a>Links</h2>
+
+<ul>
+<li><a href="http://ndpsoftware.com/csster/demo.html">Demo of the color functions and macros</a></li>
+<li><a href="http://ndpsoftware.com/csster/demo_chart.html">Demo of using to build a chart</a></li>
+<li><a href="http://ndpsoft.blogspot.com/2010/09/introducing-csster.html">Blog post</a></li>
+</ul><h2>
+<a name="tdd" class="anchor" href="#tdd"><span class="octicon octicon-link"></span></a>TDD</h2>
+
+<p>The design was driven by <a href="http://ndpsoftware.com/csster/spec_runner.html">the specs</a>.</p>
+
+<h2>
+<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>Todo</h2>
+
+<ul>
+<li>decompile existing stylesheets</li>
+</ul><h2>
+<a name="motivation" class="anchor" href="#motivation"><span class="octicon octicon-link"></span></a>Motivation</h2>
+
+<p>This project comes from my frustration of trying to build standalone Javascript widgets. Web
+projects always involve the combination of HTML DOM, CSS and Javascript. It's often simpler to
+generate the necessary DOM within your Javascript, removing any coupling (and a simpler calling
+convention) to a specific web page. But most widgets have certain style rules. To avoid
+any coupling with the CSS at all, styles can be included inline, but these gets bulky 
+and hard to read. The "rule" nature of CSS is nice. So widgets then have a Javascript
+and CSS component. Wouldn't it be nice, though, to remove that CSS component. </p>
+
+<p>With the advent of SASS, the coupling is even more complicated, as now there's some other
+tool completely unrelated to your component, written in some other language. Wouldn't
+a unified approach be nice?</p>
+
+<h2>
+<a name="similar-projects" class="anchor" href="#similar-projects"><span class="octicon octicon-link"></span></a>Similar projects</h2>
+
+<p><a href="http://revnode.com/oss/css/">http://revnode.com/oss/css/</a></p>
+
+<h2>
+<a name="legal" class="anchor" href="#legal"><span class="octicon octicon-link"></span></a>Legal</h2>
+
+<p>Copyright (c) 2010-2012 Andrew J. Peterson
+<a href="https://github.com/ndp/csster/raw/master/LICENSE">Apache License</a></p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
