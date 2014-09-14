@@ -5,7 +5,7 @@
 //
 // See http://github.com/ndp/csster
 //
-// Generated Sun Sep 14 20:26:30 CEST 2014
+// Generated Sun Sep 14 22:30:28 CEST 2014
 // 
 // 
 if (!Csster) {
@@ -412,6 +412,39 @@ Csster.addPropertyNames([
   '-webkit-user-drag',
   '-webkit-user-modify',
   '-webkit-user-select']);
+
+
+// http://tutorials.jenkov.com/svg/svg-and-css.html
+Csster.addPropertyNames([
+  // CSS properties for the path element and other shape elements
+  'fill',
+  'fill-opacity',
+  'fill-rule',
+  'marker',
+  'marker-start',
+  'marker-mid',
+  'marker-end',
+  'stroke',
+  'stroke-dasharray',
+  'stroke-dashoffset',
+  'stroke-linecap',
+  'stroke-miterlimit',
+  'stroke-opacity',
+  'stroke-width',
+  'text-rendering',
+
+  // Text CSS properties
+  'alignment-baseline',
+  'baseline-shift',
+  'dominant-baseline',
+  'glyph-orientation-horizontal',
+  'glyph-orientation-vertical',
+  'kerning',
+
+  // Gradient CSS properties
+  'stop-color',
+  'stop-opacity'
+]);
 
 
 /*
