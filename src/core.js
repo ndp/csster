@@ -49,7 +49,8 @@ Csster.addPropertyNames = function(propertyNames) {
   }
 };
 
-
+//TODO migrate all properties from here:
+//  https://developer.mozilla.org/en-US/docs/Web/CSS/Reference
 Csster.addPropertyNames(['accelerator',
   'azimuth',
   'background',
@@ -171,6 +172,7 @@ Csster.addPropertyNames(['accelerator',
   'pitch',
   'pitch-range',
   'play-during',
+  'pointer-events',
   'position',
   'quotes',
   'richness',
