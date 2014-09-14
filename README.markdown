@@ -16,16 +16,20 @@ Slideshow introduction: https://docs.google.com/present/view?id=dfm357b6_49c4d3f
 
 ### Bower install
 
-    bower install csster
+    $ bower install csster
 
 
 ### Node NPM Install
 
-<pre>npm install csster</pre>
+    $ npm install csster
 
-### Manual Install for Browser Client
 
-All code is packaged into a single Javascript file download, [csster.js](http://ndpsoftware.com/csster/csster.js). There are no external dependencies. The project itself is hosted on [GitHub](http://github.com/ndp/csster).
+### Rails Gem (in Gemfile)
+
+    gem 'rails-assets-csster'
+
+
+### Examples
 
 <pre>
 require('csster.js'); // however you manage dependencies
@@ -230,6 +234,21 @@ Function that outputs a set of rules into the DOM is <code>Csster.insertStyleshe
 * [Blog post](http://ndpsoft.blogspot.com/2010/09/introducing-csster.html)
 
 
+
+### Development
+
+    $ sh/test.sh
+
+
+### Publishing
+
+    # update the VERSION-file, then build the dist folder
+
+    $ sh/build.sh
+
+    # now tag version (will autopublish for bower)
+
+    $ sh/publish.sh
 
 
 ## TDD
