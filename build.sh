@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION="1.0.2"
+VERSION="1.0.3"
 dist_file="dist/csster.js"
 
 cat templates/bower.json   | sed "s/__VERSION__/$VERSION/" > bower.json

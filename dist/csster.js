@@ -1,11 +1,11 @@
 // csster.js
-// version 1.0.2
+// version 1.0.3
 // Copyright (c) Andrew J. Peterson / ndpsoftware.com
 // All Rights Reserved
 //
 // See http://github.com/ndp/csster
 //
-// Generated Sun Sep 14 19:50:48 CEST 2014
+// Generated Sun Sep 14 20:04:28 CEST 2014
 // 
 // 
 if (!Csster) {
