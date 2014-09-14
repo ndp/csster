@@ -1,11 +1,11 @@
 // csster.js
-// version 1.1.0
+// version 1.1.1
 // Copyright (c) Andrew J. Peterson / ndpsoftware.com
 // All Rights Reserved
 //
 // See http://github.com/ndp/csster
 //
-// Generated Sun Sep 14 22:31:34 CEST 2014
+// Generated Sun Sep 14 22:46:50 CEST 2014
 // 
 // 
 if (!Csster) {
@@ -125,7 +125,8 @@ Csster.addPropertyNames = function(propertyNames) {
   }
 };
 
-
+//TODO migrate all properties from here:
+//  https://developer.mozilla.org/en-US/docs/Web/CSS/Reference
 Csster.addPropertyNames(['accelerator',
   'azimuth',
   'background',
@@ -247,6 +248,7 @@ Csster.addPropertyNames(['accelerator',
   'pitch',
   'pitch-range',
   'play-during',
+  'pointer-events',
   'position',
   'quotes',
   'richness',
