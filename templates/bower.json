@@ -4,6 +4,10 @@
   "main": "dist/csster.js",
   "ignore": [
     ".jshintrc",
+    "libs/*",
+    "templates/*",
+    "examples/*",
+    "spec/*",
     "**/*.txt"
   ]
 }
