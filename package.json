@@ -12,7 +12,7 @@
     "url": "https://github.com/ndp/csster.git"
   },
   "author": "Andrew Peterson <andy@ndpsoftware.com>",
-  "main": "./csster.js",
+  "main": "./dist/csster.js",
   "engines": {
     "node": "*"
   }
