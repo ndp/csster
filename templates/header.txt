@@ -1,0 +1,7 @@
+// csster.js
+// version __VERSION__
+// Copyright (c) Andrew J. Peterson / ndpsoftware.com
+// All Rights Reserved
+//
+// See http://github.com/ndp/csster
+//
