@@ -1,7 +1,7 @@
 {
   "name": "csster",
   "description": "Csster: Write CSS in JS or Coffeescript, with macros, color math, etc.",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "keywords": ["css", "color"],
   "licenses": [{
     "type": "MIT",
