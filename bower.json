@@ -4,6 +4,7 @@
   "main": "dist/csster.js",
   "ignore": [
     ".jshintrc",
-    "**/*.txt"
+    "**/*.txt",
+    "tempates/*"
   ]
 }
