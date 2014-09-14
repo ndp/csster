@@ -1,0 +1,9 @@
+{
+  "name": "csster",
+  "version": "1.0.2",
+  "main": "csster.js",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ]
+}
