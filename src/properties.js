@@ -312,5 +312,6 @@ Csster.allProperties = [
   "word-spacing",
   "word-wrap",
   "writing-mode",
-  "z-index"
+  "z-index",
+  "zoom"
 ]
