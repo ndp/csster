@@ -6,7 +6,7 @@ module.exports = {
     './macros/macros.js',
     './functions/color.js',
     './filters/property_name_validator.js',
-    './filters/property_pre_processors.js',
+    './filters/macro_preprocessor.js',
     './filters/rule_post_processors.js',
     './init.js',
     './jquery.js'

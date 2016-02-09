@@ -1,4 +1,3 @@
-// Csster version 1.1.0; Copyright (c) Andrew J. Peterson / ndpsoftware.com. All Rights Reserved
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -50,7 +49,7 @@
 	__webpack_require__(3);
 	__webpack_require__(4);
 	__webpack_require__(5);
-	__webpack_require__(6);
+	(function webpackMissingModule() { throw new Error("Cannot find module \"./filters/property_pre_processors.js\""); }());
 	__webpack_require__(7);
 	__webpack_require__(8);
 	module.exports = __webpack_require__(9);
@@ -147,37 +146,20 @@
 	var arrayFlatten = __webpack_require__(1).arrayFlatten
 	var dasherize    = __webpack_require__(1).dasherize
 
-	Csster.arrayFlatten = arrayFlatten
+	Csster.arrayFlatten          = arrayFlatten
+	Csster.propertyNameValidator = __webpack_require__(5)
+
 
 	/**
 	 * Remove redundant parents from selectors that include more than one ID
 	 * selector.  eg.  #page #top => "#top"
 	 */
+	Csster.compressSelectors = __webpack_require__(7).compressSelectors
+
+	Csster.browser           = __webpack_require__(12)
+
 	Csster.propertyPreprocessors = [];
 	Csster.rulesPostProcessors   = [];
-
-
-	// Lifted from jQuery: http://docs.jquery.com/Utilities/jQuery.browser
-	Csster.browser = {};
-	(function () {
-	  function uaMatch(ua) {
-	    ua = ua.toLowerCase();
-
-	    var match = /(webkit)[ \/]([\w.]+)/.exec(ua) ||
-	        /(opera)(?:.*version)?[ \/]([\w.]+)/.exec(ua) ||
-	        /(msie) ([\w.]+)/.exec(ua) ||
-	        !/compatible/.test(ua) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec(ua) ||
-	        [];
-
-	    return {browser: match[1] || "", version: match[2] || "0"};
-	  }
-
-	  var browserMatch = uaMatch(navigator.userAgent);
-	  if (browserMatch.browser) {
-	    Csster.browser[browserMatch.browser] = true;
-	    Csster.browser.version               = browserMatch.version;
-	  }
-	})();
 
 
 	/*
@@ -331,12 +313,13 @@
 
 /***/ },
 /* 3 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	/*
 	 * Functions that return a set of properties and their values.
 	 * They can be inserted as style rules using "has" property.
 	 */
+	var browser = __webpack_require__(12)
 
 	/**
 	 *  Return rounded corner properties. Call with an optional side and a radius.
@@ -461,7 +444,7 @@
 	      visibility: 'hidden'
 	    }
 	  };
-	  if (Csster.browser.msie) {
+	  if (browser.msie) {
 	    css['zoom'] = '1'
 	  }
 	  return css;
@@ -491,9 +474,9 @@
 	function linearGradient(startingPoint, color1, color2, etc) {
 	  var prefix = '',
 	      result = '';
-	  if (Csster.browser.webkit) {
+	  if (browser.webkit) {
 	    prefix = '-webkit';
-	  } else if (Csster.browser.mozilla) {
+	  } else if (browser.mozilla) {
 	    prefix = '-moz';
 	  }
 
@@ -759,7 +742,7 @@
 	 */
 	var arrayFlatten = __webpack_require__(1).arrayFlatten
 
-	var propertyNameValidator = {
+	module.exports = propertyNameValidator = {
 
 	  propertyNamesHash: {},
 
@@ -780,8 +763,6 @@
 	    return this.propertyNamesHash[name] ? name : null;
 	  }
 	}
-
-	Csster.propertyNameValidator = propertyNameValidator
 
 
 	propertyNameValidator.addNames(['accelerator',
@@ -1075,7 +1056,58 @@
 
 
 /***/ },
-/* 6 */
+/* 6 */,
+/* 7 */
+/***/ function(module, exports) {
+
+	/**
+	 * Rule post-processor to remove "redundant" id selectors. For example,
+	 * if the generated selected ends up being '#a #b #c', this post-processor
+	 * will reduce it to '#c'. In general this is great, as it makes the rules
+	 * more readable on the output side. You are, however, losing the specificity,
+	 * creating a cascade you might not expect.
+	 *
+	 * To wire it in:
+	 * Csster.rulesPostProcessors.push(Csster.compressSelectors);
+	 */
+	var compressSelectors = function(rules) {
+	  for (var i = 0; i < rules.length; i++) {
+	    while (rules[i].sel.match(/.*#.*#.*/)) {
+	      rules[i].sel = rules[i].sel.replace(/^.*#.*#/, '#');
+	    }
+	  }
+	};
+
+	module.exports = {
+	  compressSelectors: compressSelectors
+	}
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	macroPreprocessor = __webpack_require__(11)
+	Csster.propertyPreprocessors.push(macroPreprocessor('has'));
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	if (typeof jQuery != 'undefined') {
+	  (function ($) {
+	    $.fn.csster = function (rules) {
+	      var newRules            = {};
+	      newRules[this.selector] = rules;
+	      Csster.style(newRules);
+	      return this;
+	    }
+	  })(jQuery);
+	}
+
+/***/ },
+/* 10 */,
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -1088,7 +1120,7 @@
 	var mergeHashInto = __webpack_require__(1).mergeHashInto
 	var arrayFlatten = __webpack_require__(1).arrayFlatten
 
-	Csster.macroPreprocessor = function (macroPropertyName) {
+	module.exports = function (macroPropertyName) {
 	  return function (properties) {
 	    function extractMacros(p) {
 	      var props = {};
@@ -1118,50 +1150,32 @@
 
 
 /***/ },
-/* 7 */
+/* 12 */
 /***/ function(module, exports) {
 
-	/**
-	 * Rule post-processor to remove "redundant" id selectors. For example,
-	 * if the generated selected ends up being '#a #b #c', this post-processor
-	 * will reduce it to '#c'. In general this is great, as it makes the rules
-	 * more readable on the output side. You are, however, losing the specificity,
-	 * creating a cascade you might not expect.
-	 *
-	 * To wire it in:
-	 * Csster.rulesPostProcessors.push(Csster.compressSelectors);
-	 */
-	Csster.compressSelectors = function(rules) {
-	  for (var i = 0; i < rules.length; i++) {
-	    while (rules[i].sel.match(/.*#.*#.*/)) {
-	      rules[i].sel = rules[i].sel.replace(/^.*#.*#/, '#');
-	    }
-	  }
-	};
+	// Lifted from jQuery: http://docs.jquery.com/Utilities/jQuery.browser
+	var browser = {};
 
 
+	function uaMatch(ua) {
+	  ua = ua.toLowerCase();
 
-/***/ },
-/* 8 */
-/***/ function(module, exports) {
+	  var match = /(webkit)[ \/]([\w.]+)/.exec(ua) ||
+	      /(opera)(?:.*version)?[ \/]([\w.]+)/.exec(ua) ||
+	      /(msie) ([\w.]+)/.exec(ua) ||
+	      !/compatible/.test(ua) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec(ua) ||
+	      [];
 
-	Csster.propertyPreprocessors.push(Csster.macroPreprocessor('has'));
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports) {
-
-	if (typeof jQuery != 'undefined') {
-	    (function($) {
-	        $.fn.csster = function(rules) {
-	            var newRules = {};
-	            newRules[this.selector] = rules;
-	            Csster.style(newRules);
-	            return this;
-	        }
-	    })(jQuery);
+	  return {browser: match[1] || "", version: match[2] || "0"};
 	}
+
+	var browserMatch = uaMatch(navigator.userAgent);
+	if (browserMatch.browser) {
+	  browser[browserMatch.browser] = true;
+	  browser.version               = browserMatch.version;
+	}
+
+	module.exports = browser
 
 /***/ }
 /******/ ]);

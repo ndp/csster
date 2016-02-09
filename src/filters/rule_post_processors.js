@@ -8,7 +8,7 @@
  * To wire it in:
  * Csster.rulesPostProcessors.push(Csster.compressSelectors);
  */
-Csster.compressSelectors = function(rules) {
+var compressSelectors = function(rules) {
   for (var i = 0; i < rules.length; i++) {
     while (rules[i].sel.match(/.*#.*#.*/)) {
       rules[i].sel = rules[i].sel.replace(/^.*#.*#/, '#');
@@ -16,3 +16,6 @@ Csster.compressSelectors = function(rules) {
   }
 };
 
+module.exports = {
+  compressSelectors: compressSelectors
+}

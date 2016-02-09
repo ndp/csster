@@ -8,37 +8,20 @@ var arrayEach    = require('./utils.js').arrayEach
 var arrayFlatten = require('./utils.js').arrayFlatten
 var dasherize    = require('./utils.js').dasherize
 
-Csster.arrayFlatten = arrayFlatten
+Csster.arrayFlatten          = arrayFlatten
+Csster.propertyNameValidator = require('./filters/property_name_validator.js')
+
 
 /**
  * Remove redundant parents from selectors that include more than one ID
  * selector.  eg.  #page #top => "#top"
  */
+Csster.compressSelectors = require('./filters/rule_post_processors.js').compressSelectors
+
+Csster.browser           = require('./browser.js')
+
 Csster.propertyPreprocessors = [];
 Csster.rulesPostProcessors   = [];
-
-
-// Lifted from jQuery: http://docs.jquery.com/Utilities/jQuery.browser
-Csster.browser = {};
-(function () {
-  function uaMatch(ua) {
-    ua = ua.toLowerCase();
-
-    var match = /(webkit)[ \/]([\w.]+)/.exec(ua) ||
-        /(opera)(?:.*version)?[ \/]([\w.]+)/.exec(ua) ||
-        /(msie) ([\w.]+)/.exec(ua) ||
-        !/compatible/.test(ua) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec(ua) ||
-        [];
-
-    return {browser: match[1] || "", version: match[2] || "0"};
-  }
-
-  var browserMatch = uaMatch(navigator.userAgent);
-  if (browserMatch.browser) {
-    Csster.browser[browserMatch.browser] = true;
-    Csster.browser.version               = browserMatch.version;
-  }
-})();
 
 
 /*

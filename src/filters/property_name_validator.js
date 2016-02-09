@@ -3,7 +3,7 @@
  */
 var arrayFlatten = require('../utils.js').arrayFlatten
 
-var propertyNameValidator = {
+module.exports = propertyNameValidator = {
 
   propertyNamesHash: {},
 
@@ -24,8 +24,6 @@ var propertyNameValidator = {
     return this.propertyNamesHash[name] ? name : null;
   }
 }
-
-Csster.propertyNameValidator = propertyNameValidator
 
 
 propertyNameValidator.addNames(['accelerator',

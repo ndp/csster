@@ -2,6 +2,7 @@
  * Functions that return a set of properties and their values.
  * They can be inserted as style rules using "has" property.
  */
+var browser = require('../browser.js')
 
 /**
  *  Return rounded corner properties. Call with an optional side and a radius.
@@ -126,7 +127,7 @@ function clearfix() {
       visibility: 'hidden'
     }
   };
-  if (Csster.browser.msie) {
+  if (browser.msie) {
     css['zoom'] = '1'
   }
   return css;
@@ -156,9 +157,9 @@ function verticalCentering(height) {
 function linearGradient(startingPoint, color1, color2, etc) {
   var prefix = '',
       result = '';
-  if (Csster.browser.webkit) {
+  if (browser.webkit) {
     prefix = '-webkit';
-  } else if (Csster.browser.mozilla) {
+  } else if (browser.mozilla) {
     prefix = '-moz';
   }
 

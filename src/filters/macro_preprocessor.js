@@ -8,7 +8,7 @@
 var mergeHashInto = require('../utils.js').mergeHashInto
 var arrayFlatten = require('../utils.js').arrayFlatten
 
-Csster.macroPreprocessor = function (macroPropertyName) {
+module.exports = function (macroPropertyName) {
   return function (properties) {
     function extractMacros(p) {
       var props = {};
