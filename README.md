@@ -225,7 +225,16 @@ This is used to write custom browser overrides. For example, this one makes opac
 ### Inserting into the DOM
 Function that outputs a set of rules into the DOM is <code>Csster.insertStylesheet</code> and can be replaced if desired.
 
-## Contributing
+## Links
+
+* [Demo of the color functions and macros](http://ndpsoftware.com/csster/demo.html)
+* [Demo of using to build a chart](http://ndpsoftware.com/csster/demo_chart.html)
+* [Blog post](http://ndpsoft.blogspot.com/2010/09/introducing-csster.html)
+
+
+## Development
+
+### Contributing
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
@@ -234,18 +243,14 @@ Function that outputs a set of rules into the DOM is <code>Csster.insertStyleshe
 5. Create new Pull Request
 
 
-## Links
-
-* [Demo of the color functions and macros](http://ndpsoftware.com/csster/demo.html)
-* [Demo of using to build a chart](http://ndpsoftware.com/csster/demo_chart.html)
-* [Blog post](http://ndpsoft.blogspot.com/2010/09/introducing-csster.html)
-
-
-
-
-## TDD
+### TDD
 
 The design was driven by [the specs](http://ndpsoftware.com/csster/spec_runner.html).
+
+### Building
+
+`./build.sh`
+
 
 
 ## Todo
@@ -275,6 +280,6 @@ http://revnode.com/oss/css/
 
 ## Legal
 
-Copyright (c) 2010-2012 Andrew J. Peterson
+Copyright (c) 2010-2016 Andrew J. Peterson
 [Apache License](https://github.com/ndp/csster/raw/master/LICENSE)
 
