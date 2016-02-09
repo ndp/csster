@@ -2,11 +2,14 @@
  Returns a function to process macros with the given property key
  To use:
 
-  Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
+ Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
 
-*/
-Csster.macroPreprocessor = function(macroPropertyName) {
-  return   function(properties) {
+ */
+var mergeHashInto = require('../utils.js').mergeHashInto
+var arrayFlatten = require('../utils.js').arrayFlatten
+
+Csster.macroPreprocessor = function (macroPropertyName) {
+  return function (properties) {
     function extractMacros(p) {
       var props = {};
       var a = arrayFlatten([p]); // support single or multiple sets of properties

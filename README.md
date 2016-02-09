@@ -11,6 +11,12 @@ Concisely generate CSS style rules within Javascript.  Features:
 
 Slideshow introduction: https://docs.google.com/present/view?id=dfm357b6_49c4d3fpdm&interval=15
 
+## Changes
+
+### V2.0
+
+* `Csster.addPropertyNames` renamed to `Csster.propertyNameValidator.addNames`
+
 
 ## Usage
 
@@ -223,7 +229,7 @@ This is used to write custom browser overrides. For example, this one makes opac
 </pre>
 
 ### Inserting into the DOM
-Function that outputs a set of rules into the DOM is <code>Csster.insertStylesheet</code> and can be replaced if desired.
+Function that outputs a set of rules into the DOM is <code>Csster.insertCss</code> and can be replaced if desired.
 
 ## Links
 

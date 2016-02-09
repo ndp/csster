@@ -105,17 +105,17 @@
             opacity:.2,
             width: 20, height: 20
         },
-        '.shadowed': boxShadow([5,10], 5, 'green'),
-        '.rounded': roundedCorners(20),
-        '.roundedLeft': roundedCorners('left', 10),
-        '.roundedBottomLeft': roundedCorners('bl', 30),
-        '.hcenter': horizontalCentering(50),
-        '.vcenter': verticalCentering(50),
+        '.shadowed': Csster.macros.boxShadow([5,10], 5, 'green'),
+        '.rounded': Csster.macros.roundedCorners(20),
+        '.roundedLeft': Csster.macros.roundedCorners('left', 10),
+        '.roundedBottomLeft': Csster.macros.roundedCorners('bl', 30),
+        '.hcenter': Csster.macros.horizontalCentering(50),
+        '.vcenter': Csster.macros.verticalCentering(50),
         '.gradient': {
-            background: linearGradient('top', 'red','maroon', 'red')
+            background: Csster.macros.linearGradient('top', 'red','maroon', 'red')
         },
         '.clearfix': {
-            has: clearfix(),
+            has: Csster.macros.clearfix(),
             height: 'auto',
             div: {
                 'float': 'left',

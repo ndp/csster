@@ -14,42 +14,42 @@
  * @param radius pixel measurement
  */
 function roundedCorners(side, radius) {
-    if (!radius) {
-        radius = side || 10;
-        side = 'all';
-    }
-    if (side == 'all') {
-        return {
-            '-moz-border-radius': radius,
-            'border-radius': radius,
-            '-webkit-border-radius': radius
+  if (!radius) {
+    radius = side || 10;
+    side = 'all';
+  }
+  if (side == 'all') {
+    return {
+      '-moz-border-radius': radius,
+      'border-radius': radius,
+      '-webkit-border-radius': radius
 //            behavior: 'url(src/border-radius.htc)',
 //            position: 'relative',zoom: '1'
-        }
-    } else {
-        var rules = {};
-        if (side == 'tl' || side == 'top' || side == 'left') {
-            rules['-moz-border-radius-topleft'] = radius;
-            rules['-webkit-border-top-left-radius'] = radius;
-            rules['border-top-left-radius'] = radius;
-        }
-        if (side == 'tr' || side == 'top' || side == 'right') {
-            rules['-webkit-border-top-right-radius'] = radius;
-            rules['-moz-border-radius-topright'] = radius;
-            rules['border-top-right-radius'] = radius;
-        }
-        if (side == 'bl' || side == 'bottom' || side == 'left') {
-            rules['-webkit-border-bottom-left-radius'] = radius;
-            rules['-moz-border-radius-bottomleft'] = radius;
-            rules['border-bottom-left-radius'] = radius;
-        }
-        if (side == 'br' || side == 'bottom' || side == 'right') {
-            rules['-webkit-border-bottom-right-radius'] = radius;
-            rules['-moz-border-radius-bottomright'] = radius;
-            rules['border-bottom-right-radius'] = radius;
-        }
-        return rules;
     }
+  } else {
+    var rules = {};
+    if (side == 'tl' || side == 'top' || side == 'left') {
+      rules['-moz-border-radius-topleft'] = radius;
+      rules['-webkit-border-top-left-radius'] = radius;
+      rules['border-top-left-radius'] = radius;
+    }
+    if (side == 'tr' || side == 'top' || side == 'right') {
+      rules['-webkit-border-top-right-radius'] = radius;
+      rules['-moz-border-radius-topright'] = radius;
+      rules['border-top-right-radius'] = radius;
+    }
+    if (side == 'bl' || side == 'bottom' || side == 'left') {
+      rules['-webkit-border-bottom-left-radius'] = radius;
+      rules['-moz-border-radius-bottomleft'] = radius;
+      rules['border-bottom-left-radius'] = radius;
+    }
+    if (side == 'br' || side == 'bottom' || side == 'right') {
+      rules['-webkit-border-bottom-right-radius'] = radius;
+      rules['-moz-border-radius-bottomright'] = radius;
+      rules['border-bottom-right-radius'] = radius;
+    }
+    return rules;
+  }
 }
 
 
@@ -62,25 +62,25 @@ function roundedCorners(side, radius) {
 
  */
 function boxShadow(offsetOrDirection, radius, color) {
-    var xOffset, yOffset, strength, direction;
-    if (typeof offsetOrDirection.length == 'undefined') {
-        throw 'Not yet supported'
-    } else if (offsetOrDirection.length == 2) {
-        xOffset = offsetOrDirection[0];
-        yOffset = offsetOrDirection[1];
-        strength = 4;
-        direction = 135; // should be angle (atan) of above numbers
-    } else {
-        throw "boxShadow requires a direction (degree) or [xOffset, yOffset] in px measurements."
-    }
+  var xOffset, yOffset, strength, direction;
+  if (typeof offsetOrDirection.length == 'undefined') {
+    throw 'Not yet supported'
+  } else if (offsetOrDirection.length == 2) {
+    xOffset = offsetOrDirection[0];
+    yOffset = offsetOrDirection[1];
+    strength = 4;
+    direction = 135; // should be angle (atan) of above numbers
+  } else {
+    throw "boxShadow requires a direction (degree) or [xOffset, yOffset] in px measurements."
+  }
 
-    return {
-        '-moz-box-shadow': '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
-        '-webkit-box-shadow': '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
-        boxShadow: '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
-        '-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=" + strength + ", Direction=" + direction + ", Color='" + color + "')",// IE 8
-        filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=" + strength + ", Direction=" + direction + ", Color='" + color + "')" // IE 5.5 - 7
-    };
+  return {
+    '-moz-box-shadow': '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
+    '-webkit-box-shadow': '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
+    boxShadow: '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
+    '-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=" + strength + ", Direction=" + direction + ", Color='" + color + "')",// IE 8
+    filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=" + strength + ", Direction=" + direction + ", Color='" + color + "')" // IE 5.5 - 7
+  };
 }
 
 /**
@@ -96,97 +96,97 @@ function boxShadow(offsetOrDirection, radius, color) {
 
  */
 function imageReplacement(width, height, img, imgXPosition, imgYPosition) {
-    if (typeof width == 'undefined' || typeof height == 'undefined' || typeof img == 'undefined') {
-        throw "imageReplacement() requires width, height and img";
-    }
-    return {
-        display: 'block',
-        width: width,
-        height: height,
-        backgroundImage: 'url(' + img + ')',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: '' + (imgXPosition || 0) + 'px ' + (imgYPosition || 0) + 'px',
-        textIndent: -20000,
-        overflow: 'hidden'
-    };
+  if (typeof width == 'undefined' || typeof height == 'undefined' || typeof img == 'undefined') {
+    throw "imageReplacement() requires width, height and img";
+  }
+  return {
+    display: 'block',
+    width: width,
+    height: height,
+    backgroundImage: 'url(' + img + ')',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: '' + (imgXPosition || 0) + 'px ' + (imgYPosition || 0) + 'px',
+    textIndent: -20000,
+    overflow: 'hidden'
+  };
 }
 
 
 function clearfix() {
-    css = {
-        display: 'inline-block',
-        '&:after': {
-            content: ' ',
-            display: 'block',
-            width: 0,
-            height: 0,
-            lineHeight: 0,
-            fontSize: 0,
-            clear: 'both',
-            visibility: 'hidden'
-        }
-    };
-    if (Csster.browser.msie) {
-        css['zoom'] = '1'
+  css = {
+    display: 'inline-block',
+    '&:after': {
+      content: ' ',
+      display: 'block',
+      width: 0,
+      height: 0,
+      lineHeight: 0,
+      fontSize: 0,
+      clear: 'both',
+      visibility: 'hidden'
     }
-    return css;
+  };
+  if (Csster.browser.msie) {
+    css['zoom'] = '1'
+  }
+  return css;
 }
 
 
 // http://stackoverflow.com/questions/148251/css-centering-tricks
 function horizontalCentering(width) {
-    return {
-        width: width,
-        position: 'absolute',
-        left: '50%',
-        marginLeft: -(width / 2)
-    }
+  return {
+    width: width,
+    position: 'absolute',
+    left: '50%',
+    marginLeft: -(width / 2)
+  }
 }
 
 // http://stackoverflow.com/questions/148251/css-centering-tricks
 function verticalCentering(height) {
-    return {
-        height: height,
-        position: 'absolute',
-        top: '50%',
-        marginTop: -(height / 2)
-    }
+  return {
+    height: height,
+    position: 'absolute',
+    top: '50%',
+    marginTop: -(height / 2)
+  }
 }
 
 function linearGradient(startingPoint, color1, color2, etc) {
-    var prefix = '',
-            result = '';
-    if (Csster.browser.webkit) {
-        prefix = '-webkit';
-    } else if (Csster.browser.mozilla) {
-        prefix = '-moz';
+  var prefix = '',
+      result = '';
+  if (Csster.browser.webkit) {
+    prefix = '-webkit';
+  } else if (Csster.browser.mozilla) {
+    prefix = '-moz';
+  }
+
+
+  var stops = [];
+  for (var i = 0; i < arguments.length; i++) {
+    var argument = arguments[i];
+    if (typeof argument == 'string') {
+      stops.push(argument);
+    } else if ($.isArray(argument)) {
+      for (var j = 0; j < argument.length; j++) {
+        stops.push(argument[j]);
+      }
+    } else {
+      for (p in arguments[i]) {
+        stops.push(argument[p] + (p != 0 && p != '100' ? (' ' + p + '%') : ''));
+      }
     }
+  }
 
 
-    var stops = [];
-    for (var i = 0; i < arguments.length; i++) {
-        var argument = arguments[i];
-        if (typeof argument == 'string') {
-            stops.push(argument);
-        } else if ($.isArray(argument)) {
-            for (var j = 0; j < argument.length; j++) {
-                stops.push(argument[j]);
-            }
-        } else {
-            for (p in arguments[i]) {
-                stops.push(argument[p] + (p != 0 && p != '100' ? (' ' + p + '%') : '') );
-            }
-        }
-    }
-
-
-    result = prefix + '-linear-gradient(';
-    for (i = 0; i < stops.length; i++) {
-        if (i !== 0) result += ', ';
-        result += stops[i];
-    }
-    result += ')';
-    return result;
+  result = prefix + '-linear-gradient(';
+  for (i = 0; i < stops.length; i++) {
+    if (i !== 0) result += ', ';
+    result += stops[i];
+  }
+  result += ')';
+  return result;
 }
 
 //    },generateLinearGradient:function() {
@@ -225,3 +225,11 @@ function linearGradient(startingPoint, color1, color2, etc) {
 //        return l
 
 
+module.exports = {
+  roundedCorners: roundedCorners,
+  boxShadow: boxShadow,
+  horizontalCentering: horizontalCentering,
+  verticalCentering: verticalCentering,
+  linearGradient: linearGradient,
+  clearfix: clearfix,
+}

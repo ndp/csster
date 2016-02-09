@@ -228,7 +228,7 @@ describe("Csster", function() {
       });
       describe('inserting the stylesheet', function() {
         beforeEach(function() {
-          Csster.insertStylesheet([
+          Csster.insertRules([
             {sel:'.logo',props:{'font-size':'150%'}}
           ]);
         });
@@ -280,26 +280,26 @@ describe("Csster", function() {
   });
 
 
-  describe('customization', function() {
+  describe('property name validator', function() {
     describe('adding a valid property', function() {
 
       it('should allow adding a single property using parameters', function() {
         expect(Csster.propertyNameOf('foo')).toBeFalsy();
-        Csster.addPropertyNames('foo');
+        Csster.propertyNameValidator.addNames('foo');
         expect(Csster.propertyNameOf('foo')).toEqual('foo');
       });
 
       it('should allow adding multiple properties passed as parameters', function() {
         expect(Csster.propertyNameOf('blip')).toBeFalsy();
         expect(Csster.propertyNameOf('blop')).toBeFalsy();
-        Csster.addPropertyNames('blip', 'blop');
+        Csster.propertyNameValidator.addNames('blip', 'blop');
         expect(Csster.propertyNameOf('blip')).toEqual('blip');
         expect(Csster.propertyNameOf('blop')).toEqual('blop');
       });
       it('should allow adding a multiple properties using an array', function() {
         expect(Csster.propertyNameOf('bar')).toBeFalsy();
         expect(Csster.propertyNameOf('baz')).toBeFalsy();
-        Csster.addPropertyNames(['bar', 'baz']);
+        Csster.propertyNameValidator.addNames(['bar', 'baz']);
         expect(Csster.propertyNameOf('bar')).toEqual('bar');
         expect(Csster.propertyNameOf('baz')).toEqual('baz');
       });

@@ -2,11 +2,16 @@
   "name": "csster",
   "description": "Csster: Write CSS in JS or Coffeescript, with macros, color math, etc.",
   "version": "1.0.2",
-  "keywords": ["css", "color"],
-  "licenses": [{
-    "type": "MIT",
-    "url": "https://github.com/ndp/csster/raw/master/LICENSE"
-  }],
+  "keywords": [
+    "css",
+    "color"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/ndp/csster/raw/master/LICENSE"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/ndp/csster.git"
@@ -15,5 +20,8 @@
   "main": "./csster.js",
   "engines": {
     "node": "*"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.5.1"
   }
 }
