@@ -1,3 +1,4 @@
+// Csster version 1.1.0; Copyright (c) Andrew J. Peterson / ndpsoftware.com. All Rights Reserved
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -68,15 +69,15 @@
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
+	// A R R A Y s
 	var isArray = function isArray(object) {
 	  return (typeof object === 'undefined' ? 'undefined' : _typeof(object)) === 'object' && Object.prototype.toString.call(object) === '[object Array]';
 	};
 
-	// A R R A Y s
 	// "each_with_index" from Ruby style
-	var arrayEach = function arrayEach(a, iterator) {
+	var arrayEach = function arrayEach(a, fn) {
 	  for (var i = 0; i < a.length;) {
-	    iterator(a[i], i++);
+	    fn(a[i], i++);
 	  }
 	  return a;
 	};

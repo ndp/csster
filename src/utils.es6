@@ -1,14 +1,13 @@
+// A R R A Y s
 const isArray = (object) => {
   return typeof object === 'object' &&
       Object.prototype.toString.call(object) === '[object Array]';
 }
 
-
-// A R R A Y s
 // "each_with_index" from Ruby style
-const arrayEach = (a, iterator) => {
+const arrayEach = (a, fn) => {
   for (let i = 0; i < a.length;) {
-    iterator(a[i], i++);
+    fn(a[i], i++);
   }
   return a;
 };

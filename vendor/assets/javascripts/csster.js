@@ -60,78 +60,83 @@
 /* 1 */
 /***/ function(module, exports) {
 
-	function isArray(object) {
-	  return typeof object === 'object' &&
-	      Object.prototype.toString.call(object) === '[object Array]';
-	}
+	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var _arguments = arguments;
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 	// A R R A Y s
+	var isArray = function isArray(object) {
+	  return (typeof object === 'undefined' ? 'undefined' : _typeof(object)) === 'object' && Object.prototype.toString.call(object) === '[object Array]';
+	};
+
 	// "each_with_index" from Ruby style
-	function arrayEach(a, iterator) {
+	var arrayEach = function arrayEach(a, fn) {
 	  for (var i = 0; i < a.length;) {
-	    iterator(a[i], i++);
+	    fn(a[i], i++);
 	  }
 	  return a;
 	};
 
-
-	function arrayInject(a, memo, iterator) {
+	var arrayInject = function arrayInject(a, memo, iterator) {
 	  arrayEach(a, function (value, index) {
 	    memo = iterator(memo, value, index);
 	  });
 	  return memo;
 	};
 
-	function arrayFlatten(a) {
+	var arrayFlatten = function arrayFlatten(a) {
 	  return arrayInject(a, [], function (array, value) {
-	    if (isArray(value))
-	      return array.concat(arrayFlatten(value));
+	    if (isArray(value)) return array.concat(arrayFlatten(value));
 	    array.push(value);
 	    return array;
 	  });
 	};
 
-
 	// S T R I N G s
-	function dasherize(s) {
+	var dasherize = function dasherize(s) {
 	  return s.replace(/([A-Z])/g, function ($1) {
 	    return "-" + $1.toLowerCase();
 	  });
-	}
-
+	};
 
 	// H A S H e s
 	//  mergeHashInto(hashA, hashB, hashC...)
 	// merge all properties from B, C into hash A.
-	function mergeHashInto(r) {
-	  for (var i = 1; i < arguments.length; i++) {
-	    for (var k in arguments[i]) {
-	      r[k] = arguments[i][k];
+	var mergeHashInto = function mergeHashInto(dest) {
+	  for (var _len = arguments.length, hashes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	    hashes[_key - 1] = arguments[_key];
+	  }
+
+	  for (var i = 0; i < hashes.length; i++) {
+	    for (var k in hashes[i]) {
+	      dest[k] = hashes[i][k];
 	    }
 	  }
-	  return r;
-	}
+	  return dest;
+	};
 
-	function mergeHashes() {
+	var mergeHashes = function mergeHashes() {
 	  var result = {};
-	  for (var i = 0; i < arguments.length; i++) {
-	    for (var k in arguments[i]) {
-	      result[k] = arguments[i][k];
+	  for (var i = 0; i < _arguments.length; i++) {
+	    for (var k in _arguments[i]) {
+	      result[k] = _arguments[i][k];
 	    }
 	  }
 	  return result;
-	}
+	};
 
-	module.exports = {
-	  isArray: isArray,
-	  arrayEach: arrayEach,
-	  arrayInject: arrayInject,
-	  arrayFlatten: arrayFlatten,
-	  dasherize: dasherize,
-	  mergeHashInto: mergeHashInto,
-	  mergeHashes: mergeHashes,
-	}
+	exports.isArray = isArray;
+	exports.arrayEach = arrayEach;
+	exports.arrayInject = arrayInject;
+	exports.arrayFlatten = arrayFlatten;
+	exports.dasherize = dasherize;
+	exports.mergeHashInto = mergeHashInto;
+	exports.mergeHashes = mergeHashes;
 
 /***/ },
 /* 2 */
@@ -194,7 +199,7 @@
 
 	Csster.expandAndFlatten = function (selector, properties) {
 
-	  //selector = selector.trim();
+	  selector = trimString(selector);
 
 	  Csster.preprocessProperties(properties);
 
@@ -215,7 +220,9 @@
 	  for (p in properties) {
 
 	    if (typeof properties[p] === 'string' || typeof properties[p] === 'number') {
-	      throw "Unknown CSS property \"" + p + "\". Rule rejected.";
+	      console.log('selector', selector)
+	      console.log('props', props)
+	      throw "Unknown CSS property \"" + p + "\" (" + typeof properties[p] + "). Rule rejected for selector " + selector;
 	    }
 
 	    var subs = p.split(',');
