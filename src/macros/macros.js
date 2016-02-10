@@ -2,7 +2,8 @@
  * Functions that return a set of properties and their values.
  * They can be inserted as style rules using "has" property.
  */
-var browser = require('../browser.js')
+var browserInfo = require('../utils/browser.es6').browserInfo
+var isArray = require('../utils/array.es6').isArray
 
 /**
  *  Return rounded corner properties. Call with an optional side and a radius.
@@ -114,7 +115,7 @@ function imageReplacement(width, height, img, imgXPosition, imgYPosition) {
 
 
 function clearfix() {
-  css = {
+  var css = {
     display: 'inline-block',
     '&:after': {
       content: ' ',
@@ -127,7 +128,7 @@ function clearfix() {
       visibility: 'hidden'
     }
   };
-  if (browser.msie) {
+  if (browserInfo().msie) {
     css['zoom'] = '1'
   }
   return css;
@@ -157,9 +158,9 @@ function verticalCentering(height) {
 function linearGradient(startingPoint, color1, color2, etc) {
   var prefix = '',
       result = '';
-  if (browser.webkit) {
+  if (browserInfo().webkit) {
     prefix = '-webkit';
-  } else if (browser.mozilla) {
+  } else if (browserInfo().mozilla) {
     prefix = '-moz';
   }
 
@@ -169,12 +170,12 @@ function linearGradient(startingPoint, color1, color2, etc) {
     var argument = arguments[i];
     if (typeof argument == 'string') {
       stops.push(argument);
-    } else if ($.isArray(argument)) {
+    } else if (isArray(argument)) {
       for (var j = 0; j < argument.length; j++) {
         stops.push(argument[j]);
       }
     } else {
-      for (p in arguments[i]) {
+      for (var p in arguments[i]) {
         stops.push(argument[p] + (p != 0 && p != '100' ? (' ' + p + '%') : ''));
       }
     }
@@ -233,4 +234,5 @@ module.exports = {
   verticalCentering: verticalCentering,
   linearGradient: linearGradient,
   clearfix: clearfix,
+  imageReplacement: imageReplacement
 }

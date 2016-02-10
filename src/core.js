@@ -4,9 +4,9 @@ if (!window.Csster) {
 
 Csster.macros = require('./macros/macros.js')
 
-var arrayEach    = require('./utils.es6').arrayEach
-var arrayFlatten = require('./utils.es6').arrayFlatten
-var dasherize    = require('./utils.es6').dasherize
+var arrayEach    = require('./utils/array.es6').arrayEach
+var arrayFlatten = require('./utils/array.es6').arrayFlatten
+var dasherize    = require('./utils/string.es6').dasherize
 
 Csster.arrayFlatten          = arrayFlatten
 Csster.propertyNameValidator = require('./filters/property_name_validator.js')
@@ -18,10 +18,15 @@ Csster.propertyNameValidator = require('./filters/property_name_validator.js')
  */
 Csster.compressSelectors = require('./filters/rule_post_processors.js').compressSelectors
 
-Csster.browser           = require('./browser.js')
+Csster.browser           = require('./utils/browser.es6').browser
+Csster.browserInfo           = require('./utils/browser.es6').browserInfo
 
 Csster.propertyPreprocessors = [];
 Csster.rulesPostProcessors   = [];
+
+Csster.hslToHexColor = require('./functions/color.es6').hslToHexColor
+
+require('./functions/color.es6').colorizeString()
 
 
 /*

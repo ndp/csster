@@ -1,4 +1,3 @@
-// A R R A Y s
 const isArray = (object) => {
   return typeof object === 'object' &&
       Object.prototype.toString.call(object) === '[object Array]';
@@ -20,6 +19,7 @@ const arrayInject = (a, memo, iterator) => {
   return memo;
 };
 
+
 const arrayFlatten = (a) => {
   return arrayInject(a, [], function (array, value) {
     if (isArray(value))
@@ -29,43 +29,9 @@ const arrayFlatten = (a) => {
   });
 };
 
-
-// S T R I N G s
-const dasherize = (s) => {
-  return s.replace(/([A-Z])/g, function ($1) {
-    return "-" + $1.toLowerCase();
-  });
-}
-
-
-// H A S H e s
-//  mergeHashInto(hashA, hashB, hashC...)
-// merge all properties from B, C into hash A.
-const mergeHashInto = (dest, ...hashes) => {
-  for (let i = 0; i < hashes.length; i++) {
-    for (let k in hashes[i]) {
-      dest[k] = hashes[i][k];
-    }
-  }
-  return dest;
-}
-
-const mergeHashes = () => {
-  let result = {};
-  for (let i = 0; i < arguments.length; i++) {
-    for (let k in arguments[i]) {
-      result[k] = arguments[i][k];
-    }
-  }
-  return result;
-}
-
 export {
     isArray,
     arrayEach,
     arrayInject,
     arrayFlatten,
-    dasherize,
-    mergeHashInto,
-    mergeHashes,
 }

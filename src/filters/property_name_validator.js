@@ -1,7 +1,7 @@
 /**
  * Add more valid properties to the list of valid property names.
  */
-var arrayFlatten = require('../utils.es6').arrayFlatten
+var arrayFlatten = require('../utils/array.es6').arrayFlatten
 
 module.exports = propertyNameValidator = {
 

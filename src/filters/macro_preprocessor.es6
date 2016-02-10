@@ -5,14 +5,14 @@
  Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
 
  */
-var mergeHashInto = require('../utils.es6').mergeHashInto
-var arrayFlatten = require('../utils.es6').arrayFlatten
+import {mergeHashInto} from '../utils/object.es6'
+import {arrayFlatten} from '../utils/array.es6'
 
-module.exports = function (macroPropertyName) {
+export default function (macroPropertyName) {
   return function (properties) {
     function extractMacros(p) {
       var props = {};
-      var a = arrayFlatten([p]); // support single or multiple sets of properties
+      var a     = arrayFlatten([p]); // support single or multiple sets of properties
       for (var i = 0; i < a.length; i++) {
         for (var mp in a[i]) {
           if (mp == macroPropertyName) {

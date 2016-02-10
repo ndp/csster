@@ -1,6 +1,6 @@
-var isArray = require('../utils.es6').isArray
+import {isArray} from '../utils/array.es6'
 
-var HTML4_COLORS = {
+const HTML4_COLORS = {
   'black':   '#000000',
   'silver':  '#c0c0c0',
   'gray':    '#808080',
@@ -23,15 +23,15 @@ var HTML4_COLORS = {
  Use a singleton cache of all color strings we see.
  Each key points to a structure, which can have hex, rgb, etc. values in it.
  */
-var immutableCache = {};
+const immutableCache = {};
 
 // returns (or creates) the cached color structure
-var colorCache = function (c) {
+const colorCache = function (c) {
   if (!immutableCache[c]) immutableCache[c] = {};
   return immutableCache[c];
 };
 
-String.prototype.toHexColor = function () {
+const toHexColor = function () {
   if (this.substr(0, 1) == '#' && this.length == 7) {
     colorCache(this)['hex'] = '' + this;
   } else if (this.substr(0, 1) == '#' && this.length == 4) {
@@ -44,33 +44,33 @@ String.prototype.toHexColor = function () {
   return colorCache(this)['hex'];
 };
 
-String.prototype.toRGB = function () {
-  var cache = colorCache(this);
+const toRGB = function () {
+  const cache = colorCache(this);
   if (cache.rgb) return cache.rgb;
-  var h     = this.toHexColor();
+  const h   = this.toHexColor();
   cache.rgb = [parseInt(h.substr(1, 2), 16), parseInt(h.substr(3, 2), 16), parseInt(h.substr(5, 2), 16)];
   return cache.rgb;
 };
 
-String.prototype.red     = function () {
+const red     = function () {
   return this.toRGB()[0];
 };
-String.prototype.green   = function () {
+const green   = function () {
   return this.toRGB()[1];
 };
-String.prototype.blue    = function () {
+const blue    = function () {
   return this.toRGB()[2];
 };
-String.prototype.lighten = function (percent) {
-  var hsl    = this.toHSL();
-  var newHSL = [hsl[0], hsl[1], Math.min(100, hsl[2] + percent)];
-  return Csster.hslToHexColor(newHSL);
+const lighten = function (percent) {
+  const hsl    = this.toHSL();
+  const newHSL = [hsl[0], hsl[1], Math.min(100, hsl[2] + percent)];
+  return hslToHexColor(newHSL);
 };
 
-String.prototype.darken = function (percent) {
-  var hsl    = this.toHSL();
-  var newHSL = [hsl[0], hsl[1], Math.max(0, hsl[2] - percent)];
-  return Csster.hslToHexColor(newHSL);
+const darken = function (percent) {
+  const hsl    = this.toHSL();
+  const newHSL = [hsl[0], hsl[1], Math.max(0, hsl[2] - percent)];
+  return hslToHexColor(newHSL);
 };
 
 
@@ -78,20 +78,20 @@ String.prototype.darken = function (percent) {
  * Increase or decrease the saturation of a color.
  * @param percent positive values increase saturation, negative values desaturate.
  */
-String.prototype.saturate = function (percent) {
-  var hsl    = this.toHSL();
-  var newHSL = [hsl[0], Math.min(100, Math.max(0, hsl[1] + percent)), hsl[2]];
-  return Csster.hslToHexColor(newHSL);
+const saturate = function (percent) {
+  const hsl    = this.toHSL();
+  const newHSL = [hsl[0], Math.min(100, Math.max(0, hsl[1] + percent)), hsl[2]];
+  return hslToHexColor(newHSL);
 };
 
 // [0..360, 0..100, 0.100]
 // Ref. http://www.easyrgb.com/index.php?X=MATH&H=18#text18
-String.prototype.toHSL = function () {
-  var rgb = this.toRGB();
-  var r   = this.red() / 255, g = this.green() / 255, b = this.blue() / 255;
-  var max = Math.max(r, g, b), min = Math.min(r, g, b);
-  var d   = max - min; // Delta RGB value
-  var h, s, l = (max + min) / 2;
+const toHSL = function () {
+  const rgb = this.toRGB();
+  const r   = this.red() / 255, g = this.green() / 255, b = this.blue() / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const d   = max - min; // Delta RGB value
+  let h, s, l = (max + min) / 2;
 
 
   if (d == 0) { // gray?, no chroma...
@@ -101,9 +101,9 @@ String.prototype.toHSL = function () {
     // Chromatic data...
     s = d / ( l < 0.5 ? ( max + min ) : ( 2 - max - min ));
 
-    var del_R = ( ( ( max - r ) / 6 ) + ( d / 2 ) ) / d;
-    var del_G = ( ( ( max - g ) / 6 ) + ( d / 2 ) ) / d;
-    var del_B = ( ( ( max - b ) / 6 ) + ( d / 2 ) ) / d;
+    const del_R = ( ( ( max - r ) / 6 ) + ( d / 2 ) ) / d;
+    const del_G = ( ( ( max - g ) / 6 ) + ( d / 2 ) ) / d;
+    const del_B = ( ( ( max - b ) / 6 ) + ( d / 2 ) ) / d;
 
     if (r == max) h = del_B - del_G;
     else if (g == max) h = ( 1 / 3 ) + del_R - del_B;
@@ -116,12 +116,12 @@ String.prototype.toHSL = function () {
   h = Math.round(h * 360);
   if (h < 0) h += 360;
 
-  var cache = colorCache(this);
-  cache.hsl = [h, Math.round(s * 100), Math.round(l * 100)];
+  const cache = colorCache(this);
+  cache.hsl   = [h, Math.round(s * 100), Math.round(l * 100)];
   return cache.hsl;
 };
 
-Csster.hslToHexColor = function (h, s, l) {
+const hslToHexColor = function (h, s, l) {
   if (isArray(h)) {
     l = h[2] || 0;
     s = h[1] || 0;
@@ -135,15 +135,15 @@ Csster.hslToHexColor = function (h, s, l) {
   function hsl2rgb(h, s, l) {
     // HSL 0 to 1
     //RGB results from 0 to 255
-    var r, g, b;
+    let r, g, b;
 
     if (s == 0) {
       r = l * 255;
       g = l * 255;
       b = l * 255;
     } else {
-      var var_2 = (l < 0.5) ? l * ( 1 + s ) : (( l + s ) - ( s * l ));
-      var var_1 = 2 * l - var_2;
+      const var_2 = (l < 0.5) ? l * ( 1 + s ) : (( l + s ) - ( s * l ));
+      const var_1 = 2 * l - var_2;
 
       r = 255 * h2rgb(var_1, var_2, h + ( 1 / 3 ));
       g = 255 * h2rgb(var_1, var_2, h);
@@ -162,14 +162,25 @@ Csster.hslToHexColor = function (h, s, l) {
   }
 
   function hex2(n) {
-    var h = Math.round(n).toString(16);
+    let h = Math.round(n).toString(16);
     if (h.length == 1) h = '0' + h;
     return h.substr(0, 1) + h.substr(1, 1);
   }
 
-  var rgb = hsl2rgb(h, s, l);
+  const rgb = hsl2rgb(h, s, l);
   return "#" + hex2(rgb[0]) + hex2(rgb[1]) + hex2(rgb[2]);
 };
 
+const colorizeString = () => {
+  String.prototype.toHexColor = toHexColor
+  String.prototype.toRGB      = toRGB
+  String.prototype.red        = red
+  String.prototype.green      = green
+  String.prototype.blue       = blue
+  String.prototype.lighten    = lighten
+  String.prototype.darken     = darken
+  String.prototype.saturate   = saturate
+  String.prototype.toHSL      = toHSL
+}
 
-
+export { hslToHexColor, colorizeString }

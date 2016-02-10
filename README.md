@@ -123,7 +123,7 @@ Combined rules (with commas) are expanded as expected, so nested rules with comm
 #### Functions
 Most manipulations will fall into Javascript's language support, as far as any math or looping. Use Javascript to write necessary functions.
 
-function/color.js contains SASS-like color functions:
+functions/color.es6 contains SASS-like color functions mixed into the base String object:
 
 *  <code>"#ab342c".darken(%)</code> -- make color darker by given percent
 *  <code>"#ab342c".lighten(%)</code> -- make color lighter by given percent
@@ -215,7 +215,7 @@ This is used to write custom browser overrides. For example, this one makes opac
 <pre>
   Csster.rulesPostProcessors.push(function ieOpacity(rules) {
     // http://www.smashingmagazine.com/2010/04/28/css3-solutions-for-internet-explorer/
-    if (Csster.browser.msie) {
+    if (Csster.browserInfo().msie) {
       for (var i = 0; i &lt; rules.length; i++) {
         var rule = rules[i];
         var value = rule.props['opacity']

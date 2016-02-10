@@ -47,12 +47,15 @@
 	__webpack_require__(1);
 	__webpack_require__(2);
 	__webpack_require__(3);
-	__webpack_require__(7);
+	__webpack_require__(4);
 	__webpack_require__(5);
-	__webpack_require__(8);
 	__webpack_require__(6);
 	__webpack_require__(9);
-	module.exports = __webpack_require__(10);
+	__webpack_require__(7);
+	__webpack_require__(10);
+	__webpack_require__(8);
+	__webpack_require__(11);
+	module.exports = __webpack_require__(12);
 
 
 /***/ },
@@ -64,11 +67,9 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var _arguments = arguments;
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-	// A R R A Y s
 	var isArray = function isArray(object) {
 	  return (typeof object === 'undefined' ? 'undefined' : _typeof(object)) === 'object' && Object.prototype.toString.call(object) === '[object Array]';
 	};
@@ -96,14 +97,20 @@
 	  });
 	};
 
-	// S T R I N G s
-	var dasherize = function dasherize(s) {
-	  return s.replace(/([A-Z])/g, function ($1) {
-	    return "-" + $1.toLowerCase();
-	  });
-	};
+	exports.isArray = isArray;
+	exports.arrayEach = arrayEach;
+	exports.arrayInject = arrayInject;
+	exports.arrayFlatten = arrayFlatten;
 
-	// H A S H e s
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	//  mergeHashInto(hashA, hashB, hashC...)
 	// merge all properties from B, C into hash A.
 	var mergeHashInto = function mergeHashInto(dest) {
@@ -119,52 +126,101 @@
 	  return dest;
 	};
 
-	var mergeHashes = function mergeHashes() {
-	  var result = {};
-	  for (var i = 0; i < _arguments.length; i++) {
-	    for (var k in _arguments[i]) {
-	      result[k] = _arguments[i][k];
-	    }
-	  }
-	  return result;
-	};
-
-	exports.isArray = isArray;
-	exports.arrayEach = arrayEach;
-	exports.arrayInject = arrayInject;
-	exports.arrayFlatten = arrayFlatten;
-	exports.dasherize = dasherize;
 	exports.mergeHashInto = mergeHashInto;
-	exports.mergeHashes = mergeHashes;
 
 /***/ },
-/* 2 */
+/* 3 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	// S T R I N G s
+	var dasherize = function dasherize(s) {
+	  return s.replace(/([A-Z])/g, function ($1) {
+	    return "-" + $1.toLowerCase();
+	  });
+	};
+
+	exports.dasherize = dasherize;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	// Lifted from jQuery: http://docs.jquery.com/Utilities/jQuery.browser
+	var browser = {};
+
+	function uaMatch(ua) {
+	  ua = ua.toLowerCase();
+
+	  var match = /(webkit)[ \/]([\w.]+)/.exec(ua) || /(opera)(?:.*version)?[ \/]([\w.]+)/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || !/compatible/.test(ua) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec(ua) || [];
+
+	  return { browser: match[1] || "", version: match[2] || "0" };
+	}
+
+	if (typeof navigator !== 'undefined') {
+	  var browserMatch = uaMatch(navigator.userAgent);
+	  if (browserMatch.browser) {
+	    browser[browserMatch.browser] = true;
+	    browser.version = browserMatch.version;
+	  }
+	}
+
+	var browserInfo = function browserInfo() {
+	  if (typeof global !== 'undefined' && global.browserOverride) {
+	    return global.browserOverride;
+	  } else {
+	    return browser;
+	  }
+	};
+
+	exports.browser = browser;
+	exports. // legacy static structure
+	browserInfo // fn that can be overridden for tests
+	 = browserInfo;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	if (!window.Csster) {
 	  window.Csster = {}
 	}
 
-	Csster.macros = __webpack_require__(3)
+	Csster.macros = __webpack_require__(6)
 
 	var arrayEach    = __webpack_require__(1).arrayEach
 	var arrayFlatten = __webpack_require__(1).arrayFlatten
-	var dasherize    = __webpack_require__(1).dasherize
+	var dasherize    = __webpack_require__(3).dasherize
 
 	Csster.arrayFlatten          = arrayFlatten
-	Csster.propertyNameValidator = __webpack_require__(5)
+	Csster.propertyNameValidator = __webpack_require__(7)
 
 
 	/**
 	 * Remove redundant parents from selectors that include more than one ID
 	 * selector.  eg.  #page #top => "#top"
 	 */
-	Csster.compressSelectors = __webpack_require__(6).compressSelectors
+	Csster.compressSelectors = __webpack_require__(8).compressSelectors
 
-	Csster.browser           = __webpack_require__(4)
+	Csster.browser           = __webpack_require__(4).browser
+	Csster.browserInfo           = __webpack_require__(4).browserInfo
 
 	Csster.propertyPreprocessors = [];
 	Csster.rulesPostProcessors   = [];
+
+	Csster.hslToHexColor = __webpack_require__(9).hslToHexColor
+
+	__webpack_require__(9).colorizeString()
 
 
 	/*
@@ -319,14 +375,15 @@
 
 
 /***/ },
-/* 3 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
 	 * Functions that return a set of properties and their values.
 	 * They can be inserted as style rules using "has" property.
 	 */
-	var browser = __webpack_require__(4)
+	var browserInfo = __webpack_require__(4).browserInfo
+	var isArray = __webpack_require__(1).isArray
 
 	/**
 	 *  Return rounded corner properties. Call with an optional side and a radius.
@@ -438,7 +495,7 @@
 
 
 	function clearfix() {
-	  css = {
+	  var css = {
 	    display: 'inline-block',
 	    '&:after': {
 	      content: ' ',
@@ -451,7 +508,7 @@
 	      visibility: 'hidden'
 	    }
 	  };
-	  if (browser.msie) {
+	  if (browserInfo().msie) {
 	    css['zoom'] = '1'
 	  }
 	  return css;
@@ -481,9 +538,9 @@
 	function linearGradient(startingPoint, color1, color2, etc) {
 	  var prefix = '',
 	      result = '';
-	  if (browser.webkit) {
+	  if (browserInfo().webkit) {
 	    prefix = '-webkit';
-	  } else if (browser.mozilla) {
+	  } else if (browserInfo().mozilla) {
 	    prefix = '-moz';
 	  }
 
@@ -493,12 +550,12 @@
 	    var argument = arguments[i];
 	    if (typeof argument == 'string') {
 	      stops.push(argument);
-	    } else if ($.isArray(argument)) {
+	    } else if (isArray(argument)) {
 	      for (var j = 0; j < argument.length; j++) {
 	        stops.push(argument[j]);
 	      }
 	    } else {
-	      for (p in arguments[i]) {
+	      for (var p in arguments[i]) {
 	        stops.push(argument[p] + (p != 0 && p != '100' ? (' ' + p + '%') : ''));
 	      }
 	    }
@@ -557,38 +614,11 @@
 	  verticalCentering: verticalCentering,
 	  linearGradient: linearGradient,
 	  clearfix: clearfix,
+	  imageReplacement: imageReplacement
 	}
 
 /***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	// Lifted from jQuery: http://docs.jquery.com/Utilities/jQuery.browser
-	var browser = {};
-
-
-	function uaMatch(ua) {
-	  ua = ua.toLowerCase();
-
-	  var match = /(webkit)[ \/]([\w.]+)/.exec(ua) ||
-	      /(opera)(?:.*version)?[ \/]([\w.]+)/.exec(ua) ||
-	      /(msie) ([\w.]+)/.exec(ua) ||
-	      !/compatible/.test(ua) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec(ua) ||
-	      [];
-
-	  return {browser: match[1] || "", version: match[2] || "0"};
-	}
-
-	var browserMatch = uaMatch(navigator.userAgent);
-	if (browserMatch.browser) {
-	  browser[browserMatch.browser] = true;
-	  browser.version               = browserMatch.version;
-	}
-
-	module.exports = browser
-
-/***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -910,7 +940,7 @@
 
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports) {
 
 	/**
@@ -936,28 +966,35 @@
 	}
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(1).isArray
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.colorizeString = exports.hslToHexColor = undefined;
+
+	var _array = __webpack_require__(1);
 
 	var HTML4_COLORS = {
-	  'black':   '#000000',
-	  'silver':  '#c0c0c0',
-	  'gray':    '#808080',
-	  'white':   '#ffffff',
-	  'maroon':  '#800000',
-	  'red':     '#ff0000',
-	  'purple':  '#800080',
+	  'black': '#000000',
+	  'silver': '#c0c0c0',
+	  'gray': '#808080',
+	  'white': '#ffffff',
+	  'maroon': '#800000',
+	  'red': '#ff0000',
+	  'purple': '#800080',
 	  'fuchsia': '#ff00ff',
-	  'green':   '#008000',
-	  'lime':    '#00ff00',
-	  'olive':   '#808000',
-	  'yellow':  '#ffff00',
-	  'navy':    '#000080',
-	  'blue':    '#0000ff',
-	  'teal':    '#008080',
-	  'aqua':    '#00ffff'
+	  'green': '#008000',
+	  'lime': '#00ff00',
+	  'olive': '#808000',
+	  'yellow': '#ffff00',
+	  'navy': '#000080',
+	  'blue': '#0000ff',
+	  'teal': '#008080',
+	  'aqua': '#00ffff'
 	};
 
 	/*
@@ -967,88 +1004,88 @@
 	var immutableCache = {};
 
 	// returns (or creates) the cached color structure
-	var colorCache = function (c) {
+	var colorCache = function colorCache(c) {
 	  if (!immutableCache[c]) immutableCache[c] = {};
 	  return immutableCache[c];
 	};
 
-	String.prototype.toHexColor = function () {
+	var toHexColor = function toHexColor() {
 	  if (this.substr(0, 1) == '#' && this.length == 7) {
 	    colorCache(this)['hex'] = '' + this;
 	  } else if (this.substr(0, 1) == '#' && this.length == 4) {
-	    colorCache(this)['hex'] = '#' + this.substr(1, 1) + this.substr(1, 1) +
-	        this.substr(2, 1) + this.substr(2, 1) +
-	        this.substr(3, 1) + this.substr(3, 1);
+	    colorCache(this)['hex'] = '#' + this.substr(1, 1) + this.substr(1, 1) + this.substr(2, 1) + this.substr(2, 1) + this.substr(3, 1) + this.substr(3, 1);
 	  } else {
 	    colorCache(this)['hex'] = HTML4_COLORS[this];
 	  }
 	  return colorCache(this)['hex'];
 	};
 
-	String.prototype.toRGB = function () {
+	var toRGB = function toRGB() {
 	  var cache = colorCache(this);
 	  if (cache.rgb) return cache.rgb;
-	  var h     = this.toHexColor();
+	  var h = this.toHexColor();
 	  cache.rgb = [parseInt(h.substr(1, 2), 16), parseInt(h.substr(3, 2), 16), parseInt(h.substr(5, 2), 16)];
 	  return cache.rgb;
 	};
 
-	String.prototype.red     = function () {
+	var red = function red() {
 	  return this.toRGB()[0];
 	};
-	String.prototype.green   = function () {
+	var green = function green() {
 	  return this.toRGB()[1];
 	};
-	String.prototype.blue    = function () {
+	var blue = function blue() {
 	  return this.toRGB()[2];
 	};
-	String.prototype.lighten = function (percent) {
-	  var hsl    = this.toHSL();
+	var lighten = function lighten(percent) {
+	  var hsl = this.toHSL();
 	  var newHSL = [hsl[0], hsl[1], Math.min(100, hsl[2] + percent)];
-	  return Csster.hslToHexColor(newHSL);
+	  return hslToHexColor(newHSL);
 	};
 
-	String.prototype.darken = function (percent) {
-	  var hsl    = this.toHSL();
+	var darken = function darken(percent) {
+	  var hsl = this.toHSL();
 	  var newHSL = [hsl[0], hsl[1], Math.max(0, hsl[2] - percent)];
-	  return Csster.hslToHexColor(newHSL);
+	  return hslToHexColor(newHSL);
 	};
-
 
 	/**
 	 * Increase or decrease the saturation of a color.
 	 * @param percent positive values increase saturation, negative values desaturate.
 	 */
-	String.prototype.saturate = function (percent) {
-	  var hsl    = this.toHSL();
+	var saturate = function saturate(percent) {
+	  var hsl = this.toHSL();
 	  var newHSL = [hsl[0], Math.min(100, Math.max(0, hsl[1] + percent)), hsl[2]];
-	  return Csster.hslToHexColor(newHSL);
+	  return hslToHexColor(newHSL);
 	};
 
 	// [0..360, 0..100, 0.100]
 	// Ref. http://www.easyrgb.com/index.php?X=MATH&H=18#text18
-	String.prototype.toHSL = function () {
+	var toHSL = function toHSL() {
 	  var rgb = this.toRGB();
-	  var r   = this.red() / 255, g = this.green() / 255, b = this.blue() / 255;
-	  var max = Math.max(r, g, b), min = Math.min(r, g, b);
-	  var d   = max - min; // Delta RGB value
-	  var h, s, l = (max + min) / 2;
+	  var r = this.red() / 255,
+	      g = this.green() / 255,
+	      b = this.blue() / 255;
+	  var max = Math.max(r, g, b),
+	      min = Math.min(r, g, b);
+	  var d = max - min; // Delta RGB value
+	  var h = undefined,
+	      s = undefined,
+	      l = (max + min) / 2;
 
-
-	  if (d == 0) { // gray?, no chroma...
-	    h = 0;                                // HSl results from 0 to 1
+	  if (d == 0) {
+	    // gray?, no chroma...
+	    h = 0; // HSl results from 0 to 1
 	    s = 0;
 	  } else {
 	    // Chromatic data...
-	    s = d / ( l < 0.5 ? ( max + min ) : ( 2 - max - min ));
+	    s = d / (l < 0.5 ? max + min : 2 - max - min);
 
-	    var del_R = ( ( ( max - r ) / 6 ) + ( d / 2 ) ) / d;
-	    var del_G = ( ( ( max - g ) / 6 ) + ( d / 2 ) ) / d;
-	    var del_B = ( ( ( max - b ) / 6 ) + ( d / 2 ) ) / d;
+	    var del_R = ((max - r) / 6 + d / 2) / d;
+	    var del_G = ((max - g) / 6 + d / 2) / d;
+	    var del_B = ((max - b) / 6 + d / 2) / d;
 
-	    if (r == max) h = del_B - del_G;
-	    else if (g == max) h = ( 1 / 3 ) + del_R - del_B;
-	    else if (b == max) h = ( 2 / 3 ) + del_G - del_R;
+	    if (r == max) h = del_B - del_G;else if (g == max) h = 1 / 3 + del_R - del_B;else if (b == max) h = 2 / 3 + del_G - del_R;
 
 	    if (h < 0) h += 1;
 	    if (h > 0) h -= 1;
@@ -1062,8 +1099,8 @@
 	  return cache.hsl;
 	};
 
-	Csster.hslToHexColor = function (h, s, l) {
-	  if (isArray(h)) {
+	var hslToHexColor = function hslToHexColor(h, s, l) {
+	  if ((0, _array.isArray)(h)) {
 	    l = h[2] || 0;
 	    s = h[1] || 0;
 	    h = h[0] || 0;
@@ -1071,24 +1108,26 @@
 	  //HSL from 0 to 1
 	  s = s / 100.0;
 	  l = l / 100.0;
-	  h = ((h + 360) % 360.0) / 360;
+	  h = (h + 360) % 360.0 / 360;
 
 	  function hsl2rgb(h, s, l) {
 	    // HSL 0 to 1
 	    //RGB results from 0 to 255
-	    var r, g, b;
+	    var r = undefined,
+	        g = undefined,
+	        b = undefined;
 
 	    if (s == 0) {
 	      r = l * 255;
 	      g = l * 255;
 	      b = l * 255;
 	    } else {
-	      var var_2 = (l < 0.5) ? l * ( 1 + s ) : (( l + s ) - ( s * l ));
+	      var var_2 = l < 0.5 ? l * (1 + s) : l + s - s * l;
 	      var var_1 = 2 * l - var_2;
 
-	      r = 255 * h2rgb(var_1, var_2, h + ( 1 / 3 ));
+	      r = 255 * h2rgb(var_1, var_2, h + 1 / 3);
 	      g = 255 * h2rgb(var_1, var_2, h);
-	      b = 255 * h2rgb(var_1, var_2, h - ( 1 / 3 ));
+	      b = 255 * h2rgb(var_1, var_2, h - 1 / 3);
 	    }
 	    return [r, g, b];
 	  }
@@ -1096,10 +1135,10 @@
 	  function h2rgb(v1, v2, vH) {
 	    if (vH < 0) vH += 1;
 	    if (vH > 1) vH -= 1;
-	    if (( 6 * vH ) < 1) return ( v1 + ( v2 - v1 ) * 6 * vH );
-	    if (( 2 * vH ) < 1) return ( v2 );
-	    if (( 3 * vH ) < 2) return ( v1 + ( v2 - v1 ) * ( ( 2 / 3 ) - vH ) * 6 );
-	    return ( v1 );
+	    if (6 * vH < 1) return v1 + (v2 - v1) * 6 * vH;
+	    if (2 * vH < 1) return v2;
+	    if (3 * vH < 2) return v1 + (v2 - v1) * (2 / 3 - vH) * 6;
+	    return v1;
 	  }
 
 	  function hex2(n) {
@@ -1112,12 +1151,23 @@
 	  return "#" + hex2(rgb[0]) + hex2(rgb[1]) + hex2(rgb[2]);
 	};
 
+	var colorizeString = function colorizeString() {
+	  String.prototype.toHexColor = toHexColor;
+	  String.prototype.toRGB = toRGB;
+	  String.prototype.red = red;
+	  String.prototype.green = green;
+	  String.prototype.blue = blue;
+	  String.prototype.lighten = lighten;
+	  String.prototype.darken = darken;
+	  String.prototype.saturate = saturate;
+	  String.prototype.toHSL = toHSL;
+	};
 
-
-
+	exports.hslToHexColor = hslToHexColor;
+	exports.colorizeString = colorizeString;
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1130,11 +1180,11 @@
 	  return function (properties) {
 	    function extractMacros(p) {
 	      var props = {};
-	      var a = (0, _utils.arrayFlatten)([p]); // support single or multiple sets of properties
+	      var a = (0, _array.arrayFlatten)([p]); // support single or multiple sets of properties
 	      for (var i = 0; i < a.length; i++) {
 	        for (var mp in a[i]) {
 	          if (mp == macroPropertyName) {
-	            (0, _utils.mergeHashInto)(props, extractMacros(a[i][mp]));
+	            (0, _object.mergeHashInto)(props, extractMacros(a[i][mp]));
 	          } else {
 	            props[mp] = a[i][mp];
 	          }
@@ -1145,30 +1195,31 @@
 
 	    var macros = properties[macroPropertyName];
 	    if (macros) {
-	      (0, _utils.mergeHashInto)(properties, extractMacros(macros));
+	      (0, _object.mergeHashInto)(properties, extractMacros(macros));
 	      delete properties[macroPropertyName];
 	    }
 	  };
 	};
 
-	var _utils = __webpack_require__(1);
+	var _object = __webpack_require__(2);
 
-	/*
-	 Returns a function to process macros with the given property key
-	 To use:
+	var _array = __webpack_require__(1);
 
-	 Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
-
-	 */
-	;
+	; /*
+	   Returns a function to process macros with the given property key
+	   To use:
+	  
+	   Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
+	  
+	   */
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _macro_preprocessor = __webpack_require__(8);
+	var _macro_preprocessor = __webpack_require__(10);
 
 	var _macro_preprocessor2 = _interopRequireDefault(_macro_preprocessor);
 
@@ -1177,7 +1228,7 @@
 	Csster.propertyPreprocessors.push((0, _macro_preprocessor2.default)('has'));
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports) {
 
 	if (typeof jQuery != 'undefined') {

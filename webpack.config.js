@@ -1,10 +1,13 @@
 module.exports = {
   context: __dirname + "/src",
   entry: [
-    './utils.es6',
+    './utils/array.es6',
+    './utils/object.es6',
+    './utils/string.es6',
+    './utils/browser.es6',
     './core.js',
     './macros/macros.js',
-    './functions/color.js',
+    './functions/color.es6',
     './filters/property_name_validator.js',
     './filters/macro_preprocessor.es6',
     './filters/rule_post_processors.js',

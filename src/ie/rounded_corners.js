@@ -1,4 +1,4 @@
-var browser = require('../browser.js')
+var browserInfo = require('../utils/browser.es6').browserInfo
 
 /**
  * Override of Csster's built-in method to support rounded corners on IE.
@@ -10,13 +10,13 @@ function roundedCorners(side, radius) {
     side   = 'all';
   }
   if (side == 'all') {
-    if (browser.msie) {
+    if (browserInfo().msie) {
       return {
         'border-radius': radius,
         behavior:        'url(border-radius-ie.htc)',
         visibility:      'hidden'
       }
-    } else if (browser.mozilla) {
+    } else if (browserInfo().mozilla) {
       return {
         '-moz-border-radius': radius
       }
