@@ -1,4 +1,4 @@
-var isArray = require('../utils.js').isArray
+var isArray = require('../utils.es6').isArray
 
 var HTML4_COLORS = {
   'black':   '#000000',

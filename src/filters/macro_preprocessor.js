@@ -5,8 +5,8 @@
  Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
 
  */
-var mergeHashInto = require('../utils.js').mergeHashInto
-var arrayFlatten = require('../utils.js').arrayFlatten
+var mergeHashInto = require('../utils.es6').mergeHashInto
+var arrayFlatten = require('../utils.es6').arrayFlatten
 
 module.exports = function (macroPropertyName) {
   return function (properties) {

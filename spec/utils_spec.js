@@ -1,15 +1,15 @@
 describe('arrayFlatten', function() {
     it('should do nothing with empty array', function() {
-        expect(arrayFlatten([])).toEqual([]);
+        expect(Csster.arrayFlatten([])).toEqual([]);
     });
     it('should do nothing with flat array', function() {
-        expect(arrayFlatten([1,2])).toEqual([1,2]);
+        expect(Csster.arrayFlatten([1,2])).toEqual([1,2]);
     });
     it('should flatten one level', function() {
-        expect(arrayFlatten([1,[2]])).toEqual([1,2]);
+        expect(Csster.arrayFlatten([1,[2]])).toEqual([1,2]);
     });
     it('should flatten N levels', function() {
-        expect(arrayFlatten([1,[2,[3,[4]]]])).toEqual([1,2,3,4]);
+        expect(Csster.arrayFlatten([1,[2,[3,[4]]]])).toEqual([1,2,3,4]);
     });
 });
 

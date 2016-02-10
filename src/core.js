@@ -4,9 +4,9 @@ if (!window.Csster) {
 
 Csster.macros = require('./macros/macros.js')
 
-var arrayEach    = require('./utils.js').arrayEach
-var arrayFlatten = require('./utils.js').arrayFlatten
-var dasherize    = require('./utils.js').dasherize
+var arrayEach    = require('./utils.es6').arrayEach
+var arrayFlatten = require('./utils.es6').arrayFlatten
+var dasherize    = require('./utils.es6').dasherize
 
 Csster.arrayFlatten          = arrayFlatten
 Csster.propertyNameValidator = require('./filters/property_name_validator.js')
@@ -55,7 +55,7 @@ var trimString = function (s) {
 
 Csster.expandAndFlatten = function (selector, properties) {
 
-  //selector = selector.trim();
+  selector = trimString(selector);
 
   Csster.preprocessProperties(properties);
 
@@ -76,7 +76,9 @@ Csster.expandAndFlatten = function (selector, properties) {
   for (p in properties) {
 
     if (typeof properties[p] === 'string' || typeof properties[p] === 'number') {
-      throw "Unknown CSS property \"" + p + "\". Rule rejected.";
+      console.log('selector', selector)
+      console.log('props', props)
+      throw "Unknown CSS property \"" + p + "\" (" + typeof properties[p] + "). Rule rejected for selector " + selector;
     }
 
     var subs = p.split(',');

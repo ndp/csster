@@ -1,7 +1,7 @@
 module.exports = {
   context: __dirname + "/src",
   entry: [
-    './utils.js',
+    './utils.es6',
     './core.js',
     './macros/macros.js',
     './functions/color.js',
@@ -28,12 +28,12 @@ module.exports = {
     },
     loaders: [
       {
-        test: /\.es6$/,
+        test: /\.(es6)$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'babel',
         query: {
           presets: ['es2015'],
-          "plugins": ["transform-object-rest-spread"]
+          //"plugins": ["transform-object-rest-spread"]
         }
       }
     ]
