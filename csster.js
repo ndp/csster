@@ -1,4 +1,3 @@
-// Csster version 1.1.0; Copyright (c) Andrew J. Peterson / ndpsoftware.com. All Rights Reserved
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -1121,25 +1120,21 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*
-	 Returns a function to process macros with the given property key
-	 To use:
+	'use strict';
 
-	 Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	 */
-	var mergeHashInto = __webpack_require__(1).mergeHashInto
-	var arrayFlatten = __webpack_require__(1).arrayFlatten
-
-	module.exports = function (macroPropertyName) {
+	exports.default = function (macroPropertyName) {
 	  return function (properties) {
 	    function extractMacros(p) {
 	      var props = {};
-	      var a = arrayFlatten([p]); // support single or multiple sets of properties
+	      var a = (0, _utils.arrayFlatten)([p]); // support single or multiple sets of properties
 	      for (var i = 0; i < a.length; i++) {
 	        for (var mp in a[i]) {
 	          if (mp == macroPropertyName) {
-	            mergeHashInto(props, extractMacros(a[i][mp]));
+	            (0, _utils.mergeHashInto)(props, extractMacros(a[i][mp]));
 	          } else {
 	            props[mp] = a[i][mp];
 	          }
@@ -1150,23 +1145,36 @@
 
 	    var macros = properties[macroPropertyName];
 	    if (macros) {
-	      mergeHashInto(properties, extractMacros(macros));
-	      delete properties[macroPropertyName]
+	      (0, _utils.mergeHashInto)(properties, extractMacros(macros));
+	      delete properties[macroPropertyName];
 	    }
-	  }
+	  };
 	};
 
+	var _utils = __webpack_require__(1);
 
+	/*
+	 Returns a function to process macros with the given property key
+	 To use:
 
+	 Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
 
+	 */
+	;
 
 /***/ },
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	macroPreprocessor = __webpack_require__(8)
-	Csster.propertyPreprocessors.push(macroPreprocessor('has'));
+	'use strict';
 
+	var _macro_preprocessor = __webpack_require__(8);
+
+	var _macro_preprocessor2 = _interopRequireDefault(_macro_preprocessor);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	Csster.propertyPreprocessors.push((0, _macro_preprocessor2.default)('has'));
 
 /***/ },
 /* 10 */
