@@ -3,7 +3,7 @@
  */
 var arrayFlatten = require('../utils/array.es6').arrayFlatten
 
-module.exports = propertyNameValidator = {
+var propertyNameValidator = {
 
   propertyNamesHash: {},
 
@@ -14,13 +14,13 @@ module.exports = propertyNameValidator = {
     for (var a = 0; a < arguments.length; a++) {
       var names = arrayFlatten([arguments[a]]);
       for (var i = 0; i < names.length; i++) {
-        var name = names[i];
+        var name                     = names[i];
         this.propertyNamesHash[name] = true;
       }
     }
   },
 
-  validate: function(name) {
+  validate: function (name) {
     return this.propertyNamesHash[name] ? name : null;
   }
 }
@@ -314,3 +314,4 @@ propertyNameValidator.addNames([
   '-webkit-user-select']);
 
 
+module.exports = propertyNameValidator

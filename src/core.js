@@ -21,7 +21,6 @@ Csster.compressSelectors = require('./filters/rule_post_processors.js').compress
 Csster.browser           = require('./utils/browser.es6').browser
 Csster.browserInfo           = require('./utils/browser.es6').browserInfo
 
-Csster.propertyPreprocessors = [];
 Csster.rulesPostProcessors   = [];
 
 Csster.hslToHexColor = require('./functions/color.es6').hslToHexColor
@@ -29,14 +28,7 @@ Csster.hslToHexColor = require('./functions/color.es6').hslToHexColor
 require('./functions/color.es6').colorizeString()
 
 
-/*
- Returns the CSS-correct lowercase property name, if it's recognized
- as a property. Null otherwise.
- */
-Csster.propertyNameOf = function (p) {
-  name = dasherize(p);
-  return Csster.propertyNameValidator.validate(name)
-}
+Csster.propertyNameOf = require('./propertyNameOf.es6').propertyNameOf
 
 Csster.formatProperty = function (p, value) {
   p = Csster.propertyNameOf(p);
@@ -48,11 +40,8 @@ Csster.formatProperty = function (p, value) {
 };
 
 
-Csster.preprocessProperties = function (properties) {
-  for (var i = 0; i < Csster.propertyPreprocessors.length; i++) {
-    Csster.propertyPreprocessors[i].apply(properties, [properties])
-  }
-}
+Csster.preprocessProperties  = require('./propertyPreprocessor.es6').preprocessProperties
+Csster.propertyPreprocessors = require('./propertyPreprocessor.es6').propertyPreprocessors
 
 var trimString = function (s) {
   return s.replace(/^\s*/, "").replace(/\s*$/, "");

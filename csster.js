@@ -215,7 +215,6 @@
 	Csster.browser           = __webpack_require__(4).browser
 	Csster.browserInfo           = __webpack_require__(4).browserInfo
 
-	Csster.propertyPreprocessors = [];
 	Csster.rulesPostProcessors   = [];
 
 	Csster.hslToHexColor = __webpack_require__(9).hslToHexColor
@@ -223,14 +222,7 @@
 	__webpack_require__(9).colorizeString()
 
 
-	/*
-	 Returns the CSS-correct lowercase property name, if it's recognized
-	 as a property. Null otherwise.
-	 */
-	Csster.propertyNameOf = function (p) {
-	  name = dasherize(p);
-	  return Csster.propertyNameValidator.validate(name)
-	}
+	Csster.propertyNameOf = __webpack_require__(14).propertyNameOf
 
 	Csster.formatProperty = function (p, value) {
 	  p = Csster.propertyNameOf(p);
@@ -242,11 +234,8 @@
 	};
 
 
-	Csster.preprocessProperties = function (properties) {
-	  for (var i = 0; i < Csster.propertyPreprocessors.length; i++) {
-	    Csster.propertyPreprocessors[i].apply(properties, [properties])
-	  }
-	}
+	Csster.preprocessProperties  = __webpack_require__(13).preprocessProperties
+	Csster.propertyPreprocessors = __webpack_require__(13).propertyPreprocessors
 
 	var trimString = function (s) {
 	  return s.replace(/^\s*/, "").replace(/\s*$/, "");
@@ -626,7 +615,7 @@
 	 */
 	var arrayFlatten = __webpack_require__(1).arrayFlatten
 
-	module.exports = propertyNameValidator = {
+	var propertyNameValidator = {
 
 	  propertyNamesHash: {},
 
@@ -637,13 +626,13 @@
 	    for (var a = 0; a < arguments.length; a++) {
 	      var names = arrayFlatten([arguments[a]]);
 	      for (var i = 0; i < names.length; i++) {
-	        var name = names[i];
+	        var name                     = names[i];
 	        this.propertyNamesHash[name] = true;
 	      }
 	    }
 	  },
 
-	  validate: function(name) {
+	  validate: function (name) {
 	    return this.propertyNamesHash[name] ? name : null;
 	  }
 	}
@@ -937,6 +926,7 @@
 	  '-webkit-user-select']);
 
 
+	module.exports = propertyNameValidator
 
 
 /***/ },
@@ -1241,6 +1231,61 @@
 	    }
 	  })(jQuery);
 	}
+
+/***/ },
+/* 13 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var propertyPreprocessors = [];
+
+	var preprocessProperties = function preprocessProperties(properties) {
+	  for (var i = 0; i < propertyPreprocessors.length; i++) {
+	    propertyPreprocessors[i].apply(properties, [properties]);
+	  }
+	};
+
+	var pushPropertyPreprocessor = function pushPropertyPreprocessor(pp) {
+	  propertyPreprocessors.push(pp);
+	};
+
+	exports.preprocessProperties = preprocessProperties;
+	exports.pushPropertyPreprocessor = pushPropertyPreprocessor;
+	exports.propertyPreprocessors = propertyPreprocessors;
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.propertyNameOf = undefined;
+
+	var _string = __webpack_require__(3);
+
+	var _property_name_validator = __webpack_require__(7);
+
+	var propertyNameValidator = _interopRequireWildcard(_property_name_validator);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	/*
+	 Returns the CSS-correct lowercase property name, if it's recognized
+	 as a property. Null otherwise.
+	 */
+	var propertyNameOf = function propertyNameOf(p) {
+	  var name = (0, _string.dasherize)(p);
+	  return propertyNameValidator.validate(name);
+	};
+
+	exports.propertyNameOf = propertyNameOf;
 
 /***/ }
 /******/ ]);
