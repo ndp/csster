@@ -1,4 +1,4 @@
-function isArray(object) {
+const isArray = (object) => {
   return typeof object === 'object' &&
       Object.prototype.toString.call(object) === '[object Array]';
 }
@@ -6,22 +6,22 @@ function isArray(object) {
 
 // A R R A Y s
 // "each_with_index" from Ruby style
-function arrayEach(a, iterator) {
-  for (var i = 0; i < a.length;) {
+const arrayEach = (a, iterator) => {
+  for (let i = 0; i < a.length;) {
     iterator(a[i], i++);
   }
   return a;
 };
 
 
-function arrayInject(a, memo, iterator) {
+const arrayInject = (a, memo, iterator) => {
   arrayEach(a, function (value, index) {
     memo = iterator(memo, value, index);
   });
   return memo;
 };
 
-function arrayFlatten(a) {
+const arrayFlatten = (a) => {
   return arrayInject(a, [], function (array, value) {
     if (isArray(value))
       return array.concat(arrayFlatten(value));
@@ -32,7 +32,7 @@ function arrayFlatten(a) {
 
 
 // S T R I N G s
-function dasherize(s) {
+const dasherize = (s) => {
   return s.replace(/([A-Z])/g, function ($1) {
     return "-" + $1.toLowerCase();
   });
@@ -42,31 +42,31 @@ function dasherize(s) {
 // H A S H e s
 //  mergeHashInto(hashA, hashB, hashC...)
 // merge all properties from B, C into hash A.
-function mergeHashInto(r) {
-  for (var i = 1; i < arguments.length; i++) {
-    for (var k in arguments[i]) {
-      r[k] = arguments[i][k];
+const mergeHashInto = (dest, ...hashes) => {
+  for (let i = 0; i < hashes.length; i++) {
+    for (let k in hashes[i]) {
+      dest[k] = hashes[i][k];
     }
   }
-  return r;
+  return dest;
 }
 
-function mergeHashes() {
-  var result = {};
-  for (var i = 0; i < arguments.length; i++) {
-    for (var k in arguments[i]) {
+const mergeHashes = () => {
+  let result = {};
+  for (let i = 0; i < arguments.length; i++) {
+    for (let k in arguments[i]) {
       result[k] = arguments[i][k];
     }
   }
   return result;
 }
 
-module.exports = {
-  isArray: isArray,
-  arrayEach: arrayEach,
-  arrayInject: arrayInject,
-  arrayFlatten: arrayFlatten,
-  dasherize: dasherize,
-  mergeHashInto: mergeHashInto,
-  mergeHashes: mergeHashes,
+export {
+    isArray,
+    arrayEach,
+    arrayInject,
+    arrayFlatten,
+    dasherize,
+    mergeHashInto,
+    mergeHashes,
 }
