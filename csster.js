@@ -50,12 +50,12 @@
 	__webpack_require__(4);
 	__webpack_require__(5);
 	__webpack_require__(6);
-	__webpack_require__(9);
-	__webpack_require__(7);
 	__webpack_require__(10);
+	__webpack_require__(7);
+	__webpack_require__(15);
 	__webpack_require__(8);
-	__webpack_require__(11);
-	module.exports = __webpack_require__(12);
+	__webpack_require__(16);
+	module.exports = __webpack_require__(17);
 
 
 /***/ },
@@ -212,74 +212,21 @@
 	 */
 	Csster.compressSelectors = __webpack_require__(8).compressSelectors
 
-	Csster.browser           = __webpack_require__(4).browser
-	Csster.browserInfo           = __webpack_require__(4).browserInfo
+	Csster.browser     = __webpack_require__(4).browser
+	Csster.browserInfo = __webpack_require__(4).browserInfo
 
-	Csster.rulesPostProcessors   = [];
+	Csster.rulesPostProcessors = __webpack_require__(9).rulesPostProcessors;
+	var postProcessRules           = __webpack_require__(9).postProcessRules;
 
-	Csster.hslToHexColor = __webpack_require__(9).hslToHexColor
+	Csster.propertyPreprocessors = __webpack_require__(14).propertyPreprocessors
 
-	__webpack_require__(9).colorizeString()
+	Csster.hslToHexColor = __webpack_require__(10).hslToHexColor
 
-
-	Csster.propertyNameOf = __webpack_require__(14).propertyNameOf
-
-	Csster.formatProperty = function (p, value) {
-	  p = Csster.propertyNameOf(p);
-	  if (value && typeof value == 'number' &&
-	      p != 'z-index' && p != 'opacity' && p != 'zoom') {
-	    value = '' + value + 'px';
-	  }
-	  return p + ": " + value + ";\r";
-	};
+	__webpack_require__(10).colorizeString()
 
 
-	Csster.preprocessProperties  = __webpack_require__(13).preprocessProperties
-	Csster.propertyPreprocessors = __webpack_require__(13).propertyPreprocessors
-
-	var trimString = function (s) {
-	  return s.replace(/^\s*/, "").replace(/\s*$/, "");
-	}
-
-	Csster.expandAndFlatten = function (selector, properties) {
-
-	  selector = trimString(selector);
-
-	  Csster.preprocessProperties(properties);
-
-	  // ...all properties that look like properties
-	  // Output selector...
-	  var props = {};
-	  for (var p in properties) {
-	    if (Csster.propertyNameOf(p)) {
-	      props[p] = properties[p];
-	      delete properties[p];
-	    }
-	  }
-
-	  // ... finally, sub-selectors
-	  var rules = [
-	    {sel: selector, props: props}
-	  ];
-	  for (p in properties) {
-
-	    if (typeof properties[p] === 'string' || typeof properties[p] === 'number') {
-	      console.log('selector', selector)
-	      console.log('props', props)
-	      throw "Unknown CSS property \"" + p + "\" (" + typeof properties[p] + "). Rule rejected for selector " + selector;
-	    }
-
-	    var subs = p.split(',');
-	    for (var s = 0; s < subs.length; s++) {
-	      var str     = subs[s];
-	      var ampRule = (str.substr(0, 1) == '&');
-	      subs[s]     = selector + (ampRule ? str.substr(1) : ' ' + trimString(str));
-	    }
-	    rules.push(Csster.expandAndFlatten(subs.join(','), properties[p]));
-	  }
-
-	  return rules;
-	}
+	Csster.propertyNameOf = __webpack_require__(11).propertyNameOf
+	var formatProperty    = __webpack_require__(12).propertyFormatter
 
 	Csster.rulesToCss = function (rules) {
 	  // IE doesn't seem to matter:  http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
@@ -287,7 +234,7 @@
 	  var formatProperties = function (props) {
 	    var result = '';
 	    for (var p in props) {
-	      result += Csster.formatProperty(p, props[p]);
+	      result += formatProperty(p, props[p]);
 	    }
 	    return result;
 	  };
@@ -322,6 +269,7 @@
 	  Csster.insertCss(css)
 	}
 
+	var ruleBuilder = __webpack_require__(13).ruleBuilder
 
 	Csster.processRules = function (input) {
 
@@ -329,7 +277,7 @@
 	  var resolveRuleHash = function (cssRule) {
 	    var result = [];
 	    for (var key in cssRule) {
-	      result.push(Csster.expandAndFlatten(key, cssRule[key]));
+	      result.push(ruleBuilder(key, cssRule[key]));
 	    }
 	    return result;
 	  };
@@ -341,14 +289,8 @@
 	  });
 	  rules     = arrayFlatten(rules);
 
-	  Csster.postProcessRules(rules);
+	  postProcessRules(rules);
 	  return rules;
-	};
-
-	Csster.postProcessRules = function (rules) {
-	  for (var i = 0; i < Csster.rulesPostProcessors.length; i++) {
-	    Csster.rulesPostProcessors[i].apply(rules, [rules])
-	  }
 	};
 
 
@@ -957,6 +899,27 @@
 
 /***/ },
 /* 9 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var rulesPostProcessors = [];
+
+	var postProcessRules = function postProcessRules(rules) {
+	  for (var i = 0; i < rulesPostProcessors.length; i++) {
+	    rulesPostProcessors[i].apply(rules, [rules]);
+	  }
+	};
+
+	exports.rulesPostProcessors = rulesPostProcessors;
+	exports.postProcessRules = postProcessRules;
+
+/***/ },
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1157,7 +1120,144 @@
 	exports.colorizeString = colorizeString;
 
 /***/ },
-/* 10 */
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.propertyNameOf = undefined;
+
+	var _string = __webpack_require__(3);
+
+	var _property_name_validator = __webpack_require__(7);
+
+	var propertyNameValidator = _interopRequireWildcard(_property_name_validator);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	/*
+	 Returns the CSS-correct lowercase property name, if it's recognized
+	 as a property. Null otherwise.
+	 */
+	var propertyNameOf = function propertyNameOf(p) {
+	  var name = (0, _string.dasherize)(p);
+	  return propertyNameValidator.validate(name);
+	};
+
+	exports.propertyNameOf = propertyNameOf;
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.propertyFormatter = undefined;
+
+	var _propertyNameOf = __webpack_require__(11);
+
+	var propertyFormatter = function propertyFormatter(p, value) {
+	  p = (0, _propertyNameOf.propertyNameOf)(p);
+	  if (value && typeof value == 'number' && p != 'z-index' && p != 'opacity' && p != 'zoom') {
+	    value = '' + value + 'px';
+	  }
+	  return p + ": " + value + ";\r";
+	};
+
+	exports.propertyFormatter = propertyFormatter;
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.ruleBuilder = undefined;
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var _propertyPreprocessor = __webpack_require__(14);
+
+	var _propertyNameOf = __webpack_require__(11);
+
+	var trimString = function trimString(s) {
+	  return s.replace(/^\s*/, "").replace(/\s*$/, "");
+	};
+
+	var ruleBuilder = function ruleBuilder(selector, propertiesAndSubselectors) {
+
+	  selector = trimString(selector);
+
+	  (0, _propertyPreprocessor.preprocessProperties)(propertiesAndSubselectors);
+
+	  // ...all properties that look like properties
+	  // Output selector...
+	  var props = {};
+	  for (var p in propertiesAndSubselectors) {
+	    if ((0, _propertyNameOf.propertyNameOf)(p)) {
+	      props[p] = propertiesAndSubselectors[p];
+	      delete propertiesAndSubselectors[p];
+	    }
+	  }
+	  var rules = [{ sel: selector, props: props }];
+
+	  // ... finally, sub-selectors
+	  for (p in propertiesAndSubselectors) {
+
+	    if (typeof propertiesAndSubselectors[p] === 'string' || typeof propertiesAndSubselectors[p] === 'number') {
+	      throw "Unknown CSS property \"" + p + "\" (" + _typeof(propertiesAndSubselectors[p]) + "). Rule rejected for selector " + selector;
+	    }
+
+	    var subs = p.split(',');
+	    for (var s = 0; s < subs.length; s++) {
+	      var str = subs[s];
+	      var ampRule = str.substr(0, 1) == '&';
+	      subs[s] = selector + (ampRule ? str.substr(1) : ' ' + trimString(str));
+	    }
+	    rules.push(ruleBuilder(subs.join(','), propertiesAndSubselectors[p])); // Recurse
+	  }
+
+	  return rules;
+	};
+
+	exports.ruleBuilder = ruleBuilder;
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var propertyPreprocessors = [];
+
+	var preprocessProperties = function preprocessProperties(properties) {
+	  for (var i = 0; i < propertyPreprocessors.length; i++) {
+	    propertyPreprocessors[i].apply(properties, [properties]);
+	  }
+	};
+
+	var pushPropertyPreprocessor = function pushPropertyPreprocessor(pp) {
+	  propertyPreprocessors.push(pp);
+	};
+
+	exports.preprocessProperties = preprocessProperties;
+	exports.pushPropertyPreprocessor = pushPropertyPreprocessor;
+	exports.propertyPreprocessors = propertyPreprocessors;
+
+/***/ },
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1204,12 +1304,12 @@
 	   */
 
 /***/ },
-/* 11 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _macro_preprocessor = __webpack_require__(10);
+	var _macro_preprocessor = __webpack_require__(15);
 
 	var _macro_preprocessor2 = _interopRequireDefault(_macro_preprocessor);
 
@@ -1218,7 +1318,7 @@
 	Csster.propertyPreprocessors.push((0, _macro_preprocessor2.default)('has'));
 
 /***/ },
-/* 12 */
+/* 17 */
 /***/ function(module, exports) {
 
 	if (typeof jQuery != 'undefined') {
@@ -1231,61 +1331,6 @@
 	    }
 	  })(jQuery);
 	}
-
-/***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var propertyPreprocessors = [];
-
-	var preprocessProperties = function preprocessProperties(properties) {
-	  for (var i = 0; i < propertyPreprocessors.length; i++) {
-	    propertyPreprocessors[i].apply(properties, [properties]);
-	  }
-	};
-
-	var pushPropertyPreprocessor = function pushPropertyPreprocessor(pp) {
-	  propertyPreprocessors.push(pp);
-	};
-
-	exports.preprocessProperties = preprocessProperties;
-	exports.pushPropertyPreprocessor = pushPropertyPreprocessor;
-	exports.propertyPreprocessors = propertyPreprocessors;
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.propertyNameOf = undefined;
-
-	var _string = __webpack_require__(3);
-
-	var _property_name_validator = __webpack_require__(7);
-
-	var propertyNameValidator = _interopRequireWildcard(_property_name_validator);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	/*
-	 Returns the CSS-correct lowercase property name, if it's recognized
-	 as a property. Null otherwise.
-	 */
-	var propertyNameOf = function propertyNameOf(p) {
-	  var name = (0, _string.dasherize)(p);
-	  return propertyNameValidator.validate(name);
-	};
-
-	exports.propertyNameOf = propertyNameOf;
 
 /***/ }
 /******/ ]);

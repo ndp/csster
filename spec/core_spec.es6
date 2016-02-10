@@ -9,25 +9,6 @@ describe("Csster", function() {
   }
 
 
-  describe('#formatProperty', function() {
-    it('should render font family', function() {
-      expect(Csster.formatProperty('fontFamily', 'serif')).toEqual("font-family: serif;\r");
-    });
-    it('should render raw number as "px" value', function() {
-      expect(Csster.formatProperty('height', 12)).toEqual("height: 12px;\r");
-    });
-    it('should understand opacity', function() {
-      expect(Csster.formatProperty('opacity', .5)).toEqual("opacity: 0.5;\r");
-    });
-    it('should understand zoom', function() {
-      expect(Csster.formatProperty('zoom', 1)).toEqual("zoom: 1;\r");
-    });
-    it('should understand z-index', function() {
-      expect(Csster.formatProperty('z-index', 1000)).toEqual("z-index: 1000;\r");
-    });
-  });
-
-
   describe('#processRules', function() {
 
     it("should output style rule from element name", function() {
@@ -253,33 +234,6 @@ describe("Csster", function() {
   });
 
 
-  describe('property name validator', function() {
-    describe('adding a valid property', function() {
-
-      it('should allow adding a single property using parameters', function() {
-        expect(Csster.propertyNameOf('foo')).toBeFalsy();
-        Csster.propertyNameValidator.addNames('foo');
-        expect(Csster.propertyNameOf('foo')).toEqual('foo');
-      });
-
-      it('should allow adding multiple properties passed as parameters', function() {
-        expect(Csster.propertyNameOf('blip')).toBeFalsy();
-        expect(Csster.propertyNameOf('blop')).toBeFalsy();
-        Csster.propertyNameValidator.addNames('blip', 'blop');
-        expect(Csster.propertyNameOf('blip')).toEqual('blip');
-        expect(Csster.propertyNameOf('blop')).toEqual('blop');
-      });
-      it('should allow adding a multiple properties using an array', function() {
-        expect(Csster.propertyNameOf('bar')).toBeFalsy();
-        expect(Csster.propertyNameOf('baz')).toBeFalsy();
-        Csster.propertyNameValidator.addNames(['bar', 'baz']);
-        expect(Csster.propertyNameOf('bar')).toEqual('bar');
-        expect(Csster.propertyNameOf('baz')).toEqual('baz');
-      });
-
-
-    });
-  });
 
 
 });

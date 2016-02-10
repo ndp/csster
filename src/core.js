@@ -18,10 +18,13 @@ Csster.propertyNameValidator = require('./filters/property_name_validator.js')
  */
 Csster.compressSelectors = require('./filters/rule_post_processors.js').compressSelectors
 
-Csster.browser           = require('./utils/browser.es6').browser
-Csster.browserInfo           = require('./utils/browser.es6').browserInfo
+Csster.browser     = require('./utils/browser.es6').browser
+Csster.browserInfo = require('./utils/browser.es6').browserInfo
 
-Csster.rulesPostProcessors   = [];
+Csster.rulesPostProcessors = require('./rulePostProcessor.es6').rulesPostProcessors;
+var postProcessRules           = require('./rulePostProcessor.es6').postProcessRules;
+
+Csster.propertyPreprocessors = require('./propertyPreprocessor.es6').propertyPreprocessors
 
 Csster.hslToHexColor = require('./functions/color.es6').hslToHexColor
 
@@ -29,63 +32,7 @@ require('./functions/color.es6').colorizeString()
 
 
 Csster.propertyNameOf = require('./propertyNameOf.es6').propertyNameOf
-
-Csster.formatProperty = function (p, value) {
-  p = Csster.propertyNameOf(p);
-  if (value && typeof value == 'number' &&
-      p != 'z-index' && p != 'opacity' && p != 'zoom') {
-    value = '' + value + 'px';
-  }
-  return p + ": " + value + ";\r";
-};
-
-
-Csster.preprocessProperties  = require('./propertyPreprocessor.es6').preprocessProperties
-Csster.propertyPreprocessors = require('./propertyPreprocessor.es6').propertyPreprocessors
-
-var trimString = function (s) {
-  return s.replace(/^\s*/, "").replace(/\s*$/, "");
-}
-
-Csster.expandAndFlatten = function (selector, properties) {
-
-  selector = trimString(selector);
-
-  Csster.preprocessProperties(properties);
-
-  // ...all properties that look like properties
-  // Output selector...
-  var props = {};
-  for (var p in properties) {
-    if (Csster.propertyNameOf(p)) {
-      props[p] = properties[p];
-      delete properties[p];
-    }
-  }
-
-  // ... finally, sub-selectors
-  var rules = [
-    {sel: selector, props: props}
-  ];
-  for (p in properties) {
-
-    if (typeof properties[p] === 'string' || typeof properties[p] === 'number') {
-      console.log('selector', selector)
-      console.log('props', props)
-      throw "Unknown CSS property \"" + p + "\" (" + typeof properties[p] + "). Rule rejected for selector " + selector;
-    }
-
-    var subs = p.split(',');
-    for (var s = 0; s < subs.length; s++) {
-      var str     = subs[s];
-      var ampRule = (str.substr(0, 1) == '&');
-      subs[s]     = selector + (ampRule ? str.substr(1) : ' ' + trimString(str));
-    }
-    rules.push(Csster.expandAndFlatten(subs.join(','), properties[p]));
-  }
-
-  return rules;
-}
+var formatProperty    = require('./propertyFormatter.es6').propertyFormatter
 
 Csster.rulesToCss = function (rules) {
   // IE doesn't seem to matter:  http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
@@ -93,7 +40,7 @@ Csster.rulesToCss = function (rules) {
   var formatProperties = function (props) {
     var result = '';
     for (var p in props) {
-      result += Csster.formatProperty(p, props[p]);
+      result += formatProperty(p, props[p]);
     }
     return result;
   };
@@ -128,6 +75,7 @@ Csster.insertRules = function (rules) {
   Csster.insertCss(css)
 }
 
+var ruleBuilder = require('./ruleBuilder.es6').ruleBuilder
 
 Csster.processRules = function (input) {
 
@@ -135,7 +83,7 @@ Csster.processRules = function (input) {
   var resolveRuleHash = function (cssRule) {
     var result = [];
     for (var key in cssRule) {
-      result.push(Csster.expandAndFlatten(key, cssRule[key]));
+      result.push(ruleBuilder(key, cssRule[key]));
     }
     return result;
   };
@@ -147,14 +95,8 @@ Csster.processRules = function (input) {
   });
   rules     = arrayFlatten(rules);
 
-  Csster.postProcessRules(rules);
+  postProcessRules(rules);
   return rules;
-};
-
-Csster.postProcessRules = function (rules) {
-  for (var i = 0; i < Csster.rulesPostProcessors.length; i++) {
-    Csster.rulesPostProcessors[i].apply(rules, [rules])
-  }
 };
 
 
