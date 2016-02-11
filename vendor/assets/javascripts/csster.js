@@ -52,10 +52,10 @@
 	__webpack_require__(5);
 	__webpack_require__(18);
 	__webpack_require__(14);
-	__webpack_require__(22);
+	__webpack_require__(25);
 	__webpack_require__(15);
-	__webpack_require__(23);
-	module.exports = __webpack_require__(24);
+	__webpack_require__(26);
+	module.exports = __webpack_require__(27);
 
 
 /***/ },
@@ -192,118 +192,71 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var _macros = __webpack_require__(6);
+
+	var macros = _interopRequireWildcard(_macros);
+
+	var _array = __webpack_require__(1);
+
+	var _property_name_validator = __webpack_require__(14);
+
+	var _rule_post_processors = __webpack_require__(15);
+
+	var _browser = __webpack_require__(4);
+
+	var _rulePostProcessor = __webpack_require__(16);
+
+	var _propertyPreprocessor = __webpack_require__(17);
+
+	var _color = __webpack_require__(18);
+
+	var _buildRules = __webpack_require__(19);
+
+	var _buildRules2 = _interopRequireDefault(_buildRules);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	if (!window.Csster) {
-	  window.Csster = {}
+	  window.Csster = {};
 	}
 
-	Csster.macros = __webpack_require__(6)
+	Csster.macros = macros;
 
-	var arrayEach    = __webpack_require__(1).arrayEach
-	var arrayFlatten = __webpack_require__(1).arrayFlatten
-	var dasherize    = __webpack_require__(3).dasherize
+	Csster.arrayFlatten = _array.arrayFlatten;
 
-	Csster.arrayFlatten          = arrayFlatten
-	Csster.propertyNameValidator = __webpack_require__(14)
+	Csster.propertyNameValidator = _property_name_validator.propertyNameValidator;
 
+	Csster.compressSelectors = _rule_post_processors.compressSelectors;
 
-	/**
-	 * Remove redundant parents from selectors that include more than one ID
-	 * selector.  eg.  #page #top => "#top"
-	 */
-	Csster.compressSelectors = __webpack_require__(15).compressSelectors
+	Csster.browser = _browser.browser;
 
-	Csster.browser     = __webpack_require__(4).browser
-	Csster.browserInfo = __webpack_require__(4).browserInfo
+	Csster.browserInfo = _browser.browserInfo;
 
-	Csster.rulesPostProcessors = __webpack_require__(16).rulesPostProcessors;
-	var postProcessRules           = __webpack_require__(16).postProcessRules;
+	Csster.rulesPostProcessors = _rulePostProcessor.rulesPostProcessors;
 
-	Csster.propertyPreprocessors = __webpack_require__(17).propertyPreprocessors
+	Csster.propertyPreprocessors = _propertyPreprocessor.propertyPreprocessors;
 
-	Csster.hslToHexColor = __webpack_require__(18).hslToHexColor
+	Csster.hslToHexColor = _color.hslToHexColor;
+	(0, _color.colorizeString)();
 
-	__webpack_require__(18).colorizeString()
+	//import { propertyNameOf } from './propertyNameOf.es6'
+	//Csster.propertyNameOf = propertyNameOf
 
+	var stringifyRules = __webpack_require__(22).default;
+	var insertCss = __webpack_require__(24).default;
+	Csster.insertCss = insertCss;
 
-	Csster.propertyNameOf = __webpack_require__(19).propertyNameOf
-	var formatProperty    = __webpack_require__(20).propertyFormatter
-
-	Csster.rulesToCss = function (rules) {
-	  // IE doesn't seem to matter:  http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
-
-	  var formatProperties = function (props) {
-	    var result = '';
-	    for (var p in props) {
-	      result += formatProperty(p, props[p]);
-	    }
-	    return result;
-	  };
-
-	  // convert rules to textual string
-	  var s = '';
-	  for (var i = 0; i < rules.length; i++) {
-	    s += rules[i].sel + ' { ';
-	    s += formatProperties(rules[i].props);
-	    s += '}\r';
-	  }
-	  return s;
-	}
-
-	Csster.insertCss = function (css) {
-	  var e       = document.createElement('STYLE');
-	  var a       = document.createAttribute('type');
-	  a.nodeValue = 'text/css';
-	  e.setAttributeNode(a);
-	  var head    = document.getElementsByTagName('HEAD')[0];
-	  head.appendChild(e);
-	  try {
-	    e.appendChild(document.createTextNode(css));
-	  } catch (e) {
-	    var ss     = document.styleSheets[document.styleSheets.length - 1];
-	    ss.cssText = '' + ss.cssText + css;
-	  }
-	}
-
-	Csster.insertRules = function (rules) {
-	  var css = Csster.rulesToCss(rules)
-	  Csster.insertCss(css)
-	}
-
-	var ruleBuilder = __webpack_require__(21).ruleBuilder
-
-	Csster.processRules = function (input) {
-
-	  // @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
-	  var resolveRuleHash = function (cssRule) {
-	    var result = [];
-	    for (var key in cssRule) {
-	      result.push(ruleBuilder(key, cssRule[key]));
-	    }
-	    return result;
-	  };
-
-
-	  var rules = [];
-	  arrayEach(arrayFlatten([input]), function (r) {
-	    rules.push(resolveRuleHash(r));
-	  });
-	  rules     = arrayFlatten(rules);
-
-	  postProcessRules(rules);
-	  return rules;
-	};
-
+	Csster.buildRules = _buildRules2.default;
 
 	Csster.style = function (o) {
-	  var rules = Csster.processRules(o);
-	  Csster.insertRules(rules);
+	  var rules = Csster.buildRules(o);
+	  var css = stringifyRules(rules);
+	  Csster.insertCss(css);
 	};
-
-
-
-
-
-
 
 /***/ },
 /* 6 */
@@ -311,32 +264,51 @@
 
 	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.imageReplacement = exports.clearfix = exports.linearGradient = exports.verticalCentering = exports.horizontalCentering = exports.boxShadow = exports.roundedCorners = undefined;
+
 	var _roundedCorners = __webpack_require__(7);
+
+	var _roundedCorners2 = _interopRequireDefault(_roundedCorners);
 
 	var _boxShadow = __webpack_require__(8);
 
+	var _boxShadow2 = _interopRequireDefault(_boxShadow);
+
 	var _horizontalCentering = __webpack_require__(9);
+
+	var _horizontalCentering2 = _interopRequireDefault(_horizontalCentering);
 
 	var _verticalCentering = __webpack_require__(10);
 
+	var _verticalCentering2 = _interopRequireDefault(_verticalCentering);
+
 	var _linearGradient = __webpack_require__(11);
+
+	var _linearGradient2 = _interopRequireDefault(_linearGradient);
 
 	var _clearfix = __webpack_require__(12);
 
+	var _clearfix2 = _interopRequireDefault(_clearfix);
+
 	var _imageReplacement = __webpack_require__(13);
 
-	exports = {
-	  roundedCorners: _roundedCorners.roundedCorners,
-	  boxShadow: _boxShadow.boxShadow,
-	  horizontalCentering: _horizontalCentering.horizontalCentering,
-	  verticalCentering: _verticalCentering.verticalCentering,
-	  linearGradient: _linearGradient.linearGradient,
-	  clearfix: _clearfix.clearfix,
-	  imageReplacement: _imageReplacement.imageReplacement
-	}; /*
-	    * Functions that return a set of properties and their values.
-	    * They can be inserted as style rules using "has" property.
-	    */
+	var _imageReplacement2 = _interopRequireDefault(_imageReplacement);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.roundedCorners = _roundedCorners2.default;
+	exports.boxShadow = _boxShadow2.default;
+	exports.horizontalCentering = _horizontalCentering2.default;
+	exports.verticalCentering = _verticalCentering2.default;
+	exports.linearGradient = _linearGradient2.default;
+	exports.clearfix = _clearfix2.default;
+	exports.imageReplacement = _imageReplacement2.default; /*
+	                                                        * Functions that return a set of properties and their values.
+	                                                        * They can be inserted as style rules using "has" property.
+	                                                        */
 
 /***/ },
 /* 7 */
@@ -344,6 +316,10 @@
 
 	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = roundedCorners;
 	/**
 	 *  Return rounded corner properties. Call with an optional side and a radius.
 	 *
@@ -393,16 +369,16 @@
 	    }
 	}
 
-	module.exports = {
-	  roundedCorners: roundedCorners
-	};
-
 /***/ },
 /* 8 */
 /***/ function(module, exports) {
 
 	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = boxShadow;
 	/*
 	 Cross-browser box shadow code.
 
@@ -433,16 +409,16 @@
 	  };
 	}
 
-	module.exports = {
-	  boxShadow: boxShadow
-	};
-
 /***/ },
 /* 9 */
 /***/ function(module, exports) {
 
 	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = horizontalCentering;
 	// http://stackoverflow.com/questions/148251/css-centering-tricks
 	function horizontalCentering(width) {
 	  return {
@@ -453,16 +429,16 @@
 	  };
 	}
 
-	module.exports = {
-	  horizontalCentering: horizontalCentering
-	};
-
 /***/ },
 /* 10 */
 /***/ function(module, exports) {
 
 	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = verticalCentering;
 	// http://stackoverflow.com/questions/148251/css-centering-tricks
 	function verticalCentering(height) {
 	  return {
@@ -472,15 +448,17 @@
 	    marginTop: -(height / 2)
 	  };
 	}
-	module.exports = {
-	  verticalCentering: verticalCentering
-	};
 
 /***/ },
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = linearGradient;
 
 	var _browser = __webpack_require__(4);
 
@@ -519,10 +497,6 @@
 	  result += ')';
 	  return result;
 	}
-
-	module.exports = {
-	  linearGradient: linearGradient
-	};
 
 	//    },generateLinearGradient:function() {
 	//        var props = c.gradientProps,
@@ -565,6 +539,11 @@
 
 	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = clearfix;
+
 	var _browser = __webpack_require__(4);
 
 	function clearfix() {
@@ -587,16 +566,16 @@
 	  return css;
 	}
 
-	module.exports = {
-	  clearfix: clearfix
-	};
-
 /***/ },
 /* 13 */
 /***/ function(module, exports) {
 
 	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = imageReplacement;
 	/**
 	 Basic Phark image replacement, defined here:
 	 http://www.mezzoblue.com/tests/revised-image-replacement/
@@ -624,10 +603,6 @@
 	    overflow: 'hidden'
 	  };
 	}
-
-	module.exports = {
-	  imageReplacement: imageReplacement
-	};
 
 /***/ },
 /* 14 */
@@ -1234,52 +1209,38 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.propertyNameOf = undefined;
 
-	var _string = __webpack_require__(3);
+	exports.default = function (obj) {
 
-	var _property_name_validator = __webpack_require__(14);
+	  // @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
+	  var resolveRuleHash = function resolveRuleHash(cssRule) {
+	    var result = [];
+	    for (var key in cssRule) {
+	      result.push((0, _ruleBuilder.ruleBuilder)(key, cssRule[key]));
+	    }
+	    return result;
+	  };
 
-	var propertyNameValidator = _interopRequireWildcard(_property_name_validator);
+	  var rules = [];
+	  (0, _array.arrayEach)((0, _array.arrayFlatten)([obj]), function (r) {
+	    rules.push(resolveRuleHash(r));
+	  });
+	  rules = (0, _array.arrayFlatten)(rules);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	/*
-	 Returns the CSS-correct lowercase property name, if it's recognized
-	 as a property. Null otherwise.
-	 */
-	var propertyNameOf = function propertyNameOf(p) {
-	  var name = (0, _string.dasherize)(p);
-	  return propertyNameValidator.validate(name);
+	  (0, _rulePostProcessor.postProcessRules)(rules);
+	  return rules;
 	};
 
-	exports.propertyNameOf = propertyNameOf;
+	var _array = __webpack_require__(1);
+
+	var _ruleBuilder = __webpack_require__(20);
+
+	var _rulePostProcessor = __webpack_require__(16);
+
+	;
 
 /***/ },
 /* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.propertyFormatter = undefined;
-
-	var _propertyNameOf = __webpack_require__(19);
-
-	var propertyFormatter = function propertyFormatter(p, value) {
-	  p = (0, _propertyNameOf.propertyNameOf)(p);
-	  if (value && typeof value == 'number' && p != 'z-index' && p != 'opacity' && p != 'zoom') {
-	    value = '' + value + 'px';
-	  }
-	  return p + ": " + value + ";\r";
-	};
-
-	exports.propertyFormatter = propertyFormatter;
-
-/***/ },
-/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1293,7 +1254,7 @@
 
 	var _propertyPreprocessor = __webpack_require__(17);
 
-	var _propertyNameOf = __webpack_require__(19);
+	var _propertyNameOf = __webpack_require__(21);
 
 	var trimString = function trimString(s) {
 	  return s.replace(/^\s*/, "").replace(/\s*$/, "");
@@ -1338,7 +1299,118 @@
 	exports.ruleBuilder = ruleBuilder;
 
 /***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.propertyNameOf = undefined;
+
+	var _string = __webpack_require__(3);
+
+	var _property_name_validator = __webpack_require__(14);
+
+	var propertyNameValidator = _interopRequireWildcard(_property_name_validator);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	/*
+	 Returns the CSS-correct lowercase property name, if it's recognized
+	 as a property. Null otherwise.
+	 */
+	var propertyNameOf = function propertyNameOf(p) {
+	  var name = (0, _string.dasherize)(p);
+	  return propertyNameValidator.validate(name);
+	};
+
+	exports.propertyNameOf = propertyNameOf;
+
+/***/ },
 /* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (rules) {
+	  var s = '';
+	  for (var i = 0; i < rules.length; i++) {
+	    s += rules[i].sel + ' { ';
+	    s += formatProperties(rules[i].props);
+	    s += '}\r';
+	  }
+	  return s;
+	};
+
+	var _propertyFormatter = __webpack_require__(23);
+
+	// IE doesn't seem to matter:  http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
+
+
+	var formatProperties = function formatProperties(props) {
+	  var result = '';
+	  for (var p in props) {
+	    result += (0, _propertyFormatter.propertyFormatter)(p, props[p]);
+	  }
+	  return result;
+	}; // convert rules to textual string
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.propertyFormatter = undefined;
+
+	var _propertyNameOf = __webpack_require__(21);
+
+	var propertyFormatter = function propertyFormatter(p, value) {
+	  p = (0, _propertyNameOf.propertyNameOf)(p);
+	  if (value && typeof value == 'number' && p != 'z-index' && p != 'opacity' && p != 'zoom') {
+	    value = '' + value + 'px';
+	  }
+	  return p + ": " + value + ";\r";
+	};
+
+	exports.propertyFormatter = propertyFormatter;
+
+/***/ },
+/* 24 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (css) {
+	  var e = document.createElement('STYLE');
+	  var a = document.createAttribute('type');
+	  a.nodeValue = 'text/css';
+	  e.setAttributeNode(a);
+	  var head = document.getElementsByTagName('HEAD')[0];
+	  head.appendChild(e);
+	  try {
+	    e.appendChild(document.createTextNode(css));
+	  } catch (e) {
+	    var ss = document.styleSheets[document.styleSheets.length - 1];
+	    ss.cssText = '' + ss.cssText + css;
+	  }
+	};
+
+/***/ },
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1385,12 +1457,12 @@
 	   */
 
 /***/ },
-/* 23 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _macro_preprocessor = __webpack_require__(22);
+	var _macro_preprocessor = __webpack_require__(25);
 
 	var _macro_preprocessor2 = _interopRequireDefault(_macro_preprocessor);
 
@@ -1399,7 +1471,7 @@
 	Csster.propertyPreprocessors.push((0, _macro_preprocessor2.default)('has'));
 
 /***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports) {
 
 	if (typeof jQuery != 'undefined') {
