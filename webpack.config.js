@@ -5,7 +5,7 @@ module.exports = {
     './utils/object.es6',
     './utils/string.es6',
     './utils/browser.es6',
-    './core.js',
+    './core.es6',
     //'./macros/macros.es6',
     './functions/color.es6',
     './filters/property_name_validator.js',

@@ -9,10 +9,10 @@ describe("Csster", function () {
   }
 
 
-  describe('#processRules', function () {
+  describe('#buildRules', function () {
 
     it("should output style rule from element name", function () {
-      expect(Csster.processRules({
+      expect(Csster.buildRules({
         p: {
           fontFamily: 'serif'
         }
@@ -22,7 +22,7 @@ describe("Csster", function () {
     });
 
     it("should output style rule from element.class name", function () {
-      expect(Csster.processRules({
+      expect(Csster.buildRules({
         'div.cls': {
           height: '235px'
         }
@@ -32,7 +32,7 @@ describe("Csster", function () {
     });
 
     it("should output multiple properties", function () {
-      expect(Csster.processRules({
+      expect(Csster.buildRules({
         'div.cls': {
           height: '235px',
           width:  '300px'
@@ -50,7 +50,7 @@ describe("Csster", function () {
     it('should throw an exception if discovers a bugus properties', function () {
       expect(
           function () {
-            Csster.processRules({
+            Csster.buildRules({
               div: {
                 bogus: 'property_value'
               }
@@ -61,7 +61,7 @@ describe("Csster", function () {
     it('should throw an exception if discovers a bugus property within other valid ones', function () {
       expect(
           function () {
-            Csster.processRules({
+            Csster.buildRules({
               '#tooltip': {
                 'div.body':      {
                   textAlign: 'center'
@@ -74,7 +74,7 @@ describe("Csster", function () {
     });
 
     it("should output properties and sub-selectors", function () {
-      expect(Csster.processRules({
+      expect(Csster.buildRules({
             ul: {
               width: '300px',
               li:    {
@@ -91,7 +91,7 @@ describe("Csster", function () {
     });
 
     it("should handle commas and spaces in nested selectors", function () {
-      expect(Csster.processRules({
+      expect(Csster.buildRules({
             ul: {
               width:             '300px',
               'li.even, li.odd': {
@@ -107,7 +107,7 @@ describe("Csster", function () {
     });
 
     it("should handle commas within pseudo-classes", function () {
-      var processed = Csster.processRules({
+      var processed = Csster.buildRules({
         div: {
           'a:link,a:visited,a:hover': {
             color: 'blue'
@@ -124,7 +124,7 @@ describe("Csster", function () {
     });
 
     it("should interpret properties without space when & used", function () {
-      expect(Csster.processRules({
+      expect(Csster.buildRules({
             ul: {
               width:     '300px',
               '&:hover': {
@@ -140,7 +140,7 @@ describe("Csster", function () {
       Csster.rulesPostProcessors.push(function (rules) {
         rules[0]['sel'] = '#a'
       });
-      expect(Csster.processRules({
+      expect(Csster.buildRules({
         '#a #b #c': {width: 235}
       })).toEqual([{sel: '#a', props: {width: 235}}]);
       Csster.rulesPostProcessors.pop();
@@ -150,7 +150,7 @@ describe("Csster", function () {
     it('should process everything within a has macro, not just valid properties', function () {
       expect(
           function () {
-            Csster.processRules({
+            Csster.buildRules({
               div: {
                 has: {
                   bogus: 'property_value',

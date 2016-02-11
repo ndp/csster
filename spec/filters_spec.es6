@@ -43,7 +43,7 @@ describe('property pre-processors', () => {
     xit('should process everything within a has macro, not just valid properties', () => {
       expect(
           () => {
-            Csster.processRules({
+            Csster.buildRules({
               div: {
                 has: {
                   bogus: 'property_value',
