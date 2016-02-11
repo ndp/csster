@@ -33,9 +33,9 @@ colorizeString()
 //import { propertyNameOf } from './propertyNameOf.es6'
 //Csster.propertyNameOf = propertyNameOf
 
-const stringifyRules = require('./stringifyRules.es6').default
-const insertCss      = require('./insertCss.es6').default
-Csster.insertCss     = insertCss
+import stringifyRules from './stringifyRules.es6'
+import insertCss from './insertCss.es6'
+Csster.insertCss = insertCss
 
 import buildRules from './buildRules.es6'
 Csster.buildRules = buildRules

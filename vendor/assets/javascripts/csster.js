@@ -212,7 +212,15 @@
 
 	var _color = __webpack_require__(18);
 
-	var _buildRules = __webpack_require__(19);
+	var _stringifyRules = __webpack_require__(19);
+
+	var _stringifyRules2 = _interopRequireDefault(_stringifyRules);
+
+	var _insertCss = __webpack_require__(22);
+
+	var _insertCss2 = _interopRequireDefault(_insertCss);
+
+	var _buildRules = __webpack_require__(23);
 
 	var _buildRules2 = _interopRequireDefault(_buildRules);
 
@@ -246,15 +254,13 @@
 	//import { propertyNameOf } from './propertyNameOf.es6'
 	//Csster.propertyNameOf = propertyNameOf
 
-	var stringifyRules = __webpack_require__(22).default;
-	var insertCss = __webpack_require__(24).default;
-	Csster.insertCss = insertCss;
+	Csster.insertCss = _insertCss2.default;
 
 	Csster.buildRules = _buildRules2.default;
 
 	Csster.style = function (o) {
 	  var rules = Csster.buildRules(o);
-	  var css = stringifyRules(rules);
+	  var css = (0, _stringifyRules2.default)(rules);
 	  Csster.insertCss(css);
 	};
 
@@ -1210,6 +1216,117 @@
 	  value: true
 	});
 
+	exports.default = function (rules) {
+	  var s = '';
+	  for (var i = 0; i < rules.length; i++) {
+	    s += rules[i].sel + ' { ';
+	    s += formatProperties(rules[i].props);
+	    s += '}\r';
+	  }
+	  return s;
+	};
+
+	var _propertyFormatter = __webpack_require__(20);
+
+	// IE doesn't seem to matter:  http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
+
+
+	var formatProperties = function formatProperties(props) {
+	  var result = '';
+	  for (var p in props) {
+	    result += (0, _propertyFormatter.propertyFormatter)(p, props[p]);
+	  }
+	  return result;
+	}; // convert rules to textual string
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.propertyFormatter = undefined;
+
+	var _propertyNameOf = __webpack_require__(21);
+
+	var propertyFormatter = function propertyFormatter(p, value) {
+	  p = (0, _propertyNameOf.propertyNameOf)(p);
+	  if (value && typeof value == 'number' && p != 'z-index' && p != 'opacity' && p != 'zoom') {
+	    value = '' + value + 'px';
+	  }
+	  return p + ": " + value + ";\r";
+	};
+
+	exports.propertyFormatter = propertyFormatter;
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.propertyNameOf = undefined;
+
+	var _string = __webpack_require__(3);
+
+	var _property_name_validator = __webpack_require__(14);
+
+	var propertyNameValidator = _interopRequireWildcard(_property_name_validator);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	/*
+	 Returns the CSS-correct lowercase property name, if it's recognized
+	 as a property. Null otherwise.
+	 */
+	var propertyNameOf = function propertyNameOf(p) {
+	  var name = (0, _string.dasherize)(p);
+	  return propertyNameValidator.validate(name);
+	};
+
+	exports.propertyNameOf = propertyNameOf;
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (css) {
+	  var e = document.createElement('STYLE');
+	  var a = document.createAttribute('type');
+	  a.nodeValue = 'text/css';
+	  e.setAttributeNode(a);
+	  var head = document.getElementsByTagName('HEAD')[0];
+	  head.appendChild(e);
+	  try {
+	    e.appendChild(document.createTextNode(css));
+	  } catch (e) {
+	    var ss = document.styleSheets[document.styleSheets.length - 1];
+	    ss.cssText = '' + ss.cssText + css;
+	  }
+	};
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
 	exports.default = function (obj) {
 
 	  // @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
@@ -1233,14 +1350,14 @@
 
 	var _array = __webpack_require__(1);
 
-	var _ruleBuilder = __webpack_require__(20);
+	var _ruleBuilder = __webpack_require__(24);
 
 	var _rulePostProcessor = __webpack_require__(16);
 
 	;
 
 /***/ },
-/* 20 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1297,117 +1414,6 @@
 	};
 
 	exports.ruleBuilder = ruleBuilder;
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.propertyNameOf = undefined;
-
-	var _string = __webpack_require__(3);
-
-	var _property_name_validator = __webpack_require__(14);
-
-	var propertyNameValidator = _interopRequireWildcard(_property_name_validator);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	/*
-	 Returns the CSS-correct lowercase property name, if it's recognized
-	 as a property. Null otherwise.
-	 */
-	var propertyNameOf = function propertyNameOf(p) {
-	  var name = (0, _string.dasherize)(p);
-	  return propertyNameValidator.validate(name);
-	};
-
-	exports.propertyNameOf = propertyNameOf;
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (rules) {
-	  var s = '';
-	  for (var i = 0; i < rules.length; i++) {
-	    s += rules[i].sel + ' { ';
-	    s += formatProperties(rules[i].props);
-	    s += '}\r';
-	  }
-	  return s;
-	};
-
-	var _propertyFormatter = __webpack_require__(23);
-
-	// IE doesn't seem to matter:  http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
-
-
-	var formatProperties = function formatProperties(props) {
-	  var result = '';
-	  for (var p in props) {
-	    result += (0, _propertyFormatter.propertyFormatter)(p, props[p]);
-	  }
-	  return result;
-	}; // convert rules to textual string
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.propertyFormatter = undefined;
-
-	var _propertyNameOf = __webpack_require__(21);
-
-	var propertyFormatter = function propertyFormatter(p, value) {
-	  p = (0, _propertyNameOf.propertyNameOf)(p);
-	  if (value && typeof value == 'number' && p != 'z-index' && p != 'opacity' && p != 'zoom') {
-	    value = '' + value + 'px';
-	  }
-	  return p + ": " + value + ";\r";
-	};
-
-	exports.propertyFormatter = propertyFormatter;
-
-/***/ },
-/* 24 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (css) {
-	  var e = document.createElement('STYLE');
-	  var a = document.createAttribute('type');
-	  a.nodeValue = 'text/css';
-	  e.setAttributeNode(a);
-	  var head = document.getElementsByTagName('HEAD')[0];
-	  head.appendChild(e);
-	  try {
-	    e.appendChild(document.createTextNode(css));
-	  } catch (e) {
-	    var ss = document.styleSheets[document.styleSheets.length - 1];
-	    ss.cssText = '' + ss.cssText + css;
-	  }
-	};
 
 /***/ },
 /* 25 */
