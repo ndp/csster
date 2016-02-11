@@ -226,50 +226,13 @@
 	Csster.propertyNameOf = __webpack_require__(19).propertyNameOf
 	var formatProperty    = __webpack_require__(20).propertyFormatter
 
-	Csster.rulesToCss = function (rules) {
-	  // IE doesn't seem to matter:  http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
-
-	  var formatProperties = function (props) {
-	    var result = '';
-	    for (var p in props) {
-	      result += formatProperty(p, props[p]);
-	    }
-	    return result;
-	  };
-
-	  // convert rules to textual string
-	  var s = '';
-	  for (var i = 0; i < rules.length; i++) {
-	    s += rules[i].sel + ' { ';
-	    s += formatProperties(rules[i].props);
-	    s += '}\r';
-	  }
-	  return s;
-	}
-
-	Csster.insertCss = function (css) {
-	  var e       = document.createElement('STYLE');
-	  var a       = document.createAttribute('type');
-	  a.nodeValue = 'text/css';
-	  e.setAttributeNode(a);
-	  var head    = document.getElementsByTagName('HEAD')[0];
-	  head.appendChild(e);
-	  try {
-	    e.appendChild(document.createTextNode(css));
-	  } catch (e) {
-	    var ss     = document.styleSheets[document.styleSheets.length - 1];
-	    ss.cssText = '' + ss.cssText + css;
-	  }
-	}
-
-	Csster.insertRules = function (rules) {
-	  var css = Csster.rulesToCss(rules)
-	  Csster.insertCss(css)
-	}
+	var stringifyRules = __webpack_require__(26).default
+	var insertCss = __webpack_require__(25).default
+	Csster.insertCss = insertCss
 
 	var ruleBuilder = __webpack_require__(21).ruleBuilder
 
-	Csster.processRules = function (input) {
+	Csster.processRules = function (obj) {
 
 	  // @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
 	  var resolveRuleHash = function (cssRule) {
@@ -282,7 +245,7 @@
 
 
 	  var rules = [];
-	  arrayEach(arrayFlatten([input]), function (r) {
+	  arrayEach(arrayFlatten([obj]), function (r) {
 	    rules.push(resolveRuleHash(r));
 	  });
 	  rules     = arrayFlatten(rules);
@@ -293,8 +256,9 @@
 
 
 	Csster.style = function (o) {
-	  var rules = Csster.processRules(o);
-	  Csster.insertRules(rules);
+	  var rules = Csster.processRules(o)
+	  var css = stringifyRules(rules)
+	  Csster.insertCss(css)
 	};
 
 
@@ -1432,6 +1396,64 @@
 	    }
 	  })(jQuery);
 	}
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (css) {
+	  var e = document.createElement('STYLE');
+	  var a = document.createAttribute('type');
+	  a.nodeValue = 'text/css';
+	  e.setAttributeNode(a);
+	  var head = document.getElementsByTagName('HEAD')[0];
+	  head.appendChild(e);
+	  try {
+	    e.appendChild(document.createTextNode(css));
+	  } catch (e) {
+	    var ss = document.styleSheets[document.styleSheets.length - 1];
+	    ss.cssText = '' + ss.cssText + css;
+	  }
+	};
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (rules) {
+	  var s = '';
+	  for (var i = 0; i < rules.length; i++) {
+	    s += rules[i].sel + ' { ';
+	    s += formatProperties(rules[i].props);
+	    s += '}\r';
+	  }
+	  return s;
+	};
+
+	var _propertyFormatter = __webpack_require__(20);
+
+	// IE doesn't seem to matter:  http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
+
+
+	var formatProperties = function formatProperties(props) {
+	  var result = '';
+	  for (var p in props) {
+	    result += (0, _propertyFormatter.propertyFormatter)(p, props[p]);
+	  }
+	  return result;
+	}; // convert rules to textual string
 
 /***/ }
 /******/ ]);

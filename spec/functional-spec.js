@@ -176,25 +176,6 @@ describe("Csster", function () {
       }
     });
     beforeEach(resetCsster);
-    describe('#insertStyleElement', function () {
-      var originalWidth;
-      beforeEach(function () {
-        originalWidth = logo.clientWidth;
-      });
-      it('should have no element style overrides for width', function () {
-        expect(logo.style.width).toEqual('');
-      });
-      describe('inserting the stylesheet', function () {
-        beforeEach(function () {
-          Csster.insertRules([
-            {sel: '.logo', props: {'font-size': '150%'}}
-          ]);
-        });
-        it('should now be wider', function () {
-          expect(logo.clientWidth).toBeGreaterThan(originalWidth);
-        });
-      });
-    });
 
     describe('#style', function () {
       var originalWidth;
@@ -208,7 +189,7 @@ describe("Csster", function () {
         beforeEach(function () {
           Csster.style({'.logo': {fontSize: '75%'}});
         });
-        it('should now be wider', function () {
+        it('should now be narrower', function () {
           expect(logo.clientWidth).toBeLessThan(originalWidth);
         });
       });
