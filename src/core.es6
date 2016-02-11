@@ -8,8 +8,8 @@ Csster.macros = macros
 import {arrayFlatten} from './utils/array.es6'
 Csster.arrayFlatten = arrayFlatten
 
-import {propertyNameValidator} from './filters/property_name_validator.js'
-Csster.propertyNameValidator = propertyNameValidator
+import * as propertyNameValidator from './propertyNameValidator.es6'
+Csster.addPropertyNames = propertyNameValidator.addNames
 
 import { compressSelectors } from './filters/rule_post_processors.js'
 Csster.compressSelectors = compressSelectors
@@ -29,9 +29,6 @@ Csster.propertyPreprocessors = propertyPreprocessors
 import { hslToHexColor, colorizeString } from './functions/color.es6'
 Csster.hslToHexColor = hslToHexColor
 colorizeString()
-
-//import { propertyNameOf } from './propertyNameOf.es6'
-//Csster.propertyNameOf = propertyNameOf
 
 import stringifyRules from './stringifyRules.es6'
 import insertCss from './insertCss.es6'

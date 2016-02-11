@@ -1,4 +1,4 @@
-import {propertyNameOf} from '../src/propertyNameOf.es6'
+import {propertyNameOf} from '../src/propertyName.es6'
 
 describe('#propertyNameOf', function() {
   it('should convert fontFamily to font-family', function() {

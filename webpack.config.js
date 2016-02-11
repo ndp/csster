@@ -8,7 +8,6 @@ module.exports = {
     './core.es6',
     //'./macros/macros.es6',
     './functions/color.es6',
-    './filters/property_name_validator.js',
     './filters/macro_preprocessor.es6',
     './filters/rule_post_processors.js',
     './init.es6',

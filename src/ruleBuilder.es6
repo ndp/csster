@@ -3,7 +3,7 @@ var trimString = function (s) {
 }
 
 import {preprocessProperties} from './propertyPreprocessor.es6'
-import {propertyNameOf} from './propertyNameOf.es6'
+import * as propertyName from './propertyName.es6'
 
 
 var ruleBuilder = (selector, propertiesAndSubselectors) => {
@@ -16,7 +16,7 @@ var ruleBuilder = (selector, propertiesAndSubselectors) => {
   // Output selector...
   var props = {};
   for (var p in propertiesAndSubselectors) {
-    if (propertyNameOf(p)) {
+    if (propertyName.valid(p)) {
       props[p] = propertiesAndSubselectors[p];
       delete propertiesAndSubselectors[p];
     }
