@@ -2,11 +2,10 @@ if (!window.Csster) {
   window.Csster = {}
 }
 
-Csster.macros = require('./macros/macros.js')
+Csster.macros = require('./macros/macros.es6')
 
 var arrayEach    = require('./utils/array.es6').arrayEach
 var arrayFlatten = require('./utils/array.es6').arrayFlatten
-var dasherize    = require('./utils/string.es6').dasherize
 
 Csster.arrayFlatten          = arrayFlatten
 Csster.propertyNameValidator = require('./filters/property_name_validator.js')

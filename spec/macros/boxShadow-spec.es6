@@ -1,4 +1,4 @@
-import {boxShadow} from '../../src/macros/macros.js'
+import boxShadow from '../../src/macros/boxShadow.es6'
 
 
 describe('boxShadow', () => {

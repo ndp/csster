@@ -1,4 +1,4 @@
-import {imageReplacement} from '../../src/macros/macros.js'
+import imageReplacement from '../../src/macros/imageReplacement.es6'
 
 
 describe('imageReplacement', () => {

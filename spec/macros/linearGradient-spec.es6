@@ -1,4 +1,4 @@
-import {linearGradient} from '../../src/macros/macros.js'
+import linearGradient from '../../src/macros/linearGradient.es6'
 
 
 describe('linearGradient', () => {

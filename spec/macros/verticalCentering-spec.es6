@@ -1,4 +1,4 @@
-import {verticalCentering} from '../../src/macros/macros.js'
+import verticalCentering from '../../src/macros/verticalCentering.es6'
 
 describe('vertical centering', () => {
   var rules;

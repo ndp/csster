@@ -6,7 +6,7 @@ module.exports = {
     './utils/string.es6',
     './utils/browser.es6',
     './core.js',
-    './macros/macros.js',
+    //'./macros/macros.es6',
     './functions/color.es6',
     './filters/property_name_validator.js',
     './filters/macro_preprocessor.es6',

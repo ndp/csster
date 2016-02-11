@@ -1,4 +1,4 @@
-import {horizontalCentering} from '../../src/macros/macros.js'
+import horizontalCentering from '../../src/macros/horizontalCentering.es6'
 
 
 describe('horizontal centering', () => {

@@ -49,13 +49,12 @@
 	__webpack_require__(3);
 	__webpack_require__(4);
 	__webpack_require__(5);
-	__webpack_require__(6);
-	__webpack_require__(10);
-	__webpack_require__(7);
+	__webpack_require__(18);
+	__webpack_require__(14);
+	__webpack_require__(22);
 	__webpack_require__(15);
-	__webpack_require__(8);
-	__webpack_require__(16);
-	module.exports = __webpack_require__(17);
+	__webpack_require__(23);
+	module.exports = __webpack_require__(24);
 
 
 /***/ },
@@ -200,33 +199,32 @@
 
 	var arrayEach    = __webpack_require__(1).arrayEach
 	var arrayFlatten = __webpack_require__(1).arrayFlatten
-	var dasherize    = __webpack_require__(3).dasherize
 
 	Csster.arrayFlatten          = arrayFlatten
-	Csster.propertyNameValidator = __webpack_require__(7)
+	Csster.propertyNameValidator = __webpack_require__(14)
 
 
 	/**
 	 * Remove redundant parents from selectors that include more than one ID
 	 * selector.  eg.  #page #top => "#top"
 	 */
-	Csster.compressSelectors = __webpack_require__(8).compressSelectors
+	Csster.compressSelectors = __webpack_require__(15).compressSelectors
 
 	Csster.browser     = __webpack_require__(4).browser
 	Csster.browserInfo = __webpack_require__(4).browserInfo
 
-	Csster.rulesPostProcessors = __webpack_require__(9).rulesPostProcessors;
-	var postProcessRules           = __webpack_require__(9).postProcessRules;
+	Csster.rulesPostProcessors = __webpack_require__(16).rulesPostProcessors;
+	var postProcessRules           = __webpack_require__(16).postProcessRules;
 
-	Csster.propertyPreprocessors = __webpack_require__(14).propertyPreprocessors
+	Csster.propertyPreprocessors = __webpack_require__(17).propertyPreprocessors
 
-	Csster.hslToHexColor = __webpack_require__(10).hslToHexColor
+	Csster.hslToHexColor = __webpack_require__(18).hslToHexColor
 
-	__webpack_require__(10).colorizeString()
+	__webpack_require__(18).colorizeString()
 
 
-	Csster.propertyNameOf = __webpack_require__(11).propertyNameOf
-	var formatProperty    = __webpack_require__(12).propertyFormatter
+	Csster.propertyNameOf = __webpack_require__(19).propertyNameOf
+	var formatProperty    = __webpack_require__(20).propertyFormatter
 
 	Csster.rulesToCss = function (rules) {
 	  // IE doesn't seem to matter:  http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
@@ -269,7 +267,7 @@
 	  Csster.insertCss(css)
 	}
 
-	var ruleBuilder = __webpack_require__(13).ruleBuilder
+	var ruleBuilder = __webpack_require__(21).ruleBuilder
 
 	Csster.processRules = function (input) {
 
@@ -309,13 +307,64 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*
-	 * Functions that return a set of properties and their values.
-	 * They can be inserted as style rules using "has" property.
-	 */
-	var browserInfo = __webpack_require__(4).browserInfo
-	var isArray = __webpack_require__(1).isArray
+	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.imageReplacement = exports.clearfix = exports.linearGradient = exports.verticalCentering = exports.horizontalCentering = exports.boxShadow = exports.roundedCorners = undefined;
+
+	var _roundedCorners = __webpack_require__(7);
+
+	var _roundedCorners2 = _interopRequireDefault(_roundedCorners);
+
+	var _boxShadow = __webpack_require__(8);
+
+	var _boxShadow2 = _interopRequireDefault(_boxShadow);
+
+	var _horizontalCentering = __webpack_require__(9);
+
+	var _horizontalCentering2 = _interopRequireDefault(_horizontalCentering);
+
+	var _verticalCentering = __webpack_require__(10);
+
+	var _verticalCentering2 = _interopRequireDefault(_verticalCentering);
+
+	var _linearGradient = __webpack_require__(11);
+
+	var _linearGradient2 = _interopRequireDefault(_linearGradient);
+
+	var _clearfix = __webpack_require__(12);
+
+	var _clearfix2 = _interopRequireDefault(_clearfix);
+
+	var _imageReplacement = __webpack_require__(13);
+
+	var _imageReplacement2 = _interopRequireDefault(_imageReplacement);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.roundedCorners = _roundedCorners2.default;
+	exports.boxShadow = _boxShadow2.default;
+	exports.horizontalCentering = _horizontalCentering2.default;
+	exports.verticalCentering = _verticalCentering2.default;
+	exports.linearGradient = _linearGradient2.default;
+	exports.clearfix = _clearfix2.default;
+	exports.imageReplacement = _imageReplacement2.default; /*
+	                                                        * Functions that return a set of properties and their values.
+	                                                        * They can be inserted as style rules using "has" property.
+	                                                        */
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = roundedCorners;
 	/**
 	 *  Return rounded corner properties. Call with an optional side and a radius.
 	 *
@@ -336,36 +385,45 @@
 	      '-moz-border-radius': radius,
 	      'border-radius': radius,
 	      '-webkit-border-radius': radius
-	//            behavior: 'url(src/border-radius.htc)',
-	//            position: 'relative',zoom: '1'
-	    }
+	      //            behavior: 'url(src/border-radius.htc)',
+	      //            position: 'relative',zoom: '1'
+	    };
 	  } else {
-	    var rules = {};
-	    if (side == 'tl' || side == 'top' || side == 'left') {
-	      rules['-moz-border-radius-topleft'] = radius;
-	      rules['-webkit-border-top-left-radius'] = radius;
-	      rules['border-top-left-radius'] = radius;
+	      var rules = {};
+	      if (side == 'tl' || side == 'top' || side == 'left') {
+	        rules['-moz-border-radius-topleft'] = radius;
+	        rules['-webkit-border-top-left-radius'] = radius;
+	        rules['border-top-left-radius'] = radius;
+	      }
+	      if (side == 'tr' || side == 'top' || side == 'right') {
+	        rules['-webkit-border-top-right-radius'] = radius;
+	        rules['-moz-border-radius-topright'] = radius;
+	        rules['border-top-right-radius'] = radius;
+	      }
+	      if (side == 'bl' || side == 'bottom' || side == 'left') {
+	        rules['-webkit-border-bottom-left-radius'] = radius;
+	        rules['-moz-border-radius-bottomleft'] = radius;
+	        rules['border-bottom-left-radius'] = radius;
+	      }
+	      if (side == 'br' || side == 'bottom' || side == 'right') {
+	        rules['-webkit-border-bottom-right-radius'] = radius;
+	        rules['-moz-border-radius-bottomright'] = radius;
+	        rules['border-bottom-right-radius'] = radius;
+	      }
+	      return rules;
 	    }
-	    if (side == 'tr' || side == 'top' || side == 'right') {
-	      rules['-webkit-border-top-right-radius'] = radius;
-	      rules['-moz-border-radius-topright'] = radius;
-	      rules['border-top-right-radius'] = radius;
-	    }
-	    if (side == 'bl' || side == 'bottom' || side == 'left') {
-	      rules['-webkit-border-bottom-left-radius'] = radius;
-	      rules['-moz-border-radius-bottomleft'] = radius;
-	      rules['border-bottom-left-radius'] = radius;
-	    }
-	    if (side == 'br' || side == 'bottom' || side == 'right') {
-	      rules['-webkit-border-bottom-right-radius'] = radius;
-	      rules['-moz-border-radius-bottomright'] = radius;
-	      rules['border-bottom-right-radius'] = radius;
-	    }
-	    return rules;
-	  }
 	}
 
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = boxShadow;
 	/*
 	 Cross-browser box shadow code.
 
@@ -377,75 +435,35 @@
 	function boxShadow(offsetOrDirection, radius, color) {
 	  var xOffset, yOffset, strength, direction;
 	  if (typeof offsetOrDirection.length == 'undefined') {
-	    throw 'Not yet supported'
+	    throw 'Not yet supported';
 	  } else if (offsetOrDirection.length == 2) {
 	    xOffset = offsetOrDirection[0];
 	    yOffset = offsetOrDirection[1];
 	    strength = 4;
 	    direction = 135; // should be angle (atan) of above numbers
 	  } else {
-	    throw "boxShadow requires a direction (degree) or [xOffset, yOffset] in px measurements."
-	  }
+	      throw "boxShadow requires a direction (degree) or [xOffset, yOffset] in px measurements.";
+	    }
 
 	  return {
 	    '-moz-box-shadow': '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
 	    '-webkit-box-shadow': '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
 	    boxShadow: '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
-	    '-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=" + strength + ", Direction=" + direction + ", Color='" + color + "')",// IE 8
+	    '-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=" + strength + ", Direction=" + direction + ", Color='" + color + "')", // IE 8
 	    filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=" + strength + ", Direction=" + direction + ", Color='" + color + "')" // IE 5.5 - 7
 	  };
 	}
 
-	/**
-	 Basic Phark image replacement, defined here:
-	 http://www.mezzoblue.com/tests/revised-image-replacement/
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
 
-	 Supports sprites with option image positioning parameters (which default to 0).
-	 These values will (generally) be negative.
+	'use strict';
 
-	 width: width in pixels
-	 height: height in pixels
-	 img: url for the image, suitable for putting into a url() wrapper
-
-	 */
-	function imageReplacement(width, height, img, imgXPosition, imgYPosition) {
-	  if (typeof width == 'undefined' || typeof height == 'undefined' || typeof img == 'undefined') {
-	    throw "imageReplacement() requires width, height and img";
-	  }
-	  return {
-	    display: 'block',
-	    width: width,
-	    height: height,
-	    backgroundImage: 'url(' + img + ')',
-	    backgroundRepeat: 'no-repeat',
-	    backgroundPosition: '' + (imgXPosition || 0) + 'px ' + (imgYPosition || 0) + 'px',
-	    textIndent: -20000,
-	    overflow: 'hidden'
-	  };
-	}
-
-
-	function clearfix() {
-	  var css = {
-	    display: 'inline-block',
-	    '&:after': {
-	      content: ' ',
-	      display: 'block',
-	      width: 0,
-	      height: 0,
-	      lineHeight: 0,
-	      fontSize: 0,
-	      clear: 'both',
-	      visibility: 'hidden'
-	    }
-	  };
-	  if (browserInfo().msie) {
-	    css['zoom'] = '1'
-	  }
-	  return css;
-	}
-
-
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = horizontalCentering;
 	// http://stackoverflow.com/questions/148251/css-centering-tricks
 	function horizontalCentering(width) {
 	  return {
@@ -453,9 +471,19 @@
 	    position: 'absolute',
 	    left: '50%',
 	    marginLeft: -(width / 2)
-	  }
+	  };
 	}
 
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = verticalCentering;
 	// http://stackoverflow.com/questions/148251/css-centering-tricks
 	function verticalCentering(height) {
 	  return {
@@ -463,35 +491,48 @@
 	    position: 'absolute',
 	    top: '50%',
 	    marginTop: -(height / 2)
-	  }
+	  };
 	}
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = linearGradient;
+
+	var _browser = __webpack_require__(4);
+
+	var _array = __webpack_require__(1);
 
 	function linearGradient(startingPoint, color1, color2, etc) {
 	  var prefix = '',
 	      result = '';
-	  if (browserInfo().webkit) {
+	  if ((0, _browser.browserInfo)().webkit) {
 	    prefix = '-webkit';
-	  } else if (browserInfo().mozilla) {
+	  } else if ((0, _browser.browserInfo)().mozilla) {
 	    prefix = '-moz';
 	  }
-
 
 	  var stops = [];
 	  for (var i = 0; i < arguments.length; i++) {
 	    var argument = arguments[i];
 	    if (typeof argument == 'string') {
 	      stops.push(argument);
-	    } else if (isArray(argument)) {
+	    } else if ((0, _array.isArray)(argument)) {
 	      for (var j = 0; j < argument.length; j++) {
 	        stops.push(argument[j]);
 	      }
 	    } else {
 	      for (var p in arguments[i]) {
-	        stops.push(argument[p] + (p != 0 && p != '100' ? (' ' + p + '%') : ''));
+	        stops.push(argument[p] + (p != 0 && p != '100' ? ' ' + p + '%' : ''));
 	      }
 	    }
 	  }
-
 
 	  result = prefix + '-linear-gradient(';
 	  for (i = 0; i < stops.length; i++) {
@@ -537,19 +578,79 @@
 	//        l = l.substr(0, l.length - 1) + ");";
 	//        return l
 
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = {
-	  roundedCorners: roundedCorners,
-	  boxShadow: boxShadow,
-	  horizontalCentering: horizontalCentering,
-	  verticalCentering: verticalCentering,
-	  linearGradient: linearGradient,
-	  clearfix: clearfix,
-	  imageReplacement: imageReplacement
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = clearfix;
+
+	var _browser = __webpack_require__(4);
+
+	function clearfix() {
+	  var css = {
+	    display: 'inline-block',
+	    '&:after': {
+	      content: ' ',
+	      display: 'block',
+	      width: 0,
+	      height: 0,
+	      lineHeight: 0,
+	      fontSize: 0,
+	      clear: 'both',
+	      visibility: 'hidden'
+	    }
+	  };
+	  if ((0, _browser.browserInfo)().msie) {
+	    css['zoom'] = '1';
+	  }
+	  return css;
 	}
 
 /***/ },
-/* 7 */
+/* 13 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = imageReplacement;
+	/**
+	 Basic Phark image replacement, defined here:
+	 http://www.mezzoblue.com/tests/revised-image-replacement/
+
+	 Supports sprites with option image positioning parameters (which default to 0).
+	 These values will (generally) be negative.
+
+	 width: width in pixels
+	 height: height in pixels
+	 img: url for the image, suitable for putting into a url() wrapper
+
+	 */
+	function imageReplacement(width, height, img, imgXPosition, imgYPosition) {
+	  if (typeof width == 'undefined' || typeof height == 'undefined' || typeof img == 'undefined') {
+	    throw "imageReplacement() requires width, height and img";
+	  }
+	  return {
+	    display: 'block',
+	    width: width,
+	    height: height,
+	    backgroundImage: 'url(' + img + ')',
+	    backgroundRepeat: 'no-repeat',
+	    backgroundPosition: '' + (imgXPosition || 0) + 'px ' + (imgYPosition || 0) + 'px',
+	    textIndent: -20000,
+	    overflow: 'hidden'
+	  };
+	}
+
+/***/ },
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -872,7 +973,7 @@
 
 
 /***/ },
-/* 8 */
+/* 15 */
 /***/ function(module, exports) {
 
 	/**
@@ -898,7 +999,7 @@
 	}
 
 /***/ },
-/* 9 */
+/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -919,7 +1020,32 @@
 	exports.postProcessRules = postProcessRules;
 
 /***/ },
-/* 10 */
+/* 17 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var propertyPreprocessors = [];
+
+	var preprocessProperties = function preprocessProperties(properties) {
+	  for (var i = 0; i < propertyPreprocessors.length; i++) {
+	    propertyPreprocessors[i].apply(properties, [properties]);
+	  }
+	};
+
+	var pushPropertyPreprocessor = function pushPropertyPreprocessor(pp) {
+	  propertyPreprocessors.push(pp);
+	};
+
+	exports.preprocessProperties = preprocessProperties;
+	exports.pushPropertyPreprocessor = pushPropertyPreprocessor;
+	exports.propertyPreprocessors = propertyPreprocessors;
+
+/***/ },
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1120,7 +1246,7 @@
 	exports.colorizeString = colorizeString;
 
 /***/ },
-/* 11 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1132,7 +1258,7 @@
 
 	var _string = __webpack_require__(3);
 
-	var _property_name_validator = __webpack_require__(7);
+	var _property_name_validator = __webpack_require__(14);
 
 	var propertyNameValidator = _interopRequireWildcard(_property_name_validator);
 
@@ -1150,7 +1276,7 @@
 	exports.propertyNameOf = propertyNameOf;
 
 /***/ },
-/* 12 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1160,7 +1286,7 @@
 	});
 	exports.propertyFormatter = undefined;
 
-	var _propertyNameOf = __webpack_require__(11);
+	var _propertyNameOf = __webpack_require__(19);
 
 	var propertyFormatter = function propertyFormatter(p, value) {
 	  p = (0, _propertyNameOf.propertyNameOf)(p);
@@ -1173,7 +1299,7 @@
 	exports.propertyFormatter = propertyFormatter;
 
 /***/ },
-/* 13 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1185,9 +1311,9 @@
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-	var _propertyPreprocessor = __webpack_require__(14);
+	var _propertyPreprocessor = __webpack_require__(17);
 
-	var _propertyNameOf = __webpack_require__(11);
+	var _propertyNameOf = __webpack_require__(19);
 
 	var trimString = function trimString(s) {
 	  return s.replace(/^\s*/, "").replace(/\s*$/, "");
@@ -1232,32 +1358,7 @@
 	exports.ruleBuilder = ruleBuilder;
 
 /***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var propertyPreprocessors = [];
-
-	var preprocessProperties = function preprocessProperties(properties) {
-	  for (var i = 0; i < propertyPreprocessors.length; i++) {
-	    propertyPreprocessors[i].apply(properties, [properties]);
-	  }
-	};
-
-	var pushPropertyPreprocessor = function pushPropertyPreprocessor(pp) {
-	  propertyPreprocessors.push(pp);
-	};
-
-	exports.preprocessProperties = preprocessProperties;
-	exports.pushPropertyPreprocessor = pushPropertyPreprocessor;
-	exports.propertyPreprocessors = propertyPreprocessors;
-
-/***/ },
-/* 15 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1304,12 +1405,12 @@
 	   */
 
 /***/ },
-/* 16 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _macro_preprocessor = __webpack_require__(15);
+	var _macro_preprocessor = __webpack_require__(22);
 
 	var _macro_preprocessor2 = _interopRequireDefault(_macro_preprocessor);
 
@@ -1318,7 +1419,7 @@
 	Csster.propertyPreprocessors.push((0, _macro_preprocessor2.default)('has'));
 
 /***/ },
-/* 17 */
+/* 24 */
 /***/ function(module, exports) {
 
 	if (typeof jQuery != 'undefined') {

@@ -1,4 +1,4 @@
-import { clearfix} from '../../src/macros/macros.js'
+import clearfix from '../../src/macros/clearfix.es6'
 
 describe('clearfix', () => {
   var rules;

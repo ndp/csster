@@ -1,4 +1,4 @@
-import {roundedCorners} from '../../src/macros/macros.js'
+import roundedCorners from '../../src/macros/roundedCorners.es6'
 
 
 describe('roundedCorners', () => {

@@ -48,12 +48,14 @@
 	__webpack_require__(1);
 	__webpack_require__(2);
 	__webpack_require__(3);
-	__webpack_require__(7);
+	__webpack_require__(4);
 	__webpack_require__(5);
-	__webpack_require__(8);
-	__webpack_require__(6);
-	__webpack_require__(9);
-	module.exports = __webpack_require__(10);
+	__webpack_require__(18);
+	__webpack_require__(14);
+	__webpack_require__(22);
+	__webpack_require__(15);
+	__webpack_require__(23);
+	module.exports = __webpack_require__(24);
 
 
 /***/ },
@@ -65,11 +67,9 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var _arguments = arguments;
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-	// A R R A Y s
 	var isArray = function isArray(object) {
 	  return (typeof object === 'undefined' ? 'undefined' : _typeof(object)) === 'object' && Object.prototype.toString.call(object) === '[object Array]';
 	};
@@ -97,14 +97,20 @@
 	  });
 	};
 
-	// S T R I N G s
-	var dasherize = function dasherize(s) {
-	  return s.replace(/([A-Z])/g, function ($1) {
-	    return "-" + $1.toLowerCase();
-	  });
-	};
+	exports.isArray = isArray;
+	exports.arrayEach = arrayEach;
+	exports.arrayInject = arrayInject;
+	exports.arrayFlatten = arrayFlatten;
 
-	// H A S H e s
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	//  mergeHashInto(hashA, hashB, hashC...)
 	// merge all properties from B, C into hash A.
 	var mergeHashInto = function mergeHashInto(dest) {
@@ -120,122 +126,107 @@
 	  return dest;
 	};
 
-	var mergeHashes = function mergeHashes() {
-	  var result = {};
-	  for (var i = 0; i < _arguments.length; i++) {
-	    for (var k in _arguments[i]) {
-	      result[k] = _arguments[i][k];
-	    }
-	  }
-	  return result;
-	};
-
-	exports.isArray = isArray;
-	exports.arrayEach = arrayEach;
-	exports.arrayInject = arrayInject;
-	exports.arrayFlatten = arrayFlatten;
-	exports.dasherize = dasherize;
 	exports.mergeHashInto = mergeHashInto;
-	exports.mergeHashes = mergeHashes;
 
 /***/ },
-/* 2 */
+/* 3 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	// S T R I N G s
+	var dasherize = function dasherize(s) {
+	  return s.replace(/([A-Z])/g, function ($1) {
+	    return "-" + $1.toLowerCase();
+	  });
+	};
+
+	exports.dasherize = dasherize;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	// Lifted from jQuery: http://docs.jquery.com/Utilities/jQuery.browser
+	var browser = {};
+
+	function uaMatch(ua) {
+	  ua = ua.toLowerCase();
+
+	  var match = /(webkit)[ \/]([\w.]+)/.exec(ua) || /(opera)(?:.*version)?[ \/]([\w.]+)/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || !/compatible/.test(ua) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec(ua) || [];
+
+	  return { browser: match[1] || "", version: match[2] || "0" };
+	}
+
+	if (typeof navigator !== 'undefined') {
+	  var browserMatch = uaMatch(navigator.userAgent);
+	  if (browserMatch.browser) {
+	    browser[browserMatch.browser] = true;
+	    browser.version = browserMatch.version;
+	  }
+	}
+
+	var browserInfo = function browserInfo() {
+	  if (typeof global !== 'undefined' && global.browserOverride) {
+	    return global.browserOverride;
+	  } else {
+	    return browser;
+	  }
+	};
+
+	exports.browser = browser;
+	exports. // legacy static structure
+	browserInfo // fn that can be overridden for tests
+	 = browserInfo;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	if (!window.Csster) {
 	  window.Csster = {}
 	}
 
-	Csster.macros = __webpack_require__(3)
+	Csster.macros = __webpack_require__(6)
 
 	var arrayEach    = __webpack_require__(1).arrayEach
 	var arrayFlatten = __webpack_require__(1).arrayFlatten
-	var dasherize    = __webpack_require__(1).dasherize
+	var dasherize    = __webpack_require__(3).dasherize
 
 	Csster.arrayFlatten          = arrayFlatten
-	Csster.propertyNameValidator = __webpack_require__(5)
+	Csster.propertyNameValidator = __webpack_require__(14)
 
 
 	/**
 	 * Remove redundant parents from selectors that include more than one ID
 	 * selector.  eg.  #page #top => "#top"
 	 */
-	Csster.compressSelectors = __webpack_require__(6).compressSelectors
+	Csster.compressSelectors = __webpack_require__(15).compressSelectors
 
-	Csster.browser           = __webpack_require__(4)
+	Csster.browser     = __webpack_require__(4).browser
+	Csster.browserInfo = __webpack_require__(4).browserInfo
 
-	Csster.propertyPreprocessors = [];
-	Csster.rulesPostProcessors   = [];
+	Csster.rulesPostProcessors = __webpack_require__(16).rulesPostProcessors;
+	var postProcessRules           = __webpack_require__(16).postProcessRules;
 
+	Csster.propertyPreprocessors = __webpack_require__(17).propertyPreprocessors
 
-	/*
-	 Returns the CSS-correct lowercase property name, if it's recognized
-	 as a property. Null otherwise.
-	 */
-	Csster.propertyNameOf = function (p) {
-	  name = dasherize(p);
-	  return Csster.propertyNameValidator.validate(name)
-	}
+	Csster.hslToHexColor = __webpack_require__(18).hslToHexColor
 
-	Csster.formatProperty = function (p, value) {
-	  p = Csster.propertyNameOf(p);
-	  if (value && typeof value == 'number' &&
-	      p != 'z-index' && p != 'opacity' && p != 'zoom') {
-	    value = '' + value + 'px';
-	  }
-	  return p + ": " + value + ";\r";
-	};
+	__webpack_require__(18).colorizeString()
 
 
-	Csster.preprocessProperties = function (properties) {
-	  for (var i = 0; i < Csster.propertyPreprocessors.length; i++) {
-	    Csster.propertyPreprocessors[i].apply(properties, [properties])
-	  }
-	}
-
-	var trimString = function (s) {
-	  return s.replace(/^\s*/, "").replace(/\s*$/, "");
-	}
-
-	Csster.expandAndFlatten = function (selector, properties) {
-
-	  selector = trimString(selector);
-
-	  Csster.preprocessProperties(properties);
-
-	  // ...all properties that look like properties
-	  // Output selector...
-	  var props = {};
-	  for (var p in properties) {
-	    if (Csster.propertyNameOf(p)) {
-	      props[p] = properties[p];
-	      delete properties[p];
-	    }
-	  }
-
-	  // ... finally, sub-selectors
-	  var rules = [
-	    {sel: selector, props: props}
-	  ];
-	  for (p in properties) {
-
-	    if (typeof properties[p] === 'string' || typeof properties[p] === 'number') {
-	      console.log('selector', selector)
-	      console.log('props', props)
-	      throw "Unknown CSS property \"" + p + "\" (" + typeof properties[p] + "). Rule rejected for selector " + selector;
-	    }
-
-	    var subs = p.split(',');
-	    for (var s = 0; s < subs.length; s++) {
-	      var str     = subs[s];
-	      var ampRule = (str.substr(0, 1) == '&');
-	      subs[s]     = selector + (ampRule ? str.substr(1) : ' ' + trimString(str));
-	    }
-	    rules.push(Csster.expandAndFlatten(subs.join(','), properties[p]));
-	  }
-
-	  return rules;
-	}
+	Csster.propertyNameOf = __webpack_require__(19).propertyNameOf
+	var formatProperty    = __webpack_require__(20).propertyFormatter
 
 	Csster.rulesToCss = function (rules) {
 	  // IE doesn't seem to matter:  http://msdn.microsoft.com/en-us/library/ms535871(v=VS.85).aspx
@@ -243,7 +234,7 @@
 	  var formatProperties = function (props) {
 	    var result = '';
 	    for (var p in props) {
-	      result += Csster.formatProperty(p, props[p]);
+	      result += formatProperty(p, props[p]);
 	    }
 	    return result;
 	  };
@@ -278,6 +269,7 @@
 	  Csster.insertCss(css)
 	}
 
+	var ruleBuilder = __webpack_require__(21).ruleBuilder
 
 	Csster.processRules = function (input) {
 
@@ -285,7 +277,7 @@
 	  var resolveRuleHash = function (cssRule) {
 	    var result = [];
 	    for (var key in cssRule) {
-	      result.push(Csster.expandAndFlatten(key, cssRule[key]));
+	      result.push(ruleBuilder(key, cssRule[key]));
 	    }
 	    return result;
 	  };
@@ -297,14 +289,8 @@
 	  });
 	  rules     = arrayFlatten(rules);
 
-	  Csster.postProcessRules(rules);
+	  postProcessRules(rules);
 	  return rules;
-	};
-
-	Csster.postProcessRules = function (rules) {
-	  for (var i = 0; i < Csster.rulesPostProcessors.length; i++) {
-	    Csster.rulesPostProcessors[i].apply(rules, [rules])
-	  }
 	};
 
 
@@ -320,14 +306,43 @@
 
 
 /***/ },
-/* 3 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*
-	 * Functions that return a set of properties and their values.
-	 * They can be inserted as style rules using "has" property.
-	 */
-	var browser = __webpack_require__(4)
+	'use strict';
+
+	var _roundedCorners = __webpack_require__(7);
+
+	var _boxShadow = __webpack_require__(8);
+
+	var _horizontalCentering = __webpack_require__(9);
+
+	var _verticalCentering = __webpack_require__(10);
+
+	var _linearGradient = __webpack_require__(11);
+
+	var _clearfix = __webpack_require__(12);
+
+	var _imageReplacement = __webpack_require__(13);
+
+	exports = {
+	  roundedCorners: _roundedCorners.roundedCorners,
+	  boxShadow: _boxShadow.boxShadow,
+	  horizontalCentering: _horizontalCentering.horizontalCentering,
+	  verticalCentering: _verticalCentering.verticalCentering,
+	  linearGradient: _linearGradient.linearGradient,
+	  clearfix: _clearfix.clearfix,
+	  imageReplacement: _imageReplacement.imageReplacement
+	}; /*
+	    * Functions that return a set of properties and their values.
+	    * They can be inserted as style rules using "has" property.
+	    */
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	'use strict';
 
 	/**
 	 *  Return rounded corner properties. Call with an optional side and a radius.
@@ -349,35 +364,44 @@
 	      '-moz-border-radius': radius,
 	      'border-radius': radius,
 	      '-webkit-border-radius': radius
-	//            behavior: 'url(src/border-radius.htc)',
-	//            position: 'relative',zoom: '1'
-	    }
+	      //            behavior: 'url(src/border-radius.htc)',
+	      //            position: 'relative',zoom: '1'
+	    };
 	  } else {
-	    var rules = {};
-	    if (side == 'tl' || side == 'top' || side == 'left') {
-	      rules['-moz-border-radius-topleft'] = radius;
-	      rules['-webkit-border-top-left-radius'] = radius;
-	      rules['border-top-left-radius'] = radius;
+	      var rules = {};
+	      if (side == 'tl' || side == 'top' || side == 'left') {
+	        rules['-moz-border-radius-topleft'] = radius;
+	        rules['-webkit-border-top-left-radius'] = radius;
+	        rules['border-top-left-radius'] = radius;
+	      }
+	      if (side == 'tr' || side == 'top' || side == 'right') {
+	        rules['-webkit-border-top-right-radius'] = radius;
+	        rules['-moz-border-radius-topright'] = radius;
+	        rules['border-top-right-radius'] = radius;
+	      }
+	      if (side == 'bl' || side == 'bottom' || side == 'left') {
+	        rules['-webkit-border-bottom-left-radius'] = radius;
+	        rules['-moz-border-radius-bottomleft'] = radius;
+	        rules['border-bottom-left-radius'] = radius;
+	      }
+	      if (side == 'br' || side == 'bottom' || side == 'right') {
+	        rules['-webkit-border-bottom-right-radius'] = radius;
+	        rules['-moz-border-radius-bottomright'] = radius;
+	        rules['border-bottom-right-radius'] = radius;
+	      }
+	      return rules;
 	    }
-	    if (side == 'tr' || side == 'top' || side == 'right') {
-	      rules['-webkit-border-top-right-radius'] = radius;
-	      rules['-moz-border-radius-topright'] = radius;
-	      rules['border-top-right-radius'] = radius;
-	    }
-	    if (side == 'bl' || side == 'bottom' || side == 'left') {
-	      rules['-webkit-border-bottom-left-radius'] = radius;
-	      rules['-moz-border-radius-bottomleft'] = radius;
-	      rules['border-bottom-left-radius'] = radius;
-	    }
-	    if (side == 'br' || side == 'bottom' || side == 'right') {
-	      rules['-webkit-border-bottom-right-radius'] = radius;
-	      rules['-moz-border-radius-bottomright'] = radius;
-	      rules['border-bottom-right-radius'] = radius;
-	    }
-	    return rules;
-	  }
 	}
 
+	module.exports = {
+	  roundedCorners: roundedCorners
+	};
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	'use strict';
 
 	/*
 	 Cross-browser box shadow code.
@@ -390,74 +414,34 @@
 	function boxShadow(offsetOrDirection, radius, color) {
 	  var xOffset, yOffset, strength, direction;
 	  if (typeof offsetOrDirection.length == 'undefined') {
-	    throw 'Not yet supported'
+	    throw 'Not yet supported';
 	  } else if (offsetOrDirection.length == 2) {
 	    xOffset = offsetOrDirection[0];
 	    yOffset = offsetOrDirection[1];
 	    strength = 4;
 	    direction = 135; // should be angle (atan) of above numbers
 	  } else {
-	    throw "boxShadow requires a direction (degree) or [xOffset, yOffset] in px measurements."
-	  }
+	      throw "boxShadow requires a direction (degree) or [xOffset, yOffset] in px measurements.";
+	    }
 
 	  return {
 	    '-moz-box-shadow': '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
 	    '-webkit-box-shadow': '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
 	    boxShadow: '' + xOffset + 'px ' + yOffset + 'px ' + radius + 'px ' + color,
-	    '-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=" + strength + ", Direction=" + direction + ", Color='" + color + "')",// IE 8
+	    '-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=" + strength + ", Direction=" + direction + ", Color='" + color + "')", // IE 8
 	    filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=" + strength + ", Direction=" + direction + ", Color='" + color + "')" // IE 5.5 - 7
 	  };
 	}
 
-	/**
-	 Basic Phark image replacement, defined here:
-	 http://www.mezzoblue.com/tests/revised-image-replacement/
+	module.exports = {
+	  boxShadow: boxShadow
+	};
 
-	 Supports sprites with option image positioning parameters (which default to 0).
-	 These values will (generally) be negative.
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
 
-	 width: width in pixels
-	 height: height in pixels
-	 img: url for the image, suitable for putting into a url() wrapper
-
-	 */
-	function imageReplacement(width, height, img, imgXPosition, imgYPosition) {
-	  if (typeof width == 'undefined' || typeof height == 'undefined' || typeof img == 'undefined') {
-	    throw "imageReplacement() requires width, height and img";
-	  }
-	  return {
-	    display: 'block',
-	    width: width,
-	    height: height,
-	    backgroundImage: 'url(' + img + ')',
-	    backgroundRepeat: 'no-repeat',
-	    backgroundPosition: '' + (imgXPosition || 0) + 'px ' + (imgYPosition || 0) + 'px',
-	    textIndent: -20000,
-	    overflow: 'hidden'
-	  };
-	}
-
-
-	function clearfix() {
-	  css = {
-	    display: 'inline-block',
-	    '&:after': {
-	      content: ' ',
-	      display: 'block',
-	      width: 0,
-	      height: 0,
-	      lineHeight: 0,
-	      fontSize: 0,
-	      clear: 'both',
-	      visibility: 'hidden'
-	    }
-	  };
-	  if (browser.msie) {
-	    css['zoom'] = '1'
-	  }
-	  return css;
-	}
-
+	'use strict';
 
 	// http://stackoverflow.com/questions/148251/css-centering-tricks
 	function horizontalCentering(width) {
@@ -466,8 +450,18 @@
 	    position: 'absolute',
 	    left: '50%',
 	    marginLeft: -(width / 2)
-	  }
+	  };
 	}
+
+	module.exports = {
+	  horizontalCentering: horizontalCentering
+	};
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	'use strict';
 
 	// http://stackoverflow.com/questions/148251/css-centering-tricks
 	function verticalCentering(height) {
@@ -476,35 +470,46 @@
 	    position: 'absolute',
 	    top: '50%',
 	    marginTop: -(height / 2)
-	  }
+	  };
 	}
+	module.exports = {
+	  verticalCentering: verticalCentering
+	};
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _browser = __webpack_require__(4);
+
+	var _array = __webpack_require__(1);
 
 	function linearGradient(startingPoint, color1, color2, etc) {
 	  var prefix = '',
 	      result = '';
-	  if (browser.webkit) {
+	  if ((0, _browser.browserInfo)().webkit) {
 	    prefix = '-webkit';
-	  } else if (browser.mozilla) {
+	  } else if ((0, _browser.browserInfo)().mozilla) {
 	    prefix = '-moz';
 	  }
-
 
 	  var stops = [];
 	  for (var i = 0; i < arguments.length; i++) {
 	    var argument = arguments[i];
 	    if (typeof argument == 'string') {
 	      stops.push(argument);
-	    } else if ($.isArray(argument)) {
+	    } else if ((0, _array.isArray)(argument)) {
 	      for (var j = 0; j < argument.length; j++) {
 	        stops.push(argument[j]);
 	      }
 	    } else {
-	      for (p in arguments[i]) {
-	        stops.push(argument[p] + (p != 0 && p != '100' ? (' ' + p + '%') : ''));
+	      for (var p in arguments[i]) {
+	        stops.push(argument[p] + (p != 0 && p != '100' ? ' ' + p + '%' : ''));
 	      }
 	    }
 	  }
-
 
 	  result = prefix + '-linear-gradient(';
 	  for (i = 0; i < stops.length; i++) {
@@ -514,6 +519,10 @@
 	  result += ')';
 	  return result;
 	}
+
+	module.exports = {
+	  linearGradient: linearGradient
+	};
 
 	//    },generateLinearGradient:function() {
 	//        var props = c.gradientProps,
@@ -550,46 +559,78 @@
 	//        l = l.substr(0, l.length - 1) + ");";
 	//        return l
 
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _browser = __webpack_require__(4);
+
+	function clearfix() {
+	  var css = {
+	    display: 'inline-block',
+	    '&:after': {
+	      content: ' ',
+	      display: 'block',
+	      width: 0,
+	      height: 0,
+	      lineHeight: 0,
+	      fontSize: 0,
+	      clear: 'both',
+	      visibility: 'hidden'
+	    }
+	  };
+	  if ((0, _browser.browserInfo)().msie) {
+	    css['zoom'] = '1';
+	  }
+	  return css;
+	}
 
 	module.exports = {
-	  roundedCorners: roundedCorners,
-	  boxShadow: boxShadow,
-	  horizontalCentering: horizontalCentering,
-	  verticalCentering: verticalCentering,
-	  linearGradient: linearGradient,
-	  clearfix: clearfix,
-	}
+	  clearfix: clearfix
+	};
 
 /***/ },
-/* 4 */
+/* 13 */
 /***/ function(module, exports) {
 
-	// Lifted from jQuery: http://docs.jquery.com/Utilities/jQuery.browser
-	var browser = {};
+	'use strict';
 
+	/**
+	 Basic Phark image replacement, defined here:
+	 http://www.mezzoblue.com/tests/revised-image-replacement/
 
-	function uaMatch(ua) {
-	  ua = ua.toLowerCase();
+	 Supports sprites with option image positioning parameters (which default to 0).
+	 These values will (generally) be negative.
 
-	  var match = /(webkit)[ \/]([\w.]+)/.exec(ua) ||
-	      /(opera)(?:.*version)?[ \/]([\w.]+)/.exec(ua) ||
-	      /(msie) ([\w.]+)/.exec(ua) ||
-	      !/compatible/.test(ua) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec(ua) ||
-	      [];
+	 width: width in pixels
+	 height: height in pixels
+	 img: url for the image, suitable for putting into a url() wrapper
 
-	  return {browser: match[1] || "", version: match[2] || "0"};
+	 */
+	function imageReplacement(width, height, img, imgXPosition, imgYPosition) {
+	  if (typeof width == 'undefined' || typeof height == 'undefined' || typeof img == 'undefined') {
+	    throw "imageReplacement() requires width, height and img";
+	  }
+	  return {
+	    display: 'block',
+	    width: width,
+	    height: height,
+	    backgroundImage: 'url(' + img + ')',
+	    backgroundRepeat: 'no-repeat',
+	    backgroundPosition: '' + (imgXPosition || 0) + 'px ' + (imgYPosition || 0) + 'px',
+	    textIndent: -20000,
+	    overflow: 'hidden'
+	  };
 	}
 
-	var browserMatch = uaMatch(navigator.userAgent);
-	if (browserMatch.browser) {
-	  browser[browserMatch.browser] = true;
-	  browser.version               = browserMatch.version;
-	}
-
-	module.exports = browser
+	module.exports = {
+	  imageReplacement: imageReplacement
+	};
 
 /***/ },
-/* 5 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -597,7 +638,7 @@
 	 */
 	var arrayFlatten = __webpack_require__(1).arrayFlatten
 
-	module.exports = propertyNameValidator = {
+	var propertyNameValidator = {
 
 	  propertyNamesHash: {},
 
@@ -608,13 +649,13 @@
 	    for (var a = 0; a < arguments.length; a++) {
 	      var names = arrayFlatten([arguments[a]]);
 	      for (var i = 0; i < names.length; i++) {
-	        var name = names[i];
+	        var name                     = names[i];
 	        this.propertyNamesHash[name] = true;
 	      }
 	    }
 	  },
 
-	  validate: function(name) {
+	  validate: function (name) {
 	    return this.propertyNamesHash[name] ? name : null;
 	  }
 	}
@@ -908,10 +949,11 @@
 	  '-webkit-user-select']);
 
 
+	module.exports = propertyNameValidator
 
 
 /***/ },
-/* 6 */
+/* 15 */
 /***/ function(module, exports) {
 
 	/**
@@ -937,28 +979,81 @@
 	}
 
 /***/ },
-/* 7 */
+/* 16 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var rulesPostProcessors = [];
+
+	var postProcessRules = function postProcessRules(rules) {
+	  for (var i = 0; i < rulesPostProcessors.length; i++) {
+	    rulesPostProcessors[i].apply(rules, [rules]);
+	  }
+	};
+
+	exports.rulesPostProcessors = rulesPostProcessors;
+	exports.postProcessRules = postProcessRules;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var propertyPreprocessors = [];
+
+	var preprocessProperties = function preprocessProperties(properties) {
+	  for (var i = 0; i < propertyPreprocessors.length; i++) {
+	    propertyPreprocessors[i].apply(properties, [properties]);
+	  }
+	};
+
+	var pushPropertyPreprocessor = function pushPropertyPreprocessor(pp) {
+	  propertyPreprocessors.push(pp);
+	};
+
+	exports.preprocessProperties = preprocessProperties;
+	exports.pushPropertyPreprocessor = pushPropertyPreprocessor;
+	exports.propertyPreprocessors = propertyPreprocessors;
+
+/***/ },
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(1).isArray
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.colorizeString = exports.hslToHexColor = undefined;
+
+	var _array = __webpack_require__(1);
 
 	var HTML4_COLORS = {
-	  'black':   '#000000',
-	  'silver':  '#c0c0c0',
-	  'gray':    '#808080',
-	  'white':   '#ffffff',
-	  'maroon':  '#800000',
-	  'red':     '#ff0000',
-	  'purple':  '#800080',
+	  'black': '#000000',
+	  'silver': '#c0c0c0',
+	  'gray': '#808080',
+	  'white': '#ffffff',
+	  'maroon': '#800000',
+	  'red': '#ff0000',
+	  'purple': '#800080',
 	  'fuchsia': '#ff00ff',
-	  'green':   '#008000',
-	  'lime':    '#00ff00',
-	  'olive':   '#808000',
-	  'yellow':  '#ffff00',
-	  'navy':    '#000080',
-	  'blue':    '#0000ff',
-	  'teal':    '#008080',
-	  'aqua':    '#00ffff'
+	  'green': '#008000',
+	  'lime': '#00ff00',
+	  'olive': '#808000',
+	  'yellow': '#ffff00',
+	  'navy': '#000080',
+	  'blue': '#0000ff',
+	  'teal': '#008080',
+	  'aqua': '#00ffff'
 	};
 
 	/*
@@ -968,88 +1063,88 @@
 	var immutableCache = {};
 
 	// returns (or creates) the cached color structure
-	var colorCache = function (c) {
+	var colorCache = function colorCache(c) {
 	  if (!immutableCache[c]) immutableCache[c] = {};
 	  return immutableCache[c];
 	};
 
-	String.prototype.toHexColor = function () {
+	var toHexColor = function toHexColor() {
 	  if (this.substr(0, 1) == '#' && this.length == 7) {
 	    colorCache(this)['hex'] = '' + this;
 	  } else if (this.substr(0, 1) == '#' && this.length == 4) {
-	    colorCache(this)['hex'] = '#' + this.substr(1, 1) + this.substr(1, 1) +
-	        this.substr(2, 1) + this.substr(2, 1) +
-	        this.substr(3, 1) + this.substr(3, 1);
+	    colorCache(this)['hex'] = '#' + this.substr(1, 1) + this.substr(1, 1) + this.substr(2, 1) + this.substr(2, 1) + this.substr(3, 1) + this.substr(3, 1);
 	  } else {
 	    colorCache(this)['hex'] = HTML4_COLORS[this];
 	  }
 	  return colorCache(this)['hex'];
 	};
 
-	String.prototype.toRGB = function () {
+	var toRGB = function toRGB() {
 	  var cache = colorCache(this);
 	  if (cache.rgb) return cache.rgb;
-	  var h     = this.toHexColor();
+	  var h = this.toHexColor();
 	  cache.rgb = [parseInt(h.substr(1, 2), 16), parseInt(h.substr(3, 2), 16), parseInt(h.substr(5, 2), 16)];
 	  return cache.rgb;
 	};
 
-	String.prototype.red     = function () {
+	var red = function red() {
 	  return this.toRGB()[0];
 	};
-	String.prototype.green   = function () {
+	var green = function green() {
 	  return this.toRGB()[1];
 	};
-	String.prototype.blue    = function () {
+	var blue = function blue() {
 	  return this.toRGB()[2];
 	};
-	String.prototype.lighten = function (percent) {
-	  var hsl    = this.toHSL();
+	var lighten = function lighten(percent) {
+	  var hsl = this.toHSL();
 	  var newHSL = [hsl[0], hsl[1], Math.min(100, hsl[2] + percent)];
-	  return Csster.hslToHexColor(newHSL);
+	  return hslToHexColor(newHSL);
 	};
 
-	String.prototype.darken = function (percent) {
-	  var hsl    = this.toHSL();
+	var darken = function darken(percent) {
+	  var hsl = this.toHSL();
 	  var newHSL = [hsl[0], hsl[1], Math.max(0, hsl[2] - percent)];
-	  return Csster.hslToHexColor(newHSL);
+	  return hslToHexColor(newHSL);
 	};
-
 
 	/**
 	 * Increase or decrease the saturation of a color.
 	 * @param percent positive values increase saturation, negative values desaturate.
 	 */
-	String.prototype.saturate = function (percent) {
-	  var hsl    = this.toHSL();
+	var saturate = function saturate(percent) {
+	  var hsl = this.toHSL();
 	  var newHSL = [hsl[0], Math.min(100, Math.max(0, hsl[1] + percent)), hsl[2]];
-	  return Csster.hslToHexColor(newHSL);
+	  return hslToHexColor(newHSL);
 	};
 
 	// [0..360, 0..100, 0.100]
 	// Ref. http://www.easyrgb.com/index.php?X=MATH&H=18#text18
-	String.prototype.toHSL = function () {
+	var toHSL = function toHSL() {
 	  var rgb = this.toRGB();
-	  var r   = this.red() / 255, g = this.green() / 255, b = this.blue() / 255;
-	  var max = Math.max(r, g, b), min = Math.min(r, g, b);
-	  var d   = max - min; // Delta RGB value
-	  var h, s, l = (max + min) / 2;
+	  var r = this.red() / 255,
+	      g = this.green() / 255,
+	      b = this.blue() / 255;
+	  var max = Math.max(r, g, b),
+	      min = Math.min(r, g, b);
+	  var d = max - min; // Delta RGB value
+	  var h = undefined,
+	      s = undefined,
+	      l = (max + min) / 2;
 
-
-	  if (d == 0) { // gray?, no chroma...
-	    h = 0;                                // HSl results from 0 to 1
+	  if (d == 0) {
+	    // gray?, no chroma...
+	    h = 0; // HSl results from 0 to 1
 	    s = 0;
 	  } else {
 	    // Chromatic data...
-	    s = d / ( l < 0.5 ? ( max + min ) : ( 2 - max - min ));
+	    s = d / (l < 0.5 ? max + min : 2 - max - min);
 
-	    var del_R = ( ( ( max - r ) / 6 ) + ( d / 2 ) ) / d;
-	    var del_G = ( ( ( max - g ) / 6 ) + ( d / 2 ) ) / d;
-	    var del_B = ( ( ( max - b ) / 6 ) + ( d / 2 ) ) / d;
+	    var del_R = ((max - r) / 6 + d / 2) / d;
+	    var del_G = ((max - g) / 6 + d / 2) / d;
+	    var del_B = ((max - b) / 6 + d / 2) / d;
 
-	    if (r == max) h = del_B - del_G;
-	    else if (g == max) h = ( 1 / 3 ) + del_R - del_B;
-	    else if (b == max) h = ( 2 / 3 ) + del_G - del_R;
+	    if (r == max) h = del_B - del_G;else if (g == max) h = 1 / 3 + del_R - del_B;else if (b == max) h = 2 / 3 + del_G - del_R;
 
 	    if (h < 0) h += 1;
 	    if (h > 0) h -= 1;
@@ -1063,8 +1158,8 @@
 	  return cache.hsl;
 	};
 
-	Csster.hslToHexColor = function (h, s, l) {
-	  if (isArray(h)) {
+	var hslToHexColor = function hslToHexColor(h, s, l) {
+	  if ((0, _array.isArray)(h)) {
 	    l = h[2] || 0;
 	    s = h[1] || 0;
 	    h = h[0] || 0;
@@ -1072,24 +1167,26 @@
 	  //HSL from 0 to 1
 	  s = s / 100.0;
 	  l = l / 100.0;
-	  h = ((h + 360) % 360.0) / 360;
+	  h = (h + 360) % 360.0 / 360;
 
 	  function hsl2rgb(h, s, l) {
 	    // HSL 0 to 1
 	    //RGB results from 0 to 255
-	    var r, g, b;
+	    var r = undefined,
+	        g = undefined,
+	        b = undefined;
 
 	    if (s == 0) {
 	      r = l * 255;
 	      g = l * 255;
 	      b = l * 255;
 	    } else {
-	      var var_2 = (l < 0.5) ? l * ( 1 + s ) : (( l + s ) - ( s * l ));
+	      var var_2 = l < 0.5 ? l * (1 + s) : l + s - s * l;
 	      var var_1 = 2 * l - var_2;
 
-	      r = 255 * h2rgb(var_1, var_2, h + ( 1 / 3 ));
+	      r = 255 * h2rgb(var_1, var_2, h + 1 / 3);
 	      g = 255 * h2rgb(var_1, var_2, h);
-	      b = 255 * h2rgb(var_1, var_2, h - ( 1 / 3 ));
+	      b = 255 * h2rgb(var_1, var_2, h - 1 / 3);
 	    }
 	    return [r, g, b];
 	  }
@@ -1097,10 +1194,10 @@
 	  function h2rgb(v1, v2, vH) {
 	    if (vH < 0) vH += 1;
 	    if (vH > 1) vH -= 1;
-	    if (( 6 * vH ) < 1) return ( v1 + ( v2 - v1 ) * 6 * vH );
-	    if (( 2 * vH ) < 1) return ( v2 );
-	    if (( 3 * vH ) < 2) return ( v1 + ( v2 - v1 ) * ( ( 2 / 3 ) - vH ) * 6 );
-	    return ( v1 );
+	    if (6 * vH < 1) return v1 + (v2 - v1) * 6 * vH;
+	    if (2 * vH < 1) return v2;
+	    if (3 * vH < 2) return v1 + (v2 - v1) * (2 / 3 - vH) * 6;
+	    return v1;
 	  }
 
 	  function hex2(n) {
@@ -1113,33 +1210,152 @@
 	  return "#" + hex2(rgb[0]) + hex2(rgb[1]) + hex2(rgb[2]);
 	};
 
+	var colorizeString = function colorizeString() {
+	  String.prototype.toHexColor = toHexColor;
+	  String.prototype.toRGB = toRGB;
+	  String.prototype.red = red;
+	  String.prototype.green = green;
+	  String.prototype.blue = blue;
+	  String.prototype.lighten = lighten;
+	  String.prototype.darken = darken;
+	  String.prototype.saturate = saturate;
+	  String.prototype.toHSL = toHSL;
+	};
 
-
-
+	exports.hslToHexColor = hslToHexColor;
+	exports.colorizeString = colorizeString;
 
 /***/ },
-/* 8 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.propertyNameOf = undefined;
+
+	var _string = __webpack_require__(3);
+
+	var _property_name_validator = __webpack_require__(14);
+
+	var propertyNameValidator = _interopRequireWildcard(_property_name_validator);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	/*
-	 Returns a function to process macros with the given property key
-	 To use:
-
-	 Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
-
+	 Returns the CSS-correct lowercase property name, if it's recognized
+	 as a property. Null otherwise.
 	 */
-	var mergeHashInto = __webpack_require__(1).mergeHashInto
-	var arrayFlatten = __webpack_require__(1).arrayFlatten
+	var propertyNameOf = function propertyNameOf(p) {
+	  var name = (0, _string.dasherize)(p);
+	  return propertyNameValidator.validate(name);
+	};
 
-	module.exports = function (macroPropertyName) {
+	exports.propertyNameOf = propertyNameOf;
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.propertyFormatter = undefined;
+
+	var _propertyNameOf = __webpack_require__(19);
+
+	var propertyFormatter = function propertyFormatter(p, value) {
+	  p = (0, _propertyNameOf.propertyNameOf)(p);
+	  if (value && typeof value == 'number' && p != 'z-index' && p != 'opacity' && p != 'zoom') {
+	    value = '' + value + 'px';
+	  }
+	  return p + ": " + value + ";\r";
+	};
+
+	exports.propertyFormatter = propertyFormatter;
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.ruleBuilder = undefined;
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var _propertyPreprocessor = __webpack_require__(17);
+
+	var _propertyNameOf = __webpack_require__(19);
+
+	var trimString = function trimString(s) {
+	  return s.replace(/^\s*/, "").replace(/\s*$/, "");
+	};
+
+	var ruleBuilder = function ruleBuilder(selector, propertiesAndSubselectors) {
+
+	  selector = trimString(selector);
+
+	  (0, _propertyPreprocessor.preprocessProperties)(propertiesAndSubselectors);
+
+	  // ...all properties that look like properties
+	  // Output selector...
+	  var props = {};
+	  for (var p in propertiesAndSubselectors) {
+	    if ((0, _propertyNameOf.propertyNameOf)(p)) {
+	      props[p] = propertiesAndSubselectors[p];
+	      delete propertiesAndSubselectors[p];
+	    }
+	  }
+	  var rules = [{ sel: selector, props: props }];
+
+	  // ... finally, sub-selectors
+	  for (p in propertiesAndSubselectors) {
+
+	    if (typeof propertiesAndSubselectors[p] === 'string' || typeof propertiesAndSubselectors[p] === 'number') {
+	      throw "Unknown CSS property \"" + p + "\" (" + _typeof(propertiesAndSubselectors[p]) + "). Rule rejected for selector " + selector;
+	    }
+
+	    var subs = p.split(',');
+	    for (var s = 0; s < subs.length; s++) {
+	      var str = subs[s];
+	      var ampRule = str.substr(0, 1) == '&';
+	      subs[s] = selector + (ampRule ? str.substr(1) : ' ' + trimString(str));
+	    }
+	    rules.push(ruleBuilder(subs.join(','), propertiesAndSubselectors[p])); // Recurse
+	  }
+
+	  return rules;
+	};
+
+	exports.ruleBuilder = ruleBuilder;
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (macroPropertyName) {
 	  return function (properties) {
 	    function extractMacros(p) {
 	      var props = {};
-	      var a = arrayFlatten([p]); // support single or multiple sets of properties
+	      var a = (0, _array.arrayFlatten)([p]); // support single or multiple sets of properties
 	      for (var i = 0; i < a.length; i++) {
 	        for (var mp in a[i]) {
 	          if (mp == macroPropertyName) {
-	            mergeHashInto(props, extractMacros(a[i][mp]));
+	            (0, _object.mergeHashInto)(props, extractMacros(a[i][mp]));
 	          } else {
 	            props[mp] = a[i][mp];
 	          }
@@ -1150,26 +1366,40 @@
 
 	    var macros = properties[macroPropertyName];
 	    if (macros) {
-	      mergeHashInto(properties, extractMacros(macros));
-	      delete properties[macroPropertyName]
+	      (0, _object.mergeHashInto)(properties, extractMacros(macros));
+	      delete properties[macroPropertyName];
 	    }
-	  }
+	  };
 	};
 
+	var _object = __webpack_require__(2);
 
+	var _array = __webpack_require__(1);
 
-
+	; /*
+	   Returns a function to process macros with the given property key
+	   To use:
+	  
+	   Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
+	  
+	   */
 
 /***/ },
-/* 9 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
-	macroPreprocessor = __webpack_require__(8)
-	Csster.propertyPreprocessors.push(macroPreprocessor('has'));
+	'use strict';
 
+	var _macro_preprocessor = __webpack_require__(22);
+
+	var _macro_preprocessor2 = _interopRequireDefault(_macro_preprocessor);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	Csster.propertyPreprocessors.push((0, _macro_preprocessor2.default)('has'));
 
 /***/ },
-/* 10 */
+/* 24 */
 /***/ function(module, exports) {
 
 	if (typeof jQuery != 'undefined') {
