@@ -1,4 +1,4 @@
-describe("Csster", function () {
+describe("Csster > functional >", function () {
 
   function resetCsster() {
     var head   = document.getElementsByTagName('HEAD')[0];
@@ -17,7 +17,7 @@ describe("Csster", function () {
           fontFamily: 'serif'
         }
       })).toEqual([
-        {sel: "p", props: {'fontFamily': 'serif'}}
+        {sel: "p", props: {'font-family': 'serif'}}
       ]);
     });
 
@@ -55,7 +55,7 @@ describe("Csster", function () {
                 bogus: 'property_value'
               }
             })
-          }).toThrow('Unknown CSS property "bogus" (string). Rule rejected for selector div');
+          }).toThrow('Unrecognized "bogus" property name. Selector: "div"');
     });
 
     it('should throw an exception if discovers a bugus property within other valid ones', function () {
@@ -70,7 +70,7 @@ describe("Csster", function () {
                 opacityness:     0.85
               }
             })
-          }).toThrow('Unknown CSS property "opacityness" (number). Rule rejected for selector #tooltip');
+          }).toThrow('Unrecognized "opacityness" property name. Selector: "#tooltip"');
     });
 
     it("should output properties and sub-selectors", function () {
@@ -86,7 +86,7 @@ describe("Csster", function () {
       ).
           toEqual([
             {sel: 'ul', props: {width: '300px'}},
-            {sel: 'ul li', props: {padding: '20px', marginLeft: '-20px'}}
+            {sel: 'ul li', props: {padding: '20px', 'margin-left': '-20px'}}
           ]);
     });
 
@@ -114,11 +114,10 @@ describe("Csster", function () {
           }
         }
       });
-      expect(processed.length).toEqual(2);
-      expect(processed[1].sel).toEqual('div a:link,div a:visited,div a:hover');
+      expect(processed.length).toEqual(1);
+      expect(processed[0].sel).toEqual('div a:link,div a:visited,div a:hover');
       expect(processed).
           toEqual([
-            {sel: 'div', props: {}},
             {sel: 'div a:link,div a:visited,div a:hover', props: {color: 'blue'}}
           ]);
     });
@@ -136,17 +135,6 @@ describe("Csster", function () {
           toEqual([{sel: 'ul', props: {width: '300px'}}, {sel: 'ul:hover', props: {padding: '20px'}}]);
     });
 
-    it('should post-process rules', function () {
-      Csster.rulesPostProcessors.push(function (rules) {
-        rules[0]['sel'] = '#a'
-      });
-      expect(Csster.buildRules({
-        '#a #b #c': {width: 235}
-      })).toEqual([{sel: '#a', props: {width: 235}}]);
-      Csster.rulesPostProcessors.pop();
-    });
-
-
     it('should process everything within a has macro, not just valid properties', function () {
       expect(
           function () {
@@ -160,7 +148,7 @@ describe("Csster", function () {
                 }
               }
             })
-          }).toThrow('Unknown CSS property "bogus" (string). Rule rejected for selector div')
+          }).toThrow('Unrecognized "bogus" property name. Selector: "div has"')
     });
 
   });

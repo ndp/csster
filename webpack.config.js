@@ -1,16 +1,7 @@
 module.exports = {
   context: __dirname + "/src",
   entry: [
-    './utils/array.es6',
-    './utils/object.es6',
-    './utils/string.es6',
-    './utils/browser.es6',
     './core.es6',
-    //'./macros/macros.es6',
-    './functions/color.es6',
-    './filters/macro_preprocessor.es6',
-    './filters/rule_post_processors.js',
-    './init.es6',
     './jquery.js'
   ],
   output: {
@@ -31,13 +22,20 @@ module.exports = {
     loaders: [
       {
         test: /\.(es6)$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /(node_modules)/,
         loader: 'babel',
         query: {
           presets: ['es2015'],
-          //"plugins": ["transform-object-rest-spread"]
+          "plugins": ["transform-object-rest-spread"]
         }
       }
     ]
   }
 }
+
+/*new webpack.optimize.UglifyJsPlugin({
+ compress: {
+ warnings: false
+ }
+ })
+*/

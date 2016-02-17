@@ -15,6 +15,13 @@ Slideshow introduction: https://docs.google.com/present/view?id=dfm357b6_49c4d3f
 
 ### V2.0
 
+To upgrade:
+
+* Change `Csster.browser` to call `Csster.browserInfo()`, which returns the same thing.
+
+Other changes:
+
+* use ES6 for implementation and provide a more compressed and clean output.
 * add ability to turn off property name validation
 * add ability to warn about unknown browser extensions for property names 
 

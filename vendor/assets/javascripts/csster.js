@@ -46,19 +46,156 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	__webpack_require__(2);
-	__webpack_require__(3);
-	__webpack_require__(4);
-	__webpack_require__(5);
-	__webpack_require__(18);
-	__webpack_require__(27);
-	__webpack_require__(15);
-	__webpack_require__(28);
 	module.exports = __webpack_require__(29);
 
 
 /***/ },
 /* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _buildRules = __webpack_require__(2);
+
+	var _buildRules2 = _interopRequireDefault(_buildRules);
+
+	var _rulePostProcessor = __webpack_require__(12);
+
+	var _stringifyRules = __webpack_require__(13);
+
+	var _stringifyRules2 = _interopRequireDefault(_stringifyRules);
+
+	var _insertCss = __webpack_require__(17);
+
+	var _insertCss2 = _interopRequireDefault(_insertCss);
+
+	var _macros = __webpack_require__(18);
+
+	var macros = _interopRequireWildcard(_macros);
+
+	var _array = __webpack_require__(3);
+
+	var _browser = __webpack_require__(24);
+
+	var _color = __webpack_require__(27);
+
+	var _propertyPreprocessor = __webpack_require__(5);
+
+	var _propertyNameValidator = __webpack_require__(8);
+
+	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
+
+	var _compressSelectors = __webpack_require__(28);
+
+	var _compressSelectors2 = _interopRequireDefault(_compressSelectors);
+
+	var _macroProcessor = __webpack_require__(10);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	if (!window.Csster) {
+	  window.Csster = {};
+	}
+
+	// Main entry from the outside
+	Csster.style = function (o) {
+	  var rules = (0, _buildRules2.default)(o);
+	  (0, _rulePostProcessor.postProcessRules)(rules);
+	  var css = (0, _stringifyRules2.default)(rules);
+	  (0, _insertCss2.default)(css);
+	};
+
+	// Make available various utilities
+
+	Csster.macros = macros;
+
+	Csster.arrayFlatten = _array.arrayFlatten;
+
+	Csster.browserInfo = _browser.browserInfo;
+
+	Csster.hslToHexColor = _color.hslToHexColor;
+	(0, _color.colorizeString)();
+
+	Csster.propertyPreprocessors = _propertyPreprocessor.propertyPreprocessors;
+
+	Csster.rulesPostProcessors = _rulePostProcessor.rulesPostProcessors;
+
+	Csster.addPropertyNames = propertyNameValidator.addNames;
+
+	Csster.compressSelectors = _compressSelectors2.default;
+
+	Csster.insertCss = _insertCss2.default;
+	Csster.buildRules = _buildRules2.default;
+
+	Csster.propertyPreprocessors.push((0, _macroProcessor.createMacroProcessor)('has'));
+
+	/*
+	ObjectProcessor
+	===============
+	(Object) => (Object)
+	 flatten -- remove nested hierarchy
+	expand macros
+
+
+	(Object) => [Rules]
+	- buildRules
+	- resolveRuleHash
+
+
+	PropertyProcessor
+
+
+
+	RuleProcessor
+
+	 */
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (obj) {
+	  var rules = [];
+	  (0, _array.arrayEach)((0, _array.arrayFlatten)([obj]), function (r) {
+	    rules.push(objectToRulesArray(r));
+	  });
+	  return (0, _array.arrayFlatten)(rules);
+	};
+
+	var _array = __webpack_require__(3);
+
+	var _ruleBuilder = __webpack_require__(4);
+
+	var _cssObject = __webpack_require__(9);
+
+	var _macroProcessor = __webpack_require__(10);
+
+	// @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
+	var objectToRulesArray = function objectToRulesArray(o) {
+
+	  o = (0, _cssObject.flattenObject)(o);
+	  (0, _macroProcessor.createMacroProcessor)('has')(o);
+
+	  var result = [];
+	  for (var key in o) {
+	    //result.push(ruleBuilder(key, o[key]));
+	    result.push({ sel: key, props: o[key] });
+	  }
+	  return result;
+	};
+
+	;
+
+/***/ },
+/* 3 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -102,7 +239,325 @@
 	exports.arrayFlatten = arrayFlatten;
 
 /***/ },
-/* 2 */
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.ruleBuilder = undefined;
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var _propertyPreprocessor = __webpack_require__(5);
+
+	var _propertyName = __webpack_require__(6);
+
+	var propertyName = _interopRequireWildcard(_propertyName);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var trimString = function trimString(s) {
+	  return s.replace(/^\s*/, "").replace(/\s*$/, "");
+	};
+
+	var ruleBuilder = function ruleBuilder(selector, propertiesAndSubselectors) {
+
+	  selector = trimString(selector);
+
+	  (0, _propertyPreprocessor.preprocessProperties)(propertiesAndSubselectors);
+
+	  // ...all properties that look like properties
+	  // Output selector...
+	  var props = {};
+	  for (var p in propertiesAndSubselectors) {
+	    if (propertyName.valid(p)) {
+	      props[p] = propertiesAndSubselectors[p];
+	      delete propertiesAndSubselectors[p];
+	    }
+	  }
+	  var rules = [{ sel: selector, props: props }];
+
+	  // ... finally, sub-selectors
+	  for (p in propertiesAndSubselectors) {
+
+	    if (typeof propertiesAndSubselectors[p] === 'string' || typeof propertiesAndSubselectors[p] === 'number') {
+	      throw "Unknown CSS property \"" + p + "\" (" + _typeof(propertiesAndSubselectors[p]) + "). Rule rejected for selector " + selector;
+	    }
+
+	    var subs = p.split(',');
+	    for (var s = 0; s < subs.length; s++) {
+	      var str = subs[s];
+	      var ampRule = str.substr(0, 1) == '&';
+	      subs[s] = selector + (ampRule ? str.substr(1) : ' ' + trimString(str));
+	    }
+	    rules.push(ruleBuilder(subs.join(','), propertiesAndSubselectors[p])); // Recurse
+	  }
+
+	  return rules;
+	};
+
+	exports.ruleBuilder = ruleBuilder;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var propertyPreprocessors = [];
+
+	var preprocessProperties = function preprocessProperties(properties) {
+	  for (var i = 0; i < propertyPreprocessors.length; i++) {
+	    propertyPreprocessors[i].apply(properties, [properties]);
+	  }
+	};
+
+	var pushPropertyPreprocessor = function pushPropertyPreprocessor(pp) {
+	  propertyPreprocessors.push(pp);
+	};
+
+	exports.preprocessProperties = preprocessProperties;
+	exports.pushPropertyPreprocessor = pushPropertyPreprocessor;
+	exports.propertyPreprocessors = propertyPreprocessors;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.valid = exports.format = exports.propertyNameOf = undefined;
+
+	var _string = __webpack_require__(7);
+
+	var _propertyNameValidator = __webpack_require__(8);
+
+	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	/*
+	 Returns the CSS-correct lowercase property name, if it's recognized
+	 as a property. Null otherwise.
+	 */
+	var propertyNameOf = exports.propertyNameOf = function propertyNameOf(p) {
+	  var name = (0, _string.dasherize)(p);
+	  return propertyNameValidator.validate(name);
+	};
+
+	var format = exports.format = function format(name) {
+	  return propertyNameOf(name);
+	};
+
+	var valid = exports.valid = propertyNameOf;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	// S T R I N G s
+	var dasherize = function dasherize(s) {
+	  return s.replace(/([A-Z])/g, function ($1) {
+	    return "-" + $1.toLowerCase();
+	  });
+	};
+
+	var trim = function trim(text) {
+	  return (text || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "");
+	};
+
+	exports.dasherize = dasherize;
+	exports.trim = trim;
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.setConfig = setConfig;
+	exports.addNames = addNames;
+	exports.validate = validate;
+	exports.error = error;
+
+	var _array = __webpack_require__(3);
+
+	var validNames = {};
+
+	var config = {
+	  strictNames: true,
+	  anyBrowserExtension: true
+	};
+	function setConfig(key, value) {
+	  config[key] = value;
+	}
+
+	/**
+	 * Add more valid properties to the list of valid property names.
+	 */
+	function addNames() {
+	  for (var _len = arguments.length, propertyNames = Array(_len), _key = 0; _key < _len; _key++) {
+	    propertyNames[_key] = arguments[_key];
+	  }
+
+	  var names = (0, _array.arrayFlatten)([propertyNames]);
+	  for (var i = 0; i < names.length; i++) {
+	    validNames[names[i]] = true;
+	  }
+	}
+
+	function validate(name) {
+	  return !error(name) ? name : null;
+	}
+
+	function error(name) {
+	  if (/^\-\w+\-/.exec(name)) {
+	    if (!config.anyBrowserExtension && !validNames[name]) {
+	      return 'Unrecognized "' + name + '" browser extension property name';
+	    }
+	  } else {
+	    if (config.strictNames && !validNames[name]) {
+	      return 'Unrecognized "' + name + '" property name';
+	    }
+	  }
+	  return null;
+	}
+
+	addNames(['accelerator', 'azimuth', 'background', 'background-attachment', 'background-color', 'background-image', 'background-position', 'background-position-x', 'background-position-y', 'background-repeat', 'behavior', 'border', 'border-bottom', 'border-bottom-right-radius', 'border-bottom-left-radius', 'border-bottom-color', 'border-bottom-style', 'border-bottom-width', 'border-collapse', 'border-color', 'border-left', 'border-left-color', 'border-left-style', 'border-left-width', 'border-radius', 'border-right', 'border-right-color', 'border-right-style', 'border-right-width', 'border-spacing', 'border-style', 'border-top', 'border-top-color', 'border-top-style', 'border-top-width', 'border-top-left-radius', 'border-top-right-radius', 'border-width', 'box-shadow', 'bottom', 'caption-side', 'clear', 'clip', 'color', 'content', 'counter-increment', 'counter-reset', 'cue', 'cue-after', 'cue-before', 'cursor', 'direction', 'display', 'elevation', 'empty-cells', 'filter', 'float', 'font', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 'font-style', 'font-variant', 'font-weight', 'height', 'ime-mode', 'include-source', 'layer-background-color', 'layer-background-image', 'layout-flow', 'layout-grid', 'layout-grid-char', 'layout-grid-char-spacing', 'layout-grid-line', 'layout-grid-mode', 'layout-grid-type', 'letter-spacing', 'left', 'line-break', 'line-height', 'list-style', 'list-style-image', 'list-style-position', 'list-style-type', 'margin', 'margin-bottom', 'margin-left', 'margin-right', 'margin-top', 'marker-offset', 'marks', 'max-height', 'max-width', 'min-height', 'min-width', '-ms-filter', 'opacity', 'orphans', 'outline', 'outline-color', 'outline-style', 'outline-width', 'overflow', 'overflow-X', 'overflow-Y', 'padding', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'page', 'page-break-after', 'page-break-before', 'page-break-inside', 'pause', 'pause-after', 'pause-before', 'pitch', 'pitch-range', 'play-during', 'position', 'quotes', 'richness', 'right', 'size', 'speak', 'speak-header', 'speak-numeral', 'speak-punctuation', 'speech-rate', 'stress', 'scrollbar-arrow-color', 'scrollbar-base-color', 'scrollbar-dark-shadow-color', 'scrollbar-face-color', 'scrollbar-highlight-color', 'scrollbar-shadow-color', 'scrollbar-3d-light-color', 'scrollbar-track-color', 'table-layout', 'text-align', 'text-align-last', 'text-decoration', 'text-indent', 'text-justify', 'text-offset', 'text-overflow', 'text-shadow', 'text-transform', 'text-autospace', 'text-kashida-space', 'text-underline-position', 'top', 'unicode-bidi', 'vertical-align', 'visibility', 'voice-family', 'volume', 'white-space', 'widows', 'width', 'word-break', 'word-spacing', 'word-wrap', 'writing-mode', 'z-index', 'zoom']);
+	addNames(['-moz-binding', '-moz-border-radius', '-moz-border-radius-topleft', '-moz-border-radius-topright', '-moz-border-radius-bottomright', '-moz-border-radius-bottomleft', '-moz-border-top-colors', '-moz-border-right-colors', '-moz-border-bottom-colors', '-moz-border-left-colors', '-moz-box-shadow', '-moz-opacity', '-moz-outline', '-moz-outline-color', '-moz-outline-style', '-moz-outline-width', '-moz-user-focus', '-moz-user-input', '-moz-user-modify', '-moz-user-select']);
+	addNames(['-webkit-animation', '-webkit-animation-delay', '-webkit-animation-direction', '-webkit-animation-duration', '-webkit-animation-iteration-count', '-webkit-animation-name', '-webkit-animation-play-state', '-webkit-animation-timing-function', '-webkit-appearance', '-webkit-backface-visibility', '-webkit-background-clip', '-webkit-background-composite', '-webkit-background-origin', '-webkit-background-size', '-webkit-border-bottom-left-radius', '-webkit-border-bottom-right-radius', '-webkit-border-horizontal-spacing', '-webkit-border-image', '-webkit-border-radius', '-webkit-border-top-left-radius', '-webkit-border-top-right-radius', '-webkit-border-vertical-spacing', '-webkit-box-align', '-webkit-box-direction', '-webkit-box-flex', '-webkit-box-flex-group', '-webkit-box-lines', '-webkit-box-ordinal-group', '-webkit-box-orient', '-webkit-box-pack', '-webkit-box-reflect', '-webkit-box-shadow', '-webkit-box-sizing', '-webkit-column-break-after', '-webkit-column-break-before', '-webkit-column-break-inside', '-webkit-column-count', '-webkit-column-gap', '-webkit-column-rule', '-webkit-column-rule-color', '-webkit-column-rule-style', '-webkit-column-rule-width', '-webkit-column-width', '-webkit-columns', '-webkit-dashboard-region', '-webkit-line-break', '-webkit-margin-bottom-collapse', '-webkit-margin-collapse', '-webkit-margin-start', '-webkit-margin-top-collapse', '-webkit-marquee', '-webkit-marquee-direction', '-webkit-marquee-increment', '-webkit-marquee-repetition', '-webkit-marquee-speed', '-webkit-marquee-style', '-webkit-mask', '-webkit-mask-attachment', '-webkit-mask-box-image', '-webkit-mask-clip', '-webkit-mask-composite', '-webkit-mask-image', '-webkit-mask-origin', '-webkit-mask-position', '-webkit-mask-position-x', '-webkit-mask-position-y', '-webkit-mask-repeat', '-webkit-mask-size', '-webkit-nbsp-mode', '-webkit-padding-start', '-webkit-perspective', '-webkit-perspective-origin', '-webkit-rtl-ordering', '-webkit-tap-highlight-color', '-webkit-text-fill-color', '-webkit-text-security', '-webkit-text-size-adjust', '-webkit-text-stroke', '-webkit-text-stroke-color', '-webkit-text-stroke-width', '-webkit-touch-callout', '-webkit-transform', '-webkit-transform-origin', '-webkit-transform-origin-x', '-webkit-transform-origin-y', '-webkit-transform-origin-z', '-webkit-transform-style', '-webkit-transition', '-webkit-transition-delay', '-webkit-transition-duration', '-webkit-transition-property', '-webkit-transition-timing-function', '-webkit-user-drag', '-webkit-user-modify', '-webkit-user-select']);
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.flattenObject = undefined;
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; }; /*
+	                                                                                                                                                                                                                                                   A Javascript object tha represents "CSS" rules. It:
+	                                                                                                                                                                                                                                                   * can be deeply nested, implying subselections
+	                                                                                                                                                                                                                                                   * keys can be CSS properties and values CSS property values
+	                                                                                                                                                                                                                                                   */
+
+	var _string = __webpack_require__(7);
+
+	// Calculate "subselector", taking into account & rules and complex
+	// (comma separated) selectors.
+	function buildSubcontext(context, key) {
+	  var keys = key.split(',');
+	  for (var k = 0; k < keys.length; k++) {
+	    var str = (0, _string.trim)(keys[k]);
+	    var ampRule = str.substr(0, 1) == '&';
+	    keys[k] = context + (ampRule ? str.substr(1) : ' ' + str);
+	  }
+
+	  return (0, _string.trim)(keys.join(','));
+	}
+
+	var flattenObject = exports.flattenObject = function flattenObject(inputObject) {
+	  var out = {};
+
+	  var addRule = function addRule(selector, propertyName, propertyValue) {
+	    selector = (0, _string.trim)(selector);
+	    out[selector] = out[selector] || {};
+	    if (out[selector][propertyName]) {
+	      console.log('Replacing property ', propertyName, ' in ', selector, '; ', out[selector][propertyName], ' => ', propertyValue);
+	    }
+	    out[selector][propertyName] = propertyValue;
+	  };
+
+	  function addObject(o, context) {
+	    // o: object with keys
+	    // entries are either
+	    //   css property => value
+	    //   subselector  => rules
+	    for (var key in o) {
+	      var value = o[key];
+	      if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) == 'object') {
+	        var subcontext = buildSubcontext(context, key);
+	        addObject(value, subcontext);
+	      } else {
+	        addRule(context, key, value);
+	      }
+	    }
+	  }
+
+	  addObject(inputObject, '');
+
+	  return out;
+	};
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.createMacroProcessor = createMacroProcessor;
+
+	var _object = __webpack_require__(11);
+
+	var _array = __webpack_require__(3);
+
+	/*
+	 Returns a function to process macros with the given property key
+	 To use:
+
+	 Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
+
+	 */
+	function createMacroProcessor(macroPropertyName) {
+	  return function (properties) {
+	    function extractMacros(p) {
+	      var props = {};
+	      var a = (0, _array.arrayFlatten)([p]); // support single or multiple sets of properties
+	      for (var i = 0; i < a.length; i++) {
+	        for (var mp in a[i]) {
+	          if (mp == macroPropertyName) {
+	            (0, _object.mergeHashInto)(props, extractMacros(a[i][mp]));
+	          } else {
+	            props[mp] = a[i][mp];
+	          }
+	        }
+	      }
+	      return props;
+	    }
+
+	    var macros = properties[macroPropertyName];
+	    if (macros) {
+	      (0, _object.mergeHashInto)(properties, extractMacros(macros));
+	      delete properties[macroPropertyName];
+	    }
+	  };
+	};
+
+/***/ },
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -128,7 +583,7 @@
 	exports.mergeHashInto = mergeHashInto;
 
 /***/ },
-/* 3 */
+/* 12 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -136,132 +591,139 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	// S T R I N G s
-	var dasherize = function dasherize(s) {
-	  return s.replace(/([A-Z])/g, function ($1) {
-	    return "-" + $1.toLowerCase();
-	  });
-	};
 
-	exports.dasherize = dasherize;
+	var rulesPostProcessors = [];
 
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	// Lifted from jQuery: http://docs.jquery.com/Utilities/jQuery.browser
-	var browser = {};
-
-	function uaMatch(ua) {
-	  ua = ua.toLowerCase();
-
-	  var match = /(webkit)[ \/]([\w.]+)/.exec(ua) || /(opera)(?:.*version)?[ \/]([\w.]+)/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || !/compatible/.test(ua) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec(ua) || [];
-
-	  return { browser: match[1] || "", version: match[2] || "0" };
-	}
-
-	if (typeof navigator !== 'undefined') {
-	  var browserMatch = uaMatch(navigator.userAgent);
-	  if (browserMatch.browser) {
-	    browser[browserMatch.browser] = true;
-	    browser.version = browserMatch.version;
-	  }
-	}
-
-	var browserInfo = function browserInfo() {
-	  if (typeof global !== 'undefined' && global.browserOverride) {
-	    return global.browserOverride;
-	  } else {
-	    return browser;
+	var postProcessRules = function postProcessRules(rules) {
+	  for (var i = 0; i < rulesPostProcessors.length; i++) {
+	    rulesPostProcessors[i].apply(rules, [rules]);
 	  }
 	};
 
-	exports.browser = browser;
-	exports. // legacy static structure
-	browserInfo // fn that can be overridden for tests
-	 = browserInfo;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+	exports.rulesPostProcessors = rulesPostProcessors;
+	exports.postProcessRules = postProcessRules;
 
 /***/ },
-/* 5 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _macros = __webpack_require__(6);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	var macros = _interopRequireWildcard(_macros);
+	exports.default = function (rules) {
+	  return rules.reduce(function (s, rule) {
+	    return s + (0, _rule.format)(rule);
+	  }, '');
+	};
 
-	var _array = __webpack_require__(1);
+	var _rule = __webpack_require__(14);
 
-	var _propertyNameValidator = __webpack_require__(14);
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
 
-	var _rule_post_processors = __webpack_require__(15);
+	'use strict';
 
-	var _browser = __webpack_require__(4);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.format = undefined;
 
-	var _rulePostProcessor = __webpack_require__(16);
+	var _propertyEntry = __webpack_require__(15);
 
-	var _propertyPreprocessor = __webpack_require__(17);
-
-	var _color = __webpack_require__(18);
-
-	var _stringifyRules = __webpack_require__(19);
-
-	var _stringifyRules2 = _interopRequireDefault(_stringifyRules);
-
-	var _insertCss = __webpack_require__(24);
-
-	var _insertCss2 = _interopRequireDefault(_insertCss);
-
-	var _buildRules = __webpack_require__(25);
-
-	var _buildRules2 = _interopRequireDefault(_buildRules);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var propertyEntry = _interopRequireWildcard(_propertyEntry);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	if (!window.Csster) {
-	  window.Csster = {};
-	}
+	var formatProperties = function formatProperties(props) {
+	  return Object.keys(props).reduce(function (s, p) {
+	    return s + propertyEntry.format(p, props[p]);
+	  }, '');
+	};
 
-	Csster.macros = macros;
-
-	Csster.arrayFlatten = _array.arrayFlatten;
-
-	Csster.propertyNameValidator = _propertyNameValidator.propertyNameValidator;
-
-	Csster.compressSelectors = _rule_post_processors.compressSelectors;
-
-	Csster.browser = _browser.browser;
-
-	Csster.browserInfo = _browser.browserInfo;
-
-	Csster.rulesPostProcessors = _rulePostProcessor.rulesPostProcessors;
-
-	Csster.propertyPreprocessors = _propertyPreprocessor.propertyPreprocessors;
-
-	Csster.hslToHexColor = _color.hslToHexColor;
-	(0, _color.colorizeString)();
-
-	Csster.insertCss = _insertCss2.default;
-
-	Csster.buildRules = _buildRules2.default;
-
-	Csster.style = function (o) {
-	  var rules = Csster.buildRules(o);
-	  var css = (0, _stringifyRules2.default)(rules);
-	  Csster.insertCss(css);
+	// Rule: object with `sel` and `props` keys.
+	// .sel is the selector
+	// .props in an object holding CSS property rules
+	var format = exports.format = function format(rule) {
+	  return rule.sel + ' { ' + formatProperties(rule.props) + '}\r';
 	};
 
 /***/ },
-/* 6 */
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.format = undefined;
+
+	var _propertyName = __webpack_require__(6);
+
+	var propertyName = _interopRequireWildcard(_propertyName);
+
+	var _propertyValue = __webpack_require__(16);
+
+	var propertyValue = _interopRequireWildcard(_propertyValue);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var format = function format(name, value) {
+	  return propertyName.format(name) + ": " + propertyValue.format(value, name) + ";\r";
+	};
+
+	exports.format = format;
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var format = function format(value, name) {
+	  if (value && typeof value == 'number' && name != 'z-index' && name != 'opacity' && name != 'zoom') {
+	    return '' + value + 'px';
+	  }
+	  return value;
+	};
+
+	exports.format = format;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (css) {
+	  var e = document.createElement('STYLE');
+	  var a = document.createAttribute('type');
+	  a.nodeValue = 'text/css';
+	  e.setAttributeNode(a);
+	  var head = document.getElementsByTagName('HEAD')[0];
+	  head.appendChild(e);
+	  try {
+	    e.appendChild(document.createTextNode(css));
+	  } catch (e) {
+	    var ss = document.styleSheets[document.styleSheets.length - 1];
+	    ss.cssText = '' + ss.cssText + css;
+	  }
+	};
+
+/***/ },
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -271,31 +733,31 @@
 	});
 	exports.imageReplacement = exports.clearfix = exports.linearGradient = exports.verticalCentering = exports.horizontalCentering = exports.boxShadow = exports.roundedCorners = undefined;
 
-	var _roundedCorners = __webpack_require__(7);
+	var _roundedCorners = __webpack_require__(19);
 
 	var _roundedCorners2 = _interopRequireDefault(_roundedCorners);
 
-	var _boxShadow = __webpack_require__(8);
+	var _boxShadow = __webpack_require__(20);
 
 	var _boxShadow2 = _interopRequireDefault(_boxShadow);
 
-	var _horizontalCentering = __webpack_require__(9);
+	var _horizontalCentering = __webpack_require__(21);
 
 	var _horizontalCentering2 = _interopRequireDefault(_horizontalCentering);
 
-	var _verticalCentering = __webpack_require__(10);
+	var _verticalCentering = __webpack_require__(22);
 
 	var _verticalCentering2 = _interopRequireDefault(_verticalCentering);
 
-	var _linearGradient = __webpack_require__(11);
+	var _linearGradient = __webpack_require__(23);
 
 	var _linearGradient2 = _interopRequireDefault(_linearGradient);
 
-	var _clearfix = __webpack_require__(12);
+	var _clearfix = __webpack_require__(25);
 
 	var _clearfix2 = _interopRequireDefault(_clearfix);
 
-	var _imageReplacement = __webpack_require__(13);
+	var _imageReplacement = __webpack_require__(26);
 
 	var _imageReplacement2 = _interopRequireDefault(_imageReplacement);
 
@@ -313,7 +775,7 @@
 	                                                        */
 
 /***/ },
-/* 7 */
+/* 19 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -372,7 +834,7 @@
 	}
 
 /***/ },
-/* 8 */
+/* 20 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -412,7 +874,7 @@
 	}
 
 /***/ },
-/* 9 */
+/* 21 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -432,7 +894,7 @@
 	}
 
 /***/ },
-/* 10 */
+/* 22 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -452,7 +914,7 @@
 	}
 
 /***/ },
-/* 11 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -462,9 +924,9 @@
 	});
 	exports.default = linearGradient;
 
-	var _browser = __webpack_require__(4);
+	var _browser = __webpack_require__(24);
 
-	var _array = __webpack_require__(1);
+	var _array = __webpack_require__(3);
 
 	function linearGradient(startingPoint, color1, color2, etc) {
 	  var prefix = '',
@@ -536,7 +998,49 @@
 	//        return l
 
 /***/ },
-/* 12 */
+/* 24 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	// Lifted from jQuery: http://docs.jquery.com/Utilities/jQuery.browser
+	var browser = {};
+
+	function uaMatch(ua) {
+	  ua = ua.toLowerCase();
+
+	  var match = /(webkit)[ \/]([\w.]+)/.exec(ua) || /(opera)(?:.*version)?[ \/]([\w.]+)/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || !/compatible/.test(ua) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec(ua) || [];
+
+	  return { browser: match[1] || "", version: match[2] || "0" };
+	}
+
+	if (typeof navigator !== 'undefined') {
+	  var browserMatch = uaMatch(navigator.userAgent);
+	  if (browserMatch.browser) {
+	    browser[browserMatch.browser] = true;
+	    browser.version = browserMatch.version;
+	  }
+	}
+
+	var browserInfo = function browserInfo() {
+	  if (typeof global !== 'undefined' && global.browserOverride) {
+	    return global.browserOverride;
+	  } else {
+	    return browser;
+	  }
+	};
+
+	exports.browser = browser;
+	exports. // legacy static structure
+	browserInfo // fn that can be overridden for tests
+	 = browserInfo;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -546,7 +1050,7 @@
 	});
 	exports.default = clearfix;
 
-	var _browser = __webpack_require__(4);
+	var _browser = __webpack_require__(24);
 
 	function clearfix() {
 	  var css = {
@@ -569,7 +1073,7 @@
 	}
 
 /***/ },
-/* 13 */
+/* 26 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -607,118 +1111,7 @@
 	}
 
 /***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.propertyNamesHash = undefined;
-	exports.addNames = addNames;
-	exports.validate = validate;
-
-	var _array = __webpack_require__(1);
-
-	var propertyNamesHash = exports.propertyNamesHash = {}; /**
-	                                                         * Add more valid properties to the list of valid property names.
-	                                                         */
-
-
-	function addNames() {
-	  for (var _len = arguments.length, propertyNames = Array(_len), _key = 0; _key < _len; _key++) {
-	    propertyNames[_key] = arguments[_key];
-	  }
-
-	  var names = (0, _array.arrayFlatten)([propertyNames]);
-	  for (var i = 0; i < names.length; i++) {
-	    propertyNamesHash[names[i]] = true;
-	  }
-	}
-
-	function validate(name) {
-	  return this.propertyNamesHash[name] ? name : null;
-	}
-
-	addNames(['accelerator', 'azimuth', 'background', 'background-attachment', 'background-color', 'background-image', 'background-position', 'background-position-x', 'background-position-y', 'background-repeat', 'behavior', 'border', 'border-bottom', 'border-bottom-right-radius', 'border-bottom-left-radius', 'border-bottom-color', 'border-bottom-style', 'border-bottom-width', 'border-collapse', 'border-color', 'border-left', 'border-left-color', 'border-left-style', 'border-left-width', 'border-radius', 'border-right', 'border-right-color', 'border-right-style', 'border-right-width', 'border-spacing', 'border-style', 'border-top', 'border-top-color', 'border-top-style', 'border-top-width', 'border-top-left-radius', 'border-top-right-radius', 'border-width', 'box-shadow', 'bottom', 'caption-side', 'clear', 'clip', 'color', 'content', 'counter-increment', 'counter-reset', 'cue', 'cue-after', 'cue-before', 'cursor', 'direction', 'display', 'elevation', 'empty-cells', 'filter', 'float', 'font', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 'font-style', 'font-variant', 'font-weight', 'height', 'ime-mode', 'include-source', 'layer-background-color', 'layer-background-image', 'layout-flow', 'layout-grid', 'layout-grid-char', 'layout-grid-char-spacing', 'layout-grid-line', 'layout-grid-mode', 'layout-grid-type', 'letter-spacing', 'left', 'line-break', 'line-height', 'list-style', 'list-style-image', 'list-style-position', 'list-style-type', 'margin', 'margin-bottom', 'margin-left', 'margin-right', 'margin-top', 'marker-offset', 'marks', 'max-height', 'max-width', 'min-height', 'min-width', '-ms-filter', 'opacity', 'orphans', 'outline', 'outline-color', 'outline-style', 'outline-width', 'overflow', 'overflow-X', 'overflow-Y', 'padding', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'page', 'page-break-after', 'page-break-before', 'page-break-inside', 'pause', 'pause-after', 'pause-before', 'pitch', 'pitch-range', 'play-during', 'position', 'quotes', 'richness', 'right', 'size', 'speak', 'speak-header', 'speak-numeral', 'speak-punctuation', 'speech-rate', 'stress', 'scrollbar-arrow-color', 'scrollbar-base-color', 'scrollbar-dark-shadow-color', 'scrollbar-face-color', 'scrollbar-highlight-color', 'scrollbar-shadow-color', 'scrollbar-3d-light-color', 'scrollbar-track-color', 'table-layout', 'text-align', 'text-align-last', 'text-decoration', 'text-indent', 'text-justify', 'text-offset', 'text-overflow', 'text-shadow', 'text-transform', 'text-autospace', 'text-kashida-space', 'text-underline-position', 'top', 'unicode-bidi', 'vertical-align', 'visibility', 'voice-family', 'volume', 'white-space', 'widows', 'width', 'word-break', 'word-spacing', 'word-wrap', 'writing-mode', 'z-index', 'zoom']);
-	addNames(['-moz-binding', '-moz-border-radius', '-moz-border-radius-topleft', '-moz-border-radius-topright', '-moz-border-radius-bottomright', '-moz-border-radius-bottomleft', '-moz-border-top-colors', '-moz-border-right-colors', '-moz-border-bottom-colors', '-moz-border-left-colors', '-moz-box-shadow', '-moz-opacity', '-moz-outline', '-moz-outline-color', '-moz-outline-style', '-moz-outline-width', '-moz-user-focus', '-moz-user-input', '-moz-user-modify', '-moz-user-select']);
-	addNames(['-webkit-animation', '-webkit-animation-delay', '-webkit-animation-direction', '-webkit-animation-duration', '-webkit-animation-iteration-count', '-webkit-animation-name', '-webkit-animation-play-state', '-webkit-animation-timing-function', '-webkit-appearance', '-webkit-backface-visibility', '-webkit-background-clip', '-webkit-background-composite', '-webkit-background-origin', '-webkit-background-size', '-webkit-border-bottom-left-radius', '-webkit-border-bottom-right-radius', '-webkit-border-horizontal-spacing', '-webkit-border-image', '-webkit-border-radius', '-webkit-border-top-left-radius', '-webkit-border-top-right-radius', '-webkit-border-vertical-spacing', '-webkit-box-align', '-webkit-box-direction', '-webkit-box-flex', '-webkit-box-flex-group', '-webkit-box-lines', '-webkit-box-ordinal-group', '-webkit-box-orient', '-webkit-box-pack', '-webkit-box-reflect', '-webkit-box-shadow', '-webkit-box-sizing', '-webkit-column-break-after', '-webkit-column-break-before', '-webkit-column-break-inside', '-webkit-column-count', '-webkit-column-gap', '-webkit-column-rule', '-webkit-column-rule-color', '-webkit-column-rule-style', '-webkit-column-rule-width', '-webkit-column-width', '-webkit-columns', '-webkit-dashboard-region', '-webkit-line-break', '-webkit-margin-bottom-collapse', '-webkit-margin-collapse', '-webkit-margin-start', '-webkit-margin-top-collapse', '-webkit-marquee', '-webkit-marquee-direction', '-webkit-marquee-increment', '-webkit-marquee-repetition', '-webkit-marquee-speed', '-webkit-marquee-style', '-webkit-mask', '-webkit-mask-attachment', '-webkit-mask-box-image', '-webkit-mask-clip', '-webkit-mask-composite', '-webkit-mask-image', '-webkit-mask-origin', '-webkit-mask-position', '-webkit-mask-position-x', '-webkit-mask-position-y', '-webkit-mask-repeat', '-webkit-mask-size', '-webkit-nbsp-mode', '-webkit-padding-start', '-webkit-perspective', '-webkit-perspective-origin', '-webkit-rtl-ordering', '-webkit-tap-highlight-color', '-webkit-text-fill-color', '-webkit-text-security', '-webkit-text-size-adjust', '-webkit-text-stroke', '-webkit-text-stroke-color', '-webkit-text-stroke-width', '-webkit-touch-callout', '-webkit-transform', '-webkit-transform-origin', '-webkit-transform-origin-x', '-webkit-transform-origin-y', '-webkit-transform-origin-z', '-webkit-transform-style', '-webkit-transition', '-webkit-transition-delay', '-webkit-transition-duration', '-webkit-transition-property', '-webkit-transition-timing-function', '-webkit-user-drag', '-webkit-user-modify', '-webkit-user-select']);
-
-/***/ },
-/* 15 */
-/***/ function(module, exports) {
-
-	/**
-	 * Rule post-processor to remove "redundant" id selectors. For example,
-	 * if the generated selected ends up being '#a #b #c', this post-processor
-	 * will reduce it to '#c'. In general this is great, as it makes the rules
-	 * more readable on the output side. You are, however, losing the specificity,
-	 * creating a cascade you might not expect.
-	 *
-	 * To wire it in:
-	 * Csster.rulesPostProcessors.push(Csster.compressSelectors);
-	 */
-	var compressSelectors = function(rules) {
-	  for (var i = 0; i < rules.length; i++) {
-	    while (rules[i].sel.match(/.*#.*#.*/)) {
-	      rules[i].sel = rules[i].sel.replace(/^.*#.*#/, '#');
-	    }
-	  }
-	};
-
-	module.exports = {
-	  compressSelectors: compressSelectors
-	}
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var rulesPostProcessors = [];
-
-	var postProcessRules = function postProcessRules(rules) {
-	  for (var i = 0; i < rulesPostProcessors.length; i++) {
-	    rulesPostProcessors[i].apply(rules, [rules]);
-	  }
-	};
-
-	exports.rulesPostProcessors = rulesPostProcessors;
-	exports.postProcessRules = postProcessRules;
-
-/***/ },
-/* 17 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var propertyPreprocessors = [];
-
-	var preprocessProperties = function preprocessProperties(properties) {
-	  for (var i = 0; i < propertyPreprocessors.length; i++) {
-	    propertyPreprocessors[i].apply(properties, [properties]);
-	  }
-	};
-
-	var pushPropertyPreprocessor = function pushPropertyPreprocessor(pp) {
-	  propertyPreprocessors.push(pp);
-	};
-
-	exports.preprocessProperties = preprocessProperties;
-	exports.pushPropertyPreprocessor = pushPropertyPreprocessor;
-	exports.propertyPreprocessors = propertyPreprocessors;
-
-/***/ },
-/* 18 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -728,7 +1121,7 @@
 	});
 	exports.colorizeString = exports.hslToHexColor = undefined;
 
-	var _array = __webpack_require__(1);
+	var _array = __webpack_require__(3);
 
 	var HTML4_COLORS = {
 	  'black': '#000000',
@@ -919,8 +1312,8 @@
 	exports.colorizeString = colorizeString;
 
 /***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
+/* 28 */
+/***/ function(module, exports) {
 
 	'use strict';
 
@@ -929,310 +1322,23 @@
 	});
 
 	exports.default = function (rules) {
-	  return rules.reduce(function (s, rule) {
-	    return s + (0, _rule.format)(rule);
-	  }, '');
-	};
-
-	var _rule = __webpack_require__(20);
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.format = undefined;
-
-	var _propertyEntry = __webpack_require__(21);
-
-	var propertyEntry = _interopRequireWildcard(_propertyEntry);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	var formatProperties = function formatProperties(props) {
-	  return Object.keys(props).reduce(function (s, p) {
-	    return s + propertyEntry.format(p, props[p]);
-	  }, '');
-	};
-
-	// Rule: object with `sel` and `props` keys.
-	// .sel is the selector
-	// .props in an object holding CSS property rules
-	var format = exports.format = function format(rule) {
-	  return rule.sel + ' { ' + formatProperties(rule.props) + '}\r';
-	};
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.format = undefined;
-
-	var _propertyName = __webpack_require__(22);
-
-	var propertyName = _interopRequireWildcard(_propertyName);
-
-	var _propertyValue = __webpack_require__(23);
-
-	var propertyValue = _interopRequireWildcard(_propertyValue);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	var format = function format(name, value) {
-	  return propertyName.format(name) + ": " + propertyValue.format(value, name) + ";\r";
-	};
-
-	exports.format = format;
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.valid = exports.format = exports.propertyNameOf = undefined;
-
-	var _string = __webpack_require__(3);
-
-	var _propertyNameValidator = __webpack_require__(14);
-
-	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	/*
-	 Returns the CSS-correct lowercase property name, if it's recognized
-	 as a property. Null otherwise.
-	 */
-	var propertyNameOf = exports.propertyNameOf = function propertyNameOf(p) {
-	  var name = (0, _string.dasherize)(p);
-	  return propertyNameValidator.validate(name);
-	};
-
-	var format = exports.format = function format(name) {
-	  return propertyNameOf(name);
-	};
-
-	var valid = exports.valid = propertyNameOf;
-
-/***/ },
-/* 23 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var format = function format(value, name) {
-	  if (value && typeof value == 'number' && name != 'z-index' && name != 'opacity' && name != 'zoom') {
-	    return '' + value + 'px';
-	  }
-	  return value;
-	};
-
-	exports.format = format;
-
-/***/ },
-/* 24 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (css) {
-	  var e = document.createElement('STYLE');
-	  var a = document.createAttribute('type');
-	  a.nodeValue = 'text/css';
-	  e.setAttributeNode(a);
-	  var head = document.getElementsByTagName('HEAD')[0];
-	  head.appendChild(e);
-	  try {
-	    e.appendChild(document.createTextNode(css));
-	  } catch (e) {
-	    var ss = document.styleSheets[document.styleSheets.length - 1];
-	    ss.cssText = '' + ss.cssText + css;
-	  }
-	};
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (obj) {
-
-	  // @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
-	  var resolveRuleHash = function resolveRuleHash(cssRule) {
-	    var result = [];
-	    for (var key in cssRule) {
-	      result.push((0, _ruleBuilder.ruleBuilder)(key, cssRule[key]));
-	    }
-	    return result;
-	  };
-
-	  var rules = [];
-	  (0, _array.arrayEach)((0, _array.arrayFlatten)([obj]), function (r) {
-	    rules.push(resolveRuleHash(r));
-	  });
-	  rules = (0, _array.arrayFlatten)(rules);
-
-	  (0, _rulePostProcessor.postProcessRules)(rules);
-	  return rules;
-	};
-
-	var _array = __webpack_require__(1);
-
-	var _ruleBuilder = __webpack_require__(26);
-
-	var _rulePostProcessor = __webpack_require__(16);
-
-	;
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.ruleBuilder = undefined;
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-	var _propertyPreprocessor = __webpack_require__(17);
-
-	var _propertyName = __webpack_require__(22);
-
-	var propertyName = _interopRequireWildcard(_propertyName);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	var trimString = function trimString(s) {
-	  return s.replace(/^\s*/, "").replace(/\s*$/, "");
-	};
-
-	var ruleBuilder = function ruleBuilder(selector, propertiesAndSubselectors) {
-
-	  selector = trimString(selector);
-
-	  (0, _propertyPreprocessor.preprocessProperties)(propertiesAndSubselectors);
-
-	  // ...all properties that look like properties
-	  // Output selector...
-	  var props = {};
-	  for (var p in propertiesAndSubselectors) {
-	    if (propertyName.valid(p)) {
-	      props[p] = propertiesAndSubselectors[p];
-	      delete propertiesAndSubselectors[p];
+	  for (var i = 0; i < rules.length; i++) {
+	    while (rules[i].sel.match(/.*#.*#.*/)) {
+	      rules[i].sel = rules[i].sel.replace(/^.*#.*#/, '#');
 	    }
 	  }
-	  var rules = [{ sel: selector, props: props }];
-
-	  // ... finally, sub-selectors
-	  for (p in propertiesAndSubselectors) {
-
-	    if (typeof propertiesAndSubselectors[p] === 'string' || typeof propertiesAndSubselectors[p] === 'number') {
-	      throw "Unknown CSS property \"" + p + "\" (" + _typeof(propertiesAndSubselectors[p]) + "). Rule rejected for selector " + selector;
-	    }
-
-	    var subs = p.split(',');
-	    for (var s = 0; s < subs.length; s++) {
-	      var str = subs[s];
-	      var ampRule = str.substr(0, 1) == '&';
-	      subs[s] = selector + (ampRule ? str.substr(1) : ' ' + trimString(str));
-	    }
-	    rules.push(ruleBuilder(subs.join(','), propertiesAndSubselectors[p])); // Recurse
-	  }
-
-	  return rules;
 	};
 
-	exports.ruleBuilder = ruleBuilder;
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (macroPropertyName) {
-	  return function (properties) {
-	    function extractMacros(p) {
-	      var props = {};
-	      var a = (0, _array.arrayFlatten)([p]); // support single or multiple sets of properties
-	      for (var i = 0; i < a.length; i++) {
-	        for (var mp in a[i]) {
-	          if (mp == macroPropertyName) {
-	            (0, _object.mergeHashInto)(props, extractMacros(a[i][mp]));
-	          } else {
-	            props[mp] = a[i][mp];
-	          }
-	        }
-	      }
-	      return props;
-	    }
-
-	    var macros = properties[macroPropertyName];
-	    if (macros) {
-	      (0, _object.mergeHashInto)(properties, extractMacros(macros));
-	      delete properties[macroPropertyName];
-	    }
-	  };
-	};
-
-	var _object = __webpack_require__(2);
-
-	var _array = __webpack_require__(1);
-
-	; /*
-	   Returns a function to process macros with the given property key
-	   To use:
-	  
-	   Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
-	  
+	; /**
+	   * Rule post-processor to remove "redundant" id selectors. For example,
+	   * if the generated selected ends up being '#a #b #c', this post-processor
+	   * will reduce it to '#c'. In general this is great, as it makes the rules
+	   * more readable on the output side. You are, however, losing the specificity,
+	   * creating a cascade you might not expect.
+	   *
+	   * To wire it in:
+	   * Csster.rulesPostProcessors.push(Csster.compressSelectors);
 	   */
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _macro_preprocessor = __webpack_require__(27);
-
-	var _macro_preprocessor2 = _interopRequireDefault(_macro_preprocessor);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	Csster.propertyPreprocessors.push((0, _macro_preprocessor2.default)('has'));
 
 /***/ },
 /* 29 */

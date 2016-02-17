@@ -5,6 +5,11 @@ const dasherize = (s) => {
   });
 }
 
+const trim = function (text) {
+  return (text || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "")
+}
+
 export {
     dasherize,
+    trim,
 }

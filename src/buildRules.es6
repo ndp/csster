@@ -1,26 +1,32 @@
-import { arrayEach    } from './utils/array.es6'
-import { arrayFlatten } from './utils/array.es6'
-import { ruleBuilder } from './ruleBuilder.es6'
-import { postProcessRules } from './rulePostProcessor.es6'
+import { arrayEach, arrayFlatten    } from './utils/array.es6'
+import {curry} from './utils/curry.es6'
+
+import {applyPropertiesFilter, flattenObject, dasherizePropertyKeys, rejectUnknownPropertyKeys, compressSelectors } from './cssObject.es6'
+import {processMacro} from './filters/macroProcessor.es6'
+
+const applyHasMacro = curry(applyPropertiesFilter)(curry(processMacro)('has'))
+
+const process = function (o) {
+  o = flattenObject(o)
+  o = applyHasMacro(o)
+  o = compressSelectors(o)
+  o = dasherizePropertyKeys(o)
+  o = rejectUnknownPropertyKeys(o)
+  return o
+}
+// @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
+const objectToRulesArray = function (o) {
+  const result = [];
+  for (var key in o) {
+    result.push({sel: key, props: o[key]});
+  }
+  return result;
+};
 
 export default function (obj) {
-
-  // @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
-  var resolveRuleHash = function (cssRule) {
-    var result = [];
-    for (var key in cssRule) {
-      result.push(ruleBuilder(key, cssRule[key]));
-    }
-    return result;
-  };
-
-
   var rules = [];
-  arrayEach(arrayFlatten([obj]), function (r) {
-    rules.push(resolveRuleHash(r));
+  arrayEach(arrayFlatten([obj]), function (o) {
+    rules.push(objectToRulesArray(process(o)));
   });
-  rules     = arrayFlatten(rules);
-
-  postProcessRules(rules);
-  return rules;
+  return arrayFlatten(rules);
 };
