@@ -1,3 +1,4 @@
+// Csster version 1.1.0; Copyright (c) Andrew J. Peterson / ndpsoftware.com. All Rights Reserved
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -45,7 +46,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	module.exports = __webpack_require__(29);
+	module.exports = __webpack_require__(30);
 
 
 /***/ },
@@ -58,29 +59,29 @@
 
 	var _buildRules2 = _interopRequireDefault(_buildRules);
 
-	var _rulePostProcessor = __webpack_require__(11);
+	var _rulePostProcessor = __webpack_require__(12);
 
-	var _stringifyRules = __webpack_require__(12);
+	var _stringifyRules = __webpack_require__(13);
 
 	var _stringifyRules2 = _interopRequireDefault(_stringifyRules);
 
-	var _insertCss = __webpack_require__(17);
+	var _insertCss = __webpack_require__(18);
 
 	var _insertCss2 = _interopRequireDefault(_insertCss);
 
-	var _macros = __webpack_require__(18);
+	var _macros = __webpack_require__(19);
 
 	var macros = _interopRequireWildcard(_macros);
 
 	var _array = __webpack_require__(4);
 
-	var _browser = __webpack_require__(24);
+	var _browser = __webpack_require__(25);
 
-	var _color = __webpack_require__(27);
+	var _color = __webpack_require__(28);
 
-	var _propertyPreprocessor = __webpack_require__(28);
+	var _propertyPreprocessor = __webpack_require__(29);
 
-	var _propertyNameValidator = __webpack_require__(8);
+	var _propertyNameValidator = __webpack_require__(9);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
 
@@ -166,11 +167,11 @@
 
 	var _array = __webpack_require__(4);
 
-	var _curry = __webpack_require__(30);
+	var _curry = __webpack_require__(5);
 
-	var _cssObject = __webpack_require__(5);
+	var _cssObject = __webpack_require__(6);
 
-	var _macroProcessor = __webpack_require__(9);
+	var _macroProcessor = __webpack_require__(10);
 
 	var applyHasMacro = (0, _curry.curry)(_cssObject.applyPropertiesFilter)((0, _curry.curry)(_macroProcessor.processMacro)('has'));
 
@@ -337,6 +338,32 @@
 
 /***/ },
 /* 5 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.curry = curry;
+	function curry(fx) {
+	  var arity = fx.length;
+
+	  return function f1() {
+	    var args = Array.prototype.slice.call(arguments, 0);
+	    if (args.length >= arity) {
+	      return fx.apply(null, args);
+	    } else {
+	      return function f2() {
+	        var args2 = Array.prototype.slice.call(arguments, 0);
+	        return f1.apply(null, args.concat(args2));
+	      };
+	    }
+	  };
+	}
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -355,11 +382,11 @@
 	exports.applyPropertiesFilter = applyPropertiesFilter;
 	exports.compressSelectors = compressSelectors;
 
-	var _string = __webpack_require__(6);
+	var _string = __webpack_require__(7);
 
-	var _curry = __webpack_require__(30);
+	var _curry = __webpack_require__(5);
 
-	var _properties = __webpack_require__(7);
+	var _properties = __webpack_require__(8);
 
 	// Calculate "subselector", taking into account & rules and complex
 	// (comma separated) selectors.
@@ -443,7 +470,7 @@
 	}
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -466,7 +493,7 @@
 	exports.trim = trim;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -477,9 +504,9 @@
 	exports.dasherizeKeys = dasherizeKeys;
 	exports.rejectUnknownKeys = rejectUnknownKeys;
 
-	var _string = __webpack_require__(6);
+	var _string = __webpack_require__(7);
 
-	var _propertyNameValidator = __webpack_require__(8);
+	var _propertyNameValidator = __webpack_require__(9);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
 
@@ -504,7 +531,7 @@
 	}
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -565,7 +592,7 @@
 	addNames(['-webkit-animation', '-webkit-animation-delay', '-webkit-animation-direction', '-webkit-animation-duration', '-webkit-animation-iteration-count', '-webkit-animation-name', '-webkit-animation-play-state', '-webkit-animation-timing-function', '-webkit-appearance', '-webkit-backface-visibility', '-webkit-background-clip', '-webkit-background-composite', '-webkit-background-origin', '-webkit-background-size', '-webkit-border-bottom-left-radius', '-webkit-border-bottom-right-radius', '-webkit-border-horizontal-spacing', '-webkit-border-image', '-webkit-border-radius', '-webkit-border-top-left-radius', '-webkit-border-top-right-radius', '-webkit-border-vertical-spacing', '-webkit-box-align', '-webkit-box-direction', '-webkit-box-flex', '-webkit-box-flex-group', '-webkit-box-lines', '-webkit-box-ordinal-group', '-webkit-box-orient', '-webkit-box-pack', '-webkit-box-reflect', '-webkit-box-shadow', '-webkit-box-sizing', '-webkit-column-break-after', '-webkit-column-break-before', '-webkit-column-break-inside', '-webkit-column-count', '-webkit-column-gap', '-webkit-column-rule', '-webkit-column-rule-color', '-webkit-column-rule-style', '-webkit-column-rule-width', '-webkit-column-width', '-webkit-columns', '-webkit-dashboard-region', '-webkit-line-break', '-webkit-margin-bottom-collapse', '-webkit-margin-collapse', '-webkit-margin-start', '-webkit-margin-top-collapse', '-webkit-marquee', '-webkit-marquee-direction', '-webkit-marquee-increment', '-webkit-marquee-repetition', '-webkit-marquee-speed', '-webkit-marquee-style', '-webkit-mask', '-webkit-mask-attachment', '-webkit-mask-box-image', '-webkit-mask-clip', '-webkit-mask-composite', '-webkit-mask-image', '-webkit-mask-origin', '-webkit-mask-position', '-webkit-mask-position-x', '-webkit-mask-position-y', '-webkit-mask-repeat', '-webkit-mask-size', '-webkit-nbsp-mode', '-webkit-padding-start', '-webkit-perspective', '-webkit-perspective-origin', '-webkit-rtl-ordering', '-webkit-tap-highlight-color', '-webkit-text-fill-color', '-webkit-text-security', '-webkit-text-size-adjust', '-webkit-text-stroke', '-webkit-text-stroke-color', '-webkit-text-stroke-width', '-webkit-touch-callout', '-webkit-transform', '-webkit-transform-origin', '-webkit-transform-origin-x', '-webkit-transform-origin-y', '-webkit-transform-origin-z', '-webkit-transform-style', '-webkit-transition', '-webkit-transition-delay', '-webkit-transition-duration', '-webkit-transition-property', '-webkit-transition-timing-function', '-webkit-user-drag', '-webkit-user-modify', '-webkit-user-select']);
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -575,7 +602,7 @@
 	});
 	exports.processMacro = processMacro;
 
-	var _object = __webpack_require__(10);
+	var _object = __webpack_require__(11);
 
 	var _array = __webpack_require__(4);
 
@@ -611,7 +638,7 @@
 	}
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -637,7 +664,7 @@
 	exports.mergeHashInto = mergeHashInto;
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -658,7 +685,7 @@
 	exports.postProcessRules = postProcessRules;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -673,10 +700,10 @@
 	  }, '');
 	};
 
-	var _rule = __webpack_require__(13);
+	var _rule = __webpack_require__(14);
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -686,7 +713,7 @@
 	});
 	exports.format = undefined;
 
-	var _propertyEntry = __webpack_require__(14);
+	var _propertyEntry = __webpack_require__(15);
 
 	var propertyEntry = _interopRequireWildcard(_propertyEntry);
 
@@ -706,7 +733,7 @@
 	};
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -716,11 +743,11 @@
 	});
 	exports.format = undefined;
 
-	var _propertyName = __webpack_require__(15);
+	var _propertyName = __webpack_require__(16);
 
 	var propertyName = _interopRequireWildcard(_propertyName);
 
-	var _propertyValue = __webpack_require__(16);
+	var _propertyValue = __webpack_require__(17);
 
 	var propertyValue = _interopRequireWildcard(_propertyValue);
 
@@ -733,7 +760,7 @@
 	exports.format = format;
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -743,9 +770,9 @@
 	});
 	exports.valid = exports.format = exports.propertyNameOf = undefined;
 
-	var _string = __webpack_require__(6);
+	var _string = __webpack_require__(7);
 
-	var _propertyNameValidator = __webpack_require__(8);
+	var _propertyNameValidator = __webpack_require__(9);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
 
@@ -767,7 +794,7 @@
 	var valid = exports.valid = propertyNameOf;
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -786,7 +813,7 @@
 	exports.format = format;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -811,7 +838,7 @@
 	};
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -821,31 +848,31 @@
 	});
 	exports.imageReplacement = exports.clearfix = exports.linearGradient = exports.verticalCentering = exports.horizontalCentering = exports.boxShadow = exports.roundedCorners = undefined;
 
-	var _roundedCorners = __webpack_require__(19);
+	var _roundedCorners = __webpack_require__(20);
 
 	var _roundedCorners2 = _interopRequireDefault(_roundedCorners);
 
-	var _boxShadow = __webpack_require__(20);
+	var _boxShadow = __webpack_require__(21);
 
 	var _boxShadow2 = _interopRequireDefault(_boxShadow);
 
-	var _horizontalCentering = __webpack_require__(21);
+	var _horizontalCentering = __webpack_require__(22);
 
 	var _horizontalCentering2 = _interopRequireDefault(_horizontalCentering);
 
-	var _verticalCentering = __webpack_require__(22);
+	var _verticalCentering = __webpack_require__(23);
 
 	var _verticalCentering2 = _interopRequireDefault(_verticalCentering);
 
-	var _linearGradient = __webpack_require__(23);
+	var _linearGradient = __webpack_require__(24);
 
 	var _linearGradient2 = _interopRequireDefault(_linearGradient);
 
-	var _clearfix = __webpack_require__(25);
+	var _clearfix = __webpack_require__(26);
 
 	var _clearfix2 = _interopRequireDefault(_clearfix);
 
-	var _imageReplacement = __webpack_require__(26);
+	var _imageReplacement = __webpack_require__(27);
 
 	var _imageReplacement2 = _interopRequireDefault(_imageReplacement);
 
@@ -863,7 +890,7 @@
 	                                                        */
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -922,7 +949,7 @@
 	}
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -962,7 +989,7 @@
 	}
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -982,7 +1009,7 @@
 	}
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1002,7 +1029,7 @@
 	}
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1012,7 +1039,7 @@
 	});
 	exports.default = linearGradient;
 
-	var _browser = __webpack_require__(24);
+	var _browser = __webpack_require__(25);
 
 	var _array = __webpack_require__(4);
 
@@ -1086,7 +1113,7 @@
 	//        return l
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -1128,7 +1155,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1138,7 +1165,7 @@
 	});
 	exports.default = clearfix;
 
-	var _browser = __webpack_require__(24);
+	var _browser = __webpack_require__(25);
 
 	function clearfix() {
 	  var css = {
@@ -1161,7 +1188,7 @@
 	}
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1199,7 +1226,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1400,7 +1427,7 @@
 	exports.colorizeString = colorizeString;
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1425,7 +1452,7 @@
 	exports.propertyPreprocessors = propertyPreprocessors;
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	if (typeof jQuery != 'undefined') {
@@ -1437,32 +1464,6 @@
 	      return this;
 	    }
 	  })(jQuery);
-	}
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.curry = curry;
-	function curry(fx) {
-	  var arity = fx.length;
-
-	  return function f1() {
-	    var args = Array.prototype.slice.call(arguments, 0);
-	    if (args.length >= arity) {
-	      return fx.apply(null, args);
-	    } else {
-	      return function f2() {
-	        var args2 = Array.prototype.slice.call(arguments, 0);
-	        return f1.apply(null, args.concat(args2));
-	      };
-	    }
-	  };
 	}
 
 /***/ }
