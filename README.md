@@ -1,5 +1,9 @@
 # Csster
 
+<a href="https://travis-ci.org/ndp/csster" id="status-image-popup" title="build status image" name="status-images" class="open-popup">
+            <img src="https://travis-ci.org/ndp/csster.svg" >
+          </a>
+          
 Concisely generate CSS style rules within Javascript.  Features:
 
 * standard "object literal"/JSON format with good editor support
@@ -11,19 +15,17 @@ Concisely generate CSS style rules within Javascript.  Features:
 
 Slideshow introduction: https://docs.google.com/present/view?id=dfm357b6_49c4d3fpdm&interval=15
 
-## Changes
+## V2.0 Changes
 
-### V2.0
-
-To upgrade:
+### To Upgrade
 
 * Change `Csster.browser` to call `Csster.browserInfo()`, which returns the same thing.
 
-Other changes:
+### Other changes:
 
-* use ES6 for implementation and provide a more compressed and clean output.
-* add ability to turn off property name validation
-* add ability to warn about unknown browser extensions for property names 
+* use ES6 for implementation and provide a more compressed and clean script.
+* add ability to turn off property name validation.
+* add ability to warn about unknown browser extensions for property names.
 
 
 ## Usage
@@ -52,7 +54,7 @@ Or install it yourself as:
 
 All code is packaged into a single Javascript file download, [csster.js](http://ndpsoftware.com/csster/csster.js). There are no external dependencies. The project itself is hosted on [GitHub](http://github.com/ndp/csster).
 
-<pre>
+```
 require('csster.js'); // however you manage dependencies
 
 Csster.style({
@@ -63,7 +65,7 @@ Csster.style({
 });
 
 ...
-</pre>
+```
 
 Result, inserted in DOM automatically at the bottom of the &lt;head&gt; element:
 <pre>
