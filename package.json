@@ -6,6 +6,9 @@
     "css",
     "color"
   ],
+  "scripts": {
+    "test": "./node_modules/.bin/jasmine"
+  },
   "licenses": [
     {
       "type": "MIT",
