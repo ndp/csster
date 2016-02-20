@@ -12,12 +12,20 @@ import {trim} from '../src/utils/string.es6'
 function buildSubcontext(context, key) {
   const keys = key.split(',');
   for (let k = 0; k < keys.length; k++) {
-    var str     = trim(keys[k]);
-    var ampRule = (str.substr(0, 1) == '&');
-    keys[k]     = context + (ampRule ? str.substr(1) : ' ' + str);
+    let sel = trim(keys[k]);
+    sel     = ((sel.substr(0, 1) == '&') ? sel.substr(1) : ' ' + sel)
+    keys[k] = context + sel
   }
 
   return trim(keys.join(','))
+}
+
+
+import {isMacroKey} from './filters/macroProcessor.es6'
+
+function entryDefinesSubcontext(key, value) {
+  if (key.match(/^\.\#\&/)) return true
+  return (typeof value == 'object') && !isMacroKey(key)
 }
 
 
@@ -41,9 +49,9 @@ export const flattenObject = (inputObject) => {
     //   subselector  => rules
     for (var key in o) {
       const value = o[key]
-      if (typeof value == 'object') {
+      if (entryDefinesSubcontext(key, value)) {
         const subcontext = buildSubcontext(context, key)
-        addObject(value, subcontext)
+        addObject(value, subcontext) // Recurse!
       } else {
         addRule(context, key, value)
       }
@@ -58,8 +66,13 @@ export const flattenObject = (inputObject) => {
 
 export function applyPropertiesFilter(fn, o) {
   let out = {}
-  for (var selector in o) {
+  for (let selector in o) {
     out[selector] = fn(o[selector], selector)
+    for (let p in o[selector]) {
+      if (typeof o[selector][p] === 'object') {
+        out[selector][p] = applyPropertiesFilter(fn, o[selector][p])
+      }
+    }
   }
   return out
 }

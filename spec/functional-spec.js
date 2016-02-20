@@ -205,6 +205,4 @@ describe("Csster > functional >", function () {
     });
 
   });
-
-
 });

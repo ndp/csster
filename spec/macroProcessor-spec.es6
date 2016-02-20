@@ -1,8 +1,8 @@
 import {preprocessProperties, pushPropertyPreprocessor} from '../src/propertyPreprocessor.es6'
 
-import {processMacro} from '../src/filters/macroProcessor.es6'
+import {macroProcessor} from '../src/filters/macroProcessor.es6'
 
-describe('processMacro', () => {
+describe('macroProcessor', () => {
   function fakeMacro(radius) {
     return {
       '-webkit-border-radius': radius,
@@ -15,15 +15,15 @@ describe('processMacro', () => {
   }
 
   it('handles empty properties', () => {
-    expect(processMacro('has', {})).toEqual({})
+    expect(macroProcessor({})).toEqual({})
   })
 
   xit('replaces "has" result of function', () => {
-    expect(processMacro('has', {has: red})).toEqual({color: 'red'})
+    expect(macroProcessor({has: red})).toEqual({color: 'red'})
   })
 
   it('replaces "has" function results', () => {
-    expect(processMacro('has', {has: red()})).toEqual({color: 'red'})
+    expect(macroProcessor({has: red()})).toEqual({color: 'red'})
   })
 
 
@@ -32,7 +32,7 @@ describe('processMacro', () => {
       has:    fakeMacro(5),
       height: '235px'
     };
-    props     = processMacro('has', props);
+    props     = macroProcessor(props);
     expect(props).toEqual({height: '235px', '-webkit-border-radius': 5, '-moz-border-radius': 5})
   })
   it("expands multiple values within a 'has' properties", () => {
@@ -40,14 +40,14 @@ describe('processMacro', () => {
       has:    [fakeMacro(5), red()],
       height: '235px'
     };
-    props     = processMacro('has', props);
+    props     = macroProcessor(props);
     expect(props).toEqual({height: '235px', '-webkit-border-radius': 5, '-moz-border-radius': 5, color: 'red'})
   })
   it("expands has within a has within a 'has' properties", () => {
     var props = {
       has: {has: {height: '235px'}}
     };
-    props     = processMacro('has', props);
+    props     = macroProcessor(props);
     expect(props).toEqual({"height": "235px"})
   })
 

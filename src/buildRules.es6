@@ -2,13 +2,13 @@ import { arrayEach, arrayFlatten    } from './utils/array.es6'
 import {curry} from './utils/curry.es6'
 
 import {applyPropertiesFilter, flattenObject, dasherizePropertyKeys, rejectUnknownPropertyKeys, compressSelectors } from './cssObject.es6'
-import {processMacro} from './filters/macroProcessor.es6'
+import {macroProcessor} from './filters/macroProcessor.es6'
 
-const applyHasMacro = curry(applyPropertiesFilter)(curry(processMacro)('has'))
+const applyMacros = curry(applyPropertiesFilter)(macroProcessor)
 
 const process = function (o) {
+  o = applyMacros(o)
   o = flattenObject(o)
-  o = applyHasMacro(o)
   o = compressSelectors(o)
   o = dasherizePropertyKeys(o)
   o = rejectUnknownPropertyKeys(o)

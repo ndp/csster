@@ -29,9 +29,19 @@ const arrayFlatten = (a) => {
   });
 };
 
+function includes(values, value) {
+  for (let i = 0; i < values.length; i++) {
+    if (value == values[i]) return true
+  }
+  return false
+}
+
+
+
 export {
     isArray,
     arrayEach,
     arrayInject,
     arrayFlatten,
+    includes
 }

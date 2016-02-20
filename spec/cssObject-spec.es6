@@ -73,7 +73,7 @@ describe('flattenObject', () => {
     })
   })
 
-  it('handles macros', () => {
+  it('handles fn macros', () => {
     const mac = () => {
       return {color: 'red'}
     }
@@ -91,6 +91,52 @@ describe('flattenObject', () => {
       },
       'table.bubble_chart td': {
         has:    mac,
+        height: 30,
+      }
+    })
+  })
+
+  it('handles realized macros', () => {
+    const mac = () => {
+      return {color: 'red'}
+    }
+    expect(subject({
+      'table.bubble_chart': {
+        has: mac(),
+        td:  {
+          has:    mac(),
+          height: 30,
+        }
+      }
+    })).toEqual({
+      'table.bubble_chart':    {
+        has: { color: 'red' }
+      },
+      'table.bubble_chart td': {
+        has: { color: 'red' },
+        height: 30,
+      }
+    })
+  })
+
+  it('handles array of macros', () => {
+    const mac = () => {
+      return {color: 'red'}
+    }
+    expect(subject({
+      'table.bubble_chart': {
+        has: [mac()],
+        td:  {
+          has: [mac()],
+          height: 30,
+        }
+      }
+    })).toEqual({
+      'table.bubble_chart':    {
+        has: [{ color: 'red' }]
+      },
+      'table.bubble_chart td': {
+        has: [{ color: 'red' }],
         height: 30,
       }
     })
