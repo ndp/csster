@@ -77,6 +77,16 @@ export function applyPropertiesFilter(fn, o) {
   return out
 }
 
+const applySelectorFilter = (filterFn, o) => {
+  let out = {}
+  for (var selector in o) {
+    let newSelector = filterFn(selector)
+    out[newSelector] = o[selector]
+  }
+  return out
+}
+
+
 import {curry} from './utils/curry.es6'
 
 import { dasherizeKeys } from './properties.es6'
@@ -86,25 +96,16 @@ import { rejectUnknownKeys } from './properties.es6'
 export const rejectUnknownPropertyKeys = curry(applyPropertiesFilter)(rejectUnknownKeys)
 
 
+
 /**
- * Rule post-processor to remove "redundant" id selectors. For example,
- * if the generated selected ends up being '#a #b #c', this post-processor
- * will reduce it to '#c'. In general this is great, as it makes the rules
- * more readable on the output side. You are, however, losing the specificity,
- * creating a cascade you might not expect.
- *
- * To wire it in:
- * Csster.rulesPostProcessors.push(Csster.compressSelectors);
  * TODO UPDATE DOCS
  */
-export function compressSelectors(o) {
-  let out = {}
-  for (var selector in o) {
-    let newSelector = selector
-    while (newSelector.match(/.*#.*#.*/)) {
-      newSelector = newSelector.replace(/^.*#.*#/, '#');
-    }
-    out[newSelector] = o[selector]
+
+const compressSelector = (sel) => {
+  while (sel.match(/.*#.*#.*/)) {
+    sel = sel.replace(/^.*#.*#/, '#');
   }
-  return out
+  return sel
 }
+
+export const compressSelectors = curry(applySelectorFilter)(compressSelector)

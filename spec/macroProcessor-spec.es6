@@ -1,5 +1,3 @@
-import {preprocessProperties, pushPropertyPreprocessor} from '../src/propertyPreprocessor.es6'
-
 import {macroProcessor} from '../src/filters/macroProcessor.es6'
 
 describe('macroProcessor', () => {
@@ -18,11 +16,11 @@ describe('macroProcessor', () => {
     expect(macroProcessor({})).toEqual({})
   })
 
-  xit('replaces "has" result of function', () => {
+  it('merges results of "has" functions into results', () => {
     expect(macroProcessor({has: red})).toEqual({color: 'red'})
   })
 
-  it('replaces "has" function results', () => {
+  it('merges "has" values into results', () => {
     expect(macroProcessor({has: red()})).toEqual({color: 'red'})
   })
 

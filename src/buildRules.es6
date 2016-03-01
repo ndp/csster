@@ -6,14 +6,6 @@ import {macroProcessor} from './filters/macroProcessor.es6'
 
 const applyMacros = curry(applyPropertiesFilter)(macroProcessor)
 
-const process = function (o) {
-  o = applyMacros(o)
-  o = flattenObject(o)
-  o = compressSelectors(o)
-  o = dasherizePropertyKeys(o)
-  o = rejectUnknownPropertyKeys(o)
-  return o
-}
 // @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
 const objectToRulesArray = function (o) {
   const result = [];
@@ -23,10 +15,26 @@ const objectToRulesArray = function (o) {
   return result;
 };
 
+
+const pipeline = []
+pipeline.push(applyMacros)
+pipeline.push(flattenObject)
+pipeline.push(compressSelectors)
+pipeline.push(dasherizePropertyKeys)
+pipeline.push(rejectUnknownPropertyKeys)
+pipeline.push(objectToRulesArray)
+
+const process = function (o) {
+  for (let i = 0; i < pipeline.length; i++) {
+    o = pipeline[i](o)
+  }
+  return o
+}
+
 export default function (obj) {
   var rules = [];
   arrayEach(arrayFlatten([obj]), function (o) {
-    rules.push(objectToRulesArray(process(o)));
+    rules.push(process(o));
   });
   return arrayFlatten(rules);
 };

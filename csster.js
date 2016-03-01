@@ -58,8 +58,6 @@
 
 	var _buildRules2 = _interopRequireDefault(_buildRules);
 
-	var _rulePostProcessor = __webpack_require__(11);
-
 	var _stringifyRules = __webpack_require__(12);
 
 	var _stringifyRules2 = _interopRequireDefault(_stringifyRules);
@@ -78,8 +76,6 @@
 
 	var _color = __webpack_require__(27);
 
-	var _propertyPreprocessor = __webpack_require__(28);
-
 	var _propertyNameValidator = __webpack_require__(8);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
@@ -92,11 +88,14 @@
 	  window.Csster = {};
 	}
 
-	// Main entry from the outside
-	Csster.style = function (o) {
+	Csster.buildCss = function (o) {
 	  var rules = (0, _buildRules2.default)(o);
-	  (0, _rulePostProcessor.postProcessRules)(rules);
 	  var css = (0, _stringifyRules2.default)(rules);
+	  return css;
+	};
+
+	Csster.style = function (o) {
+	  var css = Csster.buildCss(o);
 	  (0, _insertCss2.default)(css);
 	};
 
@@ -111,40 +110,10 @@
 	Csster.hslToHexColor = _color.hslToHexColor;
 	(0, _color.colorizeString)();
 
-	Csster.propertyPreprocessors = _propertyPreprocessor.propertyPreprocessors;
-
-	Csster.rulesPostProcessors = _rulePostProcessor.rulesPostProcessors;
-
 	Csster.addPropertyNames = propertyNameValidator.addNames;
-
-	//Csster.compressSelectors = compressSelectors TODO, need to make this configurable
 
 	Csster.insertCss = _insertCss2.default;
 	Csster.buildRules = _buildRules2.default;
-
-	//import {createMacroProcessor} from './filters/macroProcessor.es6'
-	//Csster.propertyPreprocessors.push(createMacroProcessor('has'));
-
-	/*
-	ObjectProcessor
-	===============
-	(Object) => (Object)
-	 flatten -- remove nested hierarchy
-	expand macros
-
-
-	(Object) => [Rules]
-	- buildRules
-	- resolveRuleHash
-
-
-	PropertyProcessor
-
-
-
-	RuleProcessor
-
-	 */
 
 /***/ },
 /* 2 */
@@ -159,7 +128,7 @@
 	exports.default = function (obj) {
 	  var rules = [];
 	  (0, _array.arrayEach)((0, _array.arrayFlatten)([obj]), function (o) {
-	    rules.push(objectToRulesArray(process(o)));
+	    rules.push(process(o));
 	  });
 	  return (0, _array.arrayFlatten)(rules);
 	};
@@ -174,14 +143,6 @@
 
 	var applyMacros = (0, _curry.curry)(_cssObject.applyPropertiesFilter)(_macroProcessor.macroProcessor);
 
-	var process = function process(o) {
-	  o = applyMacros(o);
-	  o = (0, _cssObject.flattenObject)(o);
-	  o = (0, _cssObject.compressSelectors)(o);
-	  o = (0, _cssObject.dasherizePropertyKeys)(o);
-	  o = (0, _cssObject.rejectUnknownPropertyKeys)(o);
-	  return o;
-	};
 	// @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
 	var objectToRulesArray = function objectToRulesArray(o) {
 	  var result = [];
@@ -189,6 +150,21 @@
 	    result.push({ sel: key, props: o[key] });
 	  }
 	  return result;
+	};
+
+	var pipeline = [];
+	pipeline.push(applyMacros);
+	pipeline.push(_cssObject.flattenObject);
+	pipeline.push(_cssObject.compressSelectors);
+	pipeline.push(_cssObject.dasherizePropertyKeys);
+	pipeline.push(_cssObject.rejectUnknownPropertyKeys);
+	pipeline.push(objectToRulesArray);
+
+	var process = function process(o) {
+	  for (var i = 0; i < pipeline.length; i++) {
+	    o = pipeline[i](o);
+	  }
+	  return o;
 	};
 
 	;
@@ -352,7 +328,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.rejectUnknownPropertyKeys = exports.dasherizePropertyKeys = exports.flattenObject = undefined;
+	exports.compressSelectors = exports.rejectUnknownPropertyKeys = exports.dasherizePropertyKeys = exports.flattenObject = undefined;
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; }; /*
 	                                                                                                                                                                                                                                                   A Javascript object tha represents "CSS" rules. It:
@@ -361,7 +337,6 @@
 	                                                                                                                                                                                                                                                   */
 
 	exports.applyPropertiesFilter = applyPropertiesFilter;
-	exports.compressSelectors = compressSelectors;
 
 	var _string = __webpack_require__(6);
 
@@ -435,32 +410,31 @@
 	  return out;
 	}
 
+	var applySelectorFilter = function applySelectorFilter(filterFn, o) {
+	  var out = {};
+	  for (var selector in o) {
+	    var newSelector = filterFn(selector);
+	    out[newSelector] = o[selector];
+	  }
+	  return out;
+	};
+
 	var dasherizePropertyKeys = exports.dasherizePropertyKeys = (0, _curry.curry)(applyPropertiesFilter)(_properties.dasherizeKeys);
 
 	var rejectUnknownPropertyKeys = exports.rejectUnknownPropertyKeys = (0, _curry.curry)(applyPropertiesFilter)(_properties.rejectUnknownKeys);
 
 	/**
-	 * Rule post-processor to remove "redundant" id selectors. For example,
-	 * if the generated selected ends up being '#a #b #c', this post-processor
-	 * will reduce it to '#c'. In general this is great, as it makes the rules
-	 * more readable on the output side. You are, however, losing the specificity,
-	 * creating a cascade you might not expect.
-	 *
-	 * To wire it in:
-	 * Csster.rulesPostProcessors.push(Csster.compressSelectors);
 	 * TODO UPDATE DOCS
 	 */
-	function compressSelectors(o) {
-	  var out = {};
-	  for (var selector in o) {
-	    var newSelector = selector;
-	    while (newSelector.match(/.*#.*#.*/)) {
-	      newSelector = newSelector.replace(/^.*#.*#/, '#');
-	    }
-	    out[newSelector] = o[selector];
+
+	var compressSelector = function compressSelector(sel) {
+	  while (sel.match(/.*#.*#.*/)) {
+	    sel = sel.replace(/^.*#.*#/, '#');
 	  }
-	  return out;
-	}
+	  return sel;
+	};
+
+	var compressSelectors = exports.compressSelectors = (0, _curry.curry)(applySelectorFilter)(compressSelector);
 
 /***/ },
 /* 6 */
@@ -601,31 +575,26 @@
 
 	var _array = __webpack_require__(4);
 
-	/*
-	 Returns a function to process macros with the given property key
-	 To use:
-
-	 Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
-
-	 */
-
-
-	var macroKeys = ['has'];
+	var macroKeys = ['has', 'mixin', 'mixins'];
 	function setMacroKeys(keys) {
 	  macroKeys = keys;
 	}
 
 	function macroProcessor(properties) {
 
-	  function extractMacros(p) {
+	  function applyMacros(macroList) {
+
 	    var props = {};
-	    var a = (0, _array.arrayFlatten)([p]); // support single or multiple sets of properties
-	    for (var i = 0; i < a.length; i++) {
-	      for (var mp in a[i]) {
+
+	    var macros = (0, _array.arrayFlatten)([macroList]); // support single or multiple sets of properties
+	    for (var i = 0; i < macros.length; i++) {
+	      var macro = macros[i];
+	      if (typeof macro == 'function') macro = macro();
+	      for (var mp in macro) {
 	        if (isMacroKey(mp)) {
-	          (0, _object.mergeHashInto)(props, extractMacros(a[i][mp]));
+	          (0, _object.mergeHashInto)(props, applyMacros(macro[mp]));
 	        } else {
-	          props[mp] = a[i][mp];
+	          props[mp] = macro[mp];
 	        }
 	      }
 	    }
@@ -635,9 +604,9 @@
 	  for (var k in properties) {
 	    if (isMacroKey(k)) {
 	      var macros = properties[k];
+	      delete properties[k];
 	      if (macros) {
-	        (0, _object.mergeHashInto)(properties, extractMacros(macros));
-	        delete properties[k];
+	        (0, _object.mergeHashInto)(properties, applyMacros(macros));
 	      }
 	    }
 	  }
@@ -675,27 +644,7 @@
 	exports.mergeHashInto = mergeHashInto;
 
 /***/ },
-/* 11 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var rulesPostProcessors = [];
-
-	var postProcessRules = function postProcessRules(rules) {
-	  for (var i = 0; i < rulesPostProcessors.length; i++) {
-	    rulesPostProcessors[i].apply(rules, [rules]);
-	  }
-	};
-
-	exports.rulesPostProcessors = rulesPostProcessors;
-	exports.postProcessRules = postProcessRules;
-
-/***/ },
+/* 11 */,
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1438,31 +1387,7 @@
 	exports.colorizeString = colorizeString;
 
 /***/ },
-/* 28 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var propertyPreprocessors = [];
-
-	var preprocessProperties = function preprocessProperties(properties) {
-	  for (var i = 0; i < propertyPreprocessors.length; i++) {
-	    propertyPreprocessors[i].apply(properties, [properties]);
-	  }
-	};
-
-	var pushPropertyPreprocessor = function pushPropertyPreprocessor(pp) {
-	  propertyPreprocessors.push(pp);
-	};
-
-	exports.preprocessProperties = preprocessProperties;
-	exports.pushPropertyPreprocessor = pushPropertyPreprocessor;
-	exports.propertyPreprocessors = propertyPreprocessors;
-
-/***/ },
+/* 28 */,
 /* 29 */
 /***/ function(module, exports) {
 

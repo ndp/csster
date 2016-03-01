@@ -46,7 +46,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	module.exports = __webpack_require__(30);
+	module.exports = __webpack_require__(28);
 
 
 /***/ },
@@ -59,29 +59,25 @@
 
 	var _buildRules2 = _interopRequireDefault(_buildRules);
 
-	var _rulePostProcessor = __webpack_require__(12);
-
-	var _stringifyRules = __webpack_require__(13);
+	var _stringifyRules = __webpack_require__(12);
 
 	var _stringifyRules2 = _interopRequireDefault(_stringifyRules);
 
-	var _insertCss = __webpack_require__(18);
+	var _insertCss = __webpack_require__(17);
 
 	var _insertCss2 = _interopRequireDefault(_insertCss);
 
-	var _macros = __webpack_require__(19);
+	var _macros = __webpack_require__(18);
 
 	var macros = _interopRequireWildcard(_macros);
 
 	var _array = __webpack_require__(4);
 
-	var _browser = __webpack_require__(25);
+	var _browser = __webpack_require__(24);
 
-	var _color = __webpack_require__(28);
+	var _color = __webpack_require__(27);
 
-	var _propertyPreprocessor = __webpack_require__(29);
-
-	var _propertyNameValidator = __webpack_require__(9);
+	var _propertyNameValidator = __webpack_require__(11);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
 
@@ -93,11 +89,14 @@
 	  window.Csster = {};
 	}
 
-	// Main entry from the outside
-	Csster.style = function (o) {
+	Csster.buildCss = function (o) {
 	  var rules = (0, _buildRules2.default)(o);
-	  (0, _rulePostProcessor.postProcessRules)(rules);
 	  var css = (0, _stringifyRules2.default)(rules);
+	  return css;
+	};
+
+	Csster.style = function (o) {
+	  var css = Csster.buildCss(o);
 	  (0, _insertCss2.default)(css);
 	};
 
@@ -112,40 +111,10 @@
 	Csster.hslToHexColor = _color.hslToHexColor;
 	(0, _color.colorizeString)();
 
-	Csster.propertyPreprocessors = _propertyPreprocessor.propertyPreprocessors;
-
-	Csster.rulesPostProcessors = _rulePostProcessor.rulesPostProcessors;
-
 	Csster.addPropertyNames = propertyNameValidator.addNames;
-
-	//Csster.compressSelectors = compressSelectors TODO, need to make this configurable
 
 	Csster.insertCss = _insertCss2.default;
 	Csster.buildRules = _buildRules2.default;
-
-	//import {createMacroProcessor} from './filters/macroProcessor.es6'
-	//Csster.propertyPreprocessors.push(createMacroProcessor('has'));
-
-	/*
-	ObjectProcessor
-	===============
-	(Object) => (Object)
-	 flatten -- remove nested hierarchy
-	expand macros
-
-
-	(Object) => [Rules]
-	- buildRules
-	- resolveRuleHash
-
-
-	PropertyProcessor
-
-
-
-	RuleProcessor
-
-	 */
 
 /***/ },
 /* 2 */
@@ -160,7 +129,7 @@
 	exports.default = function (obj) {
 	  var rules = [];
 	  (0, _array.arrayEach)((0, _array.arrayFlatten)([obj]), function (o) {
-	    rules.push(objectToRulesArray(process(o)));
+	    rules.push(process(o));
 	  });
 	  return (0, _array.arrayFlatten)(rules);
 	};
@@ -171,16 +140,22 @@
 
 	var _cssObject = __webpack_require__(6);
 
-	var _macroProcessor = __webpack_require__(10);
+	var _macroProcessor = __webpack_require__(8);
 
-	var applyHasMacro = (0, _curry.curry)(_cssObject.applyPropertiesFilter)((0, _curry.curry)(_macroProcessor.processMacro)('has'));
+	var applyMacros = (0, _curry.curry)(_cssObject.applyPropertiesFilter)(_macroProcessor.macroProcessor);
+
+	var pipeline = [];
+	pipeline.push(applyMacros);
+	pipeline.push(_cssObject.flattenObject);
+	pipeline.push(_cssObject.compressSelectors);
+	pipeline.push(_cssObject.dasherizePropertyKeys);
+	pipeline.push(_cssObject.rejectUnknownPropertyKeys);
+	pipeline.push(objectToRulesArray);
 
 	var process = function process(o) {
-	  o = (0, _cssObject.flattenObject)(o);
-	  o = applyHasMacro(o);
-	  o = (0, _cssObject.compressSelectors)(o);
-	  o = (0, _cssObject.dasherizePropertyKeys)(o);
-	  o = (0, _cssObject.rejectUnknownPropertyKeys)(o);
+	  for (var i = 0; i < pipeline.length; i++) {
+	    o = pipeline[i](o);
+	  }
 	  return o;
 	};
 	// @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
@@ -331,10 +306,18 @@
 	  });
 	};
 
+	function includes(values, value) {
+	  for (var i = 0; i < values.length; i++) {
+	    if (value == values[i]) return true;
+	  }
+	  return false;
+	}
+
 	exports.isArray = isArray;
 	exports.arrayEach = arrayEach;
 	exports.arrayInject = arrayInject;
 	exports.arrayFlatten = arrayFlatten;
+	exports.includes = includes;
 
 /***/ },
 /* 5 */
@@ -371,7 +354,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.rejectUnknownPropertyKeys = exports.dasherizePropertyKeys = exports.flattenObject = undefined;
+	exports.compressSelectors = exports.rejectUnknownPropertyKeys = exports.dasherizePropertyKeys = exports.flattenObject = undefined;
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; }; /*
 	                                                                                                                                                                                                                                                   A Javascript object tha represents "CSS" rules. It:
@@ -380,25 +363,31 @@
 	                                                                                                                                                                                                                                                   */
 
 	exports.applyPropertiesFilter = applyPropertiesFilter;
-	exports.compressSelectors = compressSelectors;
 
 	var _string = __webpack_require__(7);
 
+	var _macroProcessor = __webpack_require__(8);
+
 	var _curry = __webpack_require__(5);
 
-	var _properties = __webpack_require__(8);
+	var _properties = __webpack_require__(10);
 
 	// Calculate "subselector", taking into account & rules and complex
 	// (comma separated) selectors.
 	function buildSubcontext(context, key) {
 	  var keys = key.split(',');
 	  for (var k = 0; k < keys.length; k++) {
-	    var str = (0, _string.trim)(keys[k]);
-	    var ampRule = str.substr(0, 1) == '&';
-	    keys[k] = context + (ampRule ? str.substr(1) : ' ' + str);
+	    var sel = (0, _string.trim)(keys[k]);
+	    sel = sel.substr(0, 1) == '&' ? sel.substr(1) : ' ' + sel;
+	    keys[k] = context + sel;
 	  }
 
 	  return (0, _string.trim)(keys.join(','));
+	}
+
+	function entryDefinesSubcontext(key, value) {
+	  if (key.match(/^\.\#\&/)) return true;
+	  return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) == 'object' && !(0, _macroProcessor.isMacroKey)(key);
 	}
 
 	var flattenObject = exports.flattenObject = function flattenObject(inputObject) {
@@ -420,12 +409,12 @@
 	    //   subselector  => rules
 	    for (var key in o) {
 	      var value = o[key];
-	      if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) == 'object') {
+	      if (entryDefinesSubcontext(key, value)) {
 	        var subcontext = buildSubcontext(context, key);
-	        addObject(value, subcontext);
+	        addObject(value, subcontext); // Recurse!
 	      } else {
-	        addRule(context, key, value);
-	      }
+	          addRule(context, key, value);
+	        }
 	    }
 	  }
 
@@ -438,36 +427,40 @@
 	  var out = {};
 	  for (var selector in o) {
 	    out[selector] = fn(o[selector], selector);
+	    for (var p in o[selector]) {
+	      if (_typeof(o[selector][p]) === 'object') {
+	        out[selector][p] = applyPropertiesFilter(fn, o[selector][p]);
+	      }
+	    }
 	  }
 	  return out;
 	}
+
+	var applySelectorFilter = function applySelectorFilter(filterFn, o) {
+	  var out = {};
+	  for (var selector in o) {
+	    var newSelector = filterFn(selector);
+	    out[newSelector] = o[selector];
+	  }
+	  return out;
+	};
 
 	var dasherizePropertyKeys = exports.dasherizePropertyKeys = (0, _curry.curry)(applyPropertiesFilter)(_properties.dasherizeKeys);
 
 	var rejectUnknownPropertyKeys = exports.rejectUnknownPropertyKeys = (0, _curry.curry)(applyPropertiesFilter)(_properties.rejectUnknownKeys);
 
 	/**
-	 * Rule post-processor to remove "redundant" id selectors. For example,
-	 * if the generated selected ends up being '#a #b #c', this post-processor
-	 * will reduce it to '#c'. In general this is great, as it makes the rules
-	 * more readable on the output side. You are, however, losing the specificity,
-	 * creating a cascade you might not expect.
-	 *
-	 * To wire it in:
-	 * Csster.rulesPostProcessors.push(Csster.compressSelectors);
 	 * TODO UPDATE DOCS
 	 */
-	function compressSelectors(o) {
-	  var out = {};
-	  for (var selector in o) {
-	    var newSelector = selector;
-	    while (newSelector.match(/.*#.*#.*/)) {
-	      newSelector = newSelector.replace(/^.*#.*#/, '#');
-	    }
-	    out[newSelector] = o[selector];
+
+	var compressSelector = function compressSelector(sel) {
+	  while (sel.match(/.*#.*#.*/)) {
+	    sel = sel.replace(/^.*#.*#/, '#');
 	  }
-	  return out;
-	}
+	  return sel;
+	};
+
+	var compressSelectors = exports.compressSelectors = (0, _curry.curry)(applySelectorFilter)(compressSelector);
 
 /***/ },
 /* 7 */
@@ -501,12 +494,97 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.setMacroKeys = setMacroKeys;
+	exports.macroProcessor = macroProcessor;
+	exports.isMacroKey = isMacroKey;
+
+	var _object = __webpack_require__(9);
+
+	var _array = __webpack_require__(4);
+
+	var macroKeys = ['has', 'mixin', 'mixins'];
+	function setMacroKeys(keys) {
+	  macroKeys = keys;
+	}
+
+	function macroProcessor(properties) {
+
+	  function applyMacros(macroList) {
+
+	    var props = {};
+
+	    var macros = (0, _array.arrayFlatten)([macroList]); // support single or multiple sets of properties
+	    for (var i = 0; i < macros.length; i++) {
+	      var macro = macros[i];
+	      if (typeof macro == 'function') macro = macro();
+	      for (var mp in macro) {
+	        if (isMacroKey(mp)) {
+	          (0, _object.mergeHashInto)(props, applyMacros(macro[mp]));
+	        } else {
+	          props[mp] = macro[mp];
+	        }
+	      }
+	    }
+	    return props;
+	  }
+
+	  for (var k in properties) {
+	    if (isMacroKey(k)) {
+	      var macros = properties[k];
+	      delete properties[k];
+	      if (macros) {
+	        (0, _object.mergeHashInto)(properties, applyMacros(macros));
+	      }
+	    }
+	  }
+	  return properties;
+	}
+
+	function isMacroKey(k) {
+	  return (0, _array.includes)(macroKeys, k);
+	}
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	//  mergeHashInto(hashA, hashB, hashC...)
+	// merge all properties from B, C into hash A.
+	var mergeHashInto = function mergeHashInto(dest) {
+	  for (var _len = arguments.length, hashes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	    hashes[_key - 1] = arguments[_key];
+	  }
+
+	  for (var i = 0; i < hashes.length; i++) {
+	    for (var k in hashes[i]) {
+	      dest[k] = hashes[i][k];
+	    }
+	  }
+	  return dest;
+	};
+
+	exports.mergeHashInto = mergeHashInto;
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.dasherizeKeys = dasherizeKeys;
 	exports.rejectUnknownKeys = rejectUnknownKeys;
 
 	var _string = __webpack_require__(7);
 
-	var _propertyNameValidator = __webpack_require__(9);
+	var _propertyNameValidator = __webpack_require__(11);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
 
@@ -531,7 +609,7 @@
 	}
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -592,100 +670,7 @@
 	addNames(['-webkit-animation', '-webkit-animation-delay', '-webkit-animation-direction', '-webkit-animation-duration', '-webkit-animation-iteration-count', '-webkit-animation-name', '-webkit-animation-play-state', '-webkit-animation-timing-function', '-webkit-appearance', '-webkit-backface-visibility', '-webkit-background-clip', '-webkit-background-composite', '-webkit-background-origin', '-webkit-background-size', '-webkit-border-bottom-left-radius', '-webkit-border-bottom-right-radius', '-webkit-border-horizontal-spacing', '-webkit-border-image', '-webkit-border-radius', '-webkit-border-top-left-radius', '-webkit-border-top-right-radius', '-webkit-border-vertical-spacing', '-webkit-box-align', '-webkit-box-direction', '-webkit-box-flex', '-webkit-box-flex-group', '-webkit-box-lines', '-webkit-box-ordinal-group', '-webkit-box-orient', '-webkit-box-pack', '-webkit-box-reflect', '-webkit-box-shadow', '-webkit-box-sizing', '-webkit-column-break-after', '-webkit-column-break-before', '-webkit-column-break-inside', '-webkit-column-count', '-webkit-column-gap', '-webkit-column-rule', '-webkit-column-rule-color', '-webkit-column-rule-style', '-webkit-column-rule-width', '-webkit-column-width', '-webkit-columns', '-webkit-dashboard-region', '-webkit-line-break', '-webkit-margin-bottom-collapse', '-webkit-margin-collapse', '-webkit-margin-start', '-webkit-margin-top-collapse', '-webkit-marquee', '-webkit-marquee-direction', '-webkit-marquee-increment', '-webkit-marquee-repetition', '-webkit-marquee-speed', '-webkit-marquee-style', '-webkit-mask', '-webkit-mask-attachment', '-webkit-mask-box-image', '-webkit-mask-clip', '-webkit-mask-composite', '-webkit-mask-image', '-webkit-mask-origin', '-webkit-mask-position', '-webkit-mask-position-x', '-webkit-mask-position-y', '-webkit-mask-repeat', '-webkit-mask-size', '-webkit-nbsp-mode', '-webkit-padding-start', '-webkit-perspective', '-webkit-perspective-origin', '-webkit-rtl-ordering', '-webkit-tap-highlight-color', '-webkit-text-fill-color', '-webkit-text-security', '-webkit-text-size-adjust', '-webkit-text-stroke', '-webkit-text-stroke-color', '-webkit-text-stroke-width', '-webkit-touch-callout', '-webkit-transform', '-webkit-transform-origin', '-webkit-transform-origin-x', '-webkit-transform-origin-y', '-webkit-transform-origin-z', '-webkit-transform-style', '-webkit-transition', '-webkit-transition-delay', '-webkit-transition-duration', '-webkit-transition-property', '-webkit-transition-timing-function', '-webkit-user-drag', '-webkit-user-modify', '-webkit-user-select']);
 
 /***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.processMacro = processMacro;
-
-	var _object = __webpack_require__(11);
-
-	var _array = __webpack_require__(4);
-
-	/*
-	 Returns a function to process macros with the given property key
-	 To use:
-
-	 Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
-
-	 */
-	function processMacro(macroPropertyName, properties) {
-
-	  function extractMacros(p) {
-	    var props = {};
-	    var a = (0, _array.arrayFlatten)([p]); // support single or multiple sets of properties
-	    for (var i = 0; i < a.length; i++) {
-	      for (var mp in a[i]) {
-	        if (mp == macroPropertyName) {
-	          (0, _object.mergeHashInto)(props, extractMacros(a[i][mp]));
-	        } else {
-	          props[mp] = a[i][mp];
-	        }
-	      }
-	    }
-	    return props;
-	  }
-	  var macros = properties[macroPropertyName];
-	  if (macros) {
-	    (0, _object.mergeHashInto)(properties, extractMacros(macros));
-	    delete properties[macroPropertyName];
-	  }
-	  return properties;
-	}
-
-/***/ },
-/* 11 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	//  mergeHashInto(hashA, hashB, hashC...)
-	// merge all properties from B, C into hash A.
-	var mergeHashInto = function mergeHashInto(dest) {
-	  for (var _len = arguments.length, hashes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	    hashes[_key - 1] = arguments[_key];
-	  }
-
-	  for (var i = 0; i < hashes.length; i++) {
-	    for (var k in hashes[i]) {
-	      dest[k] = hashes[i][k];
-	    }
-	  }
-	  return dest;
-	};
-
-	exports.mergeHashInto = mergeHashInto;
-
-/***/ },
 /* 12 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var rulesPostProcessors = [];
-
-	var postProcessRules = function postProcessRules(rules) {
-	  for (var i = 0; i < rulesPostProcessors.length; i++) {
-	    rulesPostProcessors[i].apply(rules, [rules]);
-	  }
-	};
-
-	exports.rulesPostProcessors = rulesPostProcessors;
-	exports.postProcessRules = postProcessRules;
-
-/***/ },
-/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -700,10 +685,10 @@
 	  }, '');
 	};
 
-	var _rule = __webpack_require__(14);
+	var _rule = __webpack_require__(13);
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -713,7 +698,7 @@
 	});
 	exports.format = undefined;
 
-	var _propertyEntry = __webpack_require__(15);
+	var _propertyEntry = __webpack_require__(14);
 
 	var propertyEntry = _interopRequireWildcard(_propertyEntry);
 
@@ -733,7 +718,7 @@
 	};
 
 /***/ },
-/* 15 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -743,11 +728,11 @@
 	});
 	exports.format = undefined;
 
-	var _propertyName = __webpack_require__(16);
+	var _propertyName = __webpack_require__(15);
 
 	var propertyName = _interopRequireWildcard(_propertyName);
 
-	var _propertyValue = __webpack_require__(17);
+	var _propertyValue = __webpack_require__(16);
 
 	var propertyValue = _interopRequireWildcard(_propertyValue);
 
@@ -760,7 +745,7 @@
 	exports.format = format;
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -772,7 +757,7 @@
 
 	var _string = __webpack_require__(7);
 
-	var _propertyNameValidator = __webpack_require__(9);
+	var _propertyNameValidator = __webpack_require__(11);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
 
@@ -794,7 +779,7 @@
 	var valid = exports.valid = propertyNameOf;
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -813,7 +798,7 @@
 	exports.format = format;
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -838,7 +823,7 @@
 	};
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -848,31 +833,31 @@
 	});
 	exports.imageReplacement = exports.clearfix = exports.linearGradient = exports.verticalCentering = exports.horizontalCentering = exports.boxShadow = exports.roundedCorners = undefined;
 
-	var _roundedCorners = __webpack_require__(20);
+	var _roundedCorners = __webpack_require__(19);
 
 	var _roundedCorners2 = _interopRequireDefault(_roundedCorners);
 
-	var _boxShadow = __webpack_require__(21);
+	var _boxShadow = __webpack_require__(20);
 
 	var _boxShadow2 = _interopRequireDefault(_boxShadow);
 
-	var _horizontalCentering = __webpack_require__(22);
+	var _horizontalCentering = __webpack_require__(21);
 
 	var _horizontalCentering2 = _interopRequireDefault(_horizontalCentering);
 
-	var _verticalCentering = __webpack_require__(23);
+	var _verticalCentering = __webpack_require__(22);
 
 	var _verticalCentering2 = _interopRequireDefault(_verticalCentering);
 
-	var _linearGradient = __webpack_require__(24);
+	var _linearGradient = __webpack_require__(23);
 
 	var _linearGradient2 = _interopRequireDefault(_linearGradient);
 
-	var _clearfix = __webpack_require__(26);
+	var _clearfix = __webpack_require__(25);
 
 	var _clearfix2 = _interopRequireDefault(_clearfix);
 
-	var _imageReplacement = __webpack_require__(27);
+	var _imageReplacement = __webpack_require__(26);
 
 	var _imageReplacement2 = _interopRequireDefault(_imageReplacement);
 
@@ -890,7 +875,7 @@
 	                                                        */
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -949,7 +934,7 @@
 	}
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -989,7 +974,7 @@
 	}
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1009,7 +994,7 @@
 	}
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1029,7 +1014,7 @@
 	}
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1039,7 +1024,7 @@
 	});
 	exports.default = linearGradient;
 
-	var _browser = __webpack_require__(25);
+	var _browser = __webpack_require__(24);
 
 	var _array = __webpack_require__(4);
 
@@ -1113,7 +1098,7 @@
 	//        return l
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -1155,7 +1140,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1165,7 +1150,7 @@
 	});
 	exports.default = clearfix;
 
-	var _browser = __webpack_require__(25);
+	var _browser = __webpack_require__(24);
 
 	function clearfix() {
 	  var css = {
@@ -1188,7 +1173,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1226,7 +1211,7 @@
 	}
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1427,32 +1412,7 @@
 	exports.colorizeString = colorizeString;
 
 /***/ },
-/* 29 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var propertyPreprocessors = [];
-
-	var preprocessProperties = function preprocessProperties(properties) {
-	  for (var i = 0; i < propertyPreprocessors.length; i++) {
-	    propertyPreprocessors[i].apply(properties, [properties]);
-	  }
-	};
-
-	var pushPropertyPreprocessor = function pushPropertyPreprocessor(pp) {
-	  propertyPreprocessors.push(pp);
-	};
-
-	exports.preprocessProperties = preprocessProperties;
-	exports.pushPropertyPreprocessor = pushPropertyPreprocessor;
-	exports.propertyPreprocessors = propertyPreprocessors;
-
-/***/ },
-/* 30 */
+/* 28 */
 /***/ function(module, exports) {
 
 	if (typeof jQuery != 'undefined') {

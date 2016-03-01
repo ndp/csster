@@ -1,14 +1,7 @@
-/*
- Returns a function to process macros with the given property key
- To use:
-
- Csster.propertyPreprocessors.push(Csster.macroPreprocessor('macro'));
-
- */
 import {mergeHashInto} from '../utils/object.es6'
 import {arrayFlatten} from '../utils/array.es6'
 
-let macroKeys = ['has']
+let macroKeys = ['has', 'mixin', 'mixins']
 export function setMacroKeys(keys) {
   macroKeys = keys
 }
@@ -16,15 +9,19 @@ export function setMacroKeys(keys) {
 
 export function macroProcessor(properties) {
 
-  function extractMacros(p) {
-    const props = {};
-    const a     = arrayFlatten([p]); // support single or multiple sets of properties
-    for (let i = 0; i < a.length; i++) {
-      for (let mp in a[i]) {
+  function applyMacros(macroList) {
+
+    const props  = {};
+
+    const macros = arrayFlatten([macroList]); // support single or multiple sets of properties
+    for (let i = 0; i < macros.length; i++) {
+      let macro = macros[i]
+      if (typeof macro == 'function') macro = macro()
+      for (let mp in macro) {
         if (isMacroKey(mp)) {
-          mergeHashInto(props, extractMacros(a[i][mp]));
+          mergeHashInto(props, applyMacros(macro[mp]));
         } else {
-          props[mp] = a[i][mp];
+          props[mp] = macro[mp];
         }
       }
     }
@@ -34,9 +31,9 @@ export function macroProcessor(properties) {
   for (let k in properties) {
     if (isMacroKey(k)) {
       const macros = properties[k];
+      delete properties[k]
       if (macros) {
-        mergeHashInto(properties, extractMacros(macros));
-        delete properties[k]
+        mergeHashInto(properties, applyMacros(macros));
       }
     }
   }
