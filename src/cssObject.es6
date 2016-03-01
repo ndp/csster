@@ -64,39 +64,6 @@ export const flattenObject = (inputObject) => {
 }
 
 
-export function applyPropertiesFilter(fn, o) {
-  let out = {}
-  for (let selector in o) {
-    out[selector] = fn(o[selector], selector)
-    for (let p in o[selector]) {
-      if (typeof o[selector][p] === 'object') {
-        out[selector][p] = applyPropertiesFilter(fn, o[selector][p])
-      }
-    }
-  }
-  return out
-}
-
-const applySelectorFilter = (filterFn, o) => {
-  let out = {}
-  for (var selector in o) {
-    let newSelector = filterFn(selector)
-    out[newSelector] = o[selector]
-  }
-  return out
-}
-
-
-import {curry} from './utils/curry.es6'
-
-import { dasherizeKeys } from './properties.es6'
-export const dasherizePropertyKeys = curry(applyPropertiesFilter)(dasherizeKeys)
-
-import { rejectUnknownKeys } from './properties.es6'
-export const rejectUnknownPropertyKeys = curry(applyPropertiesFilter)(rejectUnknownKeys)
-
-
-
 /**
  * TODO UPDATE DOCS
  */
@@ -108,4 +75,8 @@ const compressSelector = (sel) => {
   return sel
 }
 
-export const compressSelectors = curry(applySelectorFilter)(compressSelector)
+
+import {applyToKeys} from './utils/object.es6'
+
+
+export const compressSelectors = applyToKeys(compressSelector)

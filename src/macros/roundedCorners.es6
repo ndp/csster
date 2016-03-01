@@ -18,8 +18,6 @@ export default function roundedCorners(side, radius) {
       '-moz-border-radius': radius,
       'border-radius': radius,
       '-webkit-border-radius': radius
-//            behavior: 'url(src/border-radius.htc)',
-//            position: 'relative',zoom: '1'
     }
   } else {
     var rules = {};

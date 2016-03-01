@@ -45,3 +45,25 @@ describe('mergeHashInto', () => {
   });
 
 });
+
+
+import {filterValuesRecursively} from '../../src/utils/object.es6'
+
+describe('filterValuesRecursively', () => {
+  it('applies property filter', () => {
+    const fn = ()=> {
+      return {foo: 'bar'}
+    }
+    expect(filterValuesRecursively(fn, {'.sel': {ignore: 'me'}}))
+        .toEqual({'.sel': {foo: 'bar'}})
+  })
+
+  it('can be curried', () => {
+    const fn = ()=> {
+      return {foo: 'bar'}
+    }
+    const fooBar = filterValuesRecursively(fn)
+    expect(fooBar({'.sel': {ignore: 'me'}}))
+        .toEqual({'.sel': {foo: 'bar'}})
+  })
+})

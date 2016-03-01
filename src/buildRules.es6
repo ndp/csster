@@ -1,10 +1,11 @@
+import { filterValuesRecursively } from './utils/object.es6'
 import { arrayEach, arrayFlatten    } from './utils/array.es6'
 import {curry} from './utils/curry.es6'
 
-import {applyPropertiesFilter, flattenObject, dasherizePropertyKeys, rejectUnknownPropertyKeys, compressSelectors } from './cssObject.es6'
+import {flattenObject, compressSelectors } from './cssObject.es6'
 import {macroProcessor} from './filters/macroProcessor.es6'
 
-const applyMacros = curry(applyPropertiesFilter)(macroProcessor)
+const applyMacros = filterValuesRecursively(macroProcessor)
 
 // @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
 const objectToRulesArray = function (o) {
@@ -14,6 +15,13 @@ const objectToRulesArray = function (o) {
   }
   return result;
 };
+
+
+import { dasherizeKeys } from './properties.es6'
+export const dasherizePropertyKeys = filterValuesRecursively(dasherizeKeys)
+
+import { rejectUnknownKeys } from './properties.es6'
+export const rejectUnknownPropertyKeys = filterValuesRecursively(rejectUnknownKeys)
 
 
 const pipeline = []

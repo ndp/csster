@@ -1,12 +1,8 @@
 import { dasherize } from './utils/string.es6'
 
-export function dasherizeKeys(rules) {
-  let out = {}
-  for (let prop in rules) {
-    out[dasherize(prop)] = rules[prop]
-  }
-  return out
-}
+import {applyToKeys} from './utils/object.es6'
+
+export const dasherizeKeys = applyToKeys(dasherize)
 
 import * as propertyNameValidator from './propertyNameValidator.es6'
 

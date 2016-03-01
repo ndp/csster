@@ -15,22 +15,7 @@ Concisely generate CSS style rules within Javascript.  Features:
 
 Slideshow introduction: https://docs.google.com/present/view?id=dfm357b6_49c4d3fpdm&interval=15
 
-## V2.0 Changes
-
-### To upgrade from 1.0 or before
-
-* Change `Csster.browser` to call `Csster.browserInfo()`, which returns the same thing.
-* Change `has:` macro implementations to `mixin:`.
-
-### Other changes:
-
-* use ES6 for implementation and provide a more compressed and clean script.
-* add ability to turn off property name validation.
-* add ability to warn about unknown browser extensions for property names.
-
-
 ## Usage
-
 
 ### Bundler (Rails) Installation
 
@@ -246,6 +231,20 @@ This is used to write custom browser overrides. For example, this one makes opac
 ### Inserting into the DOM
 Function that outputs a set of rules into the DOM is <code>Csster.insertCss</code> and can be replaced if desired.
 
+## V2.0 Changes
+
+### To upgrade from 1.0 or before
+
+* Change `Csster.browser` to call `Csster.browserInfo()`, which returns the same thing.
+* Change `has:` macro implementations to `mixin:`.
+
+### Other changes:
+
+* use ES6 for implementation and provide a more compressed and clean script.
+* add ability to turn off property name validation.
+* add ability to warn about unknown browser extensions for property names.
+
+
 ## Links
 
 * [Demo of the color functions and macros](http://ndpsoftware.com/csster/demo.html)
@@ -270,7 +269,7 @@ The design was driven by [the specs](http://ndpsoftware.com/csster/spec_runner.h
 
 ### Building
 
-`./build.sh`
+`./bin/build.sh`
 
 
 

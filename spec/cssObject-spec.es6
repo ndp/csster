@@ -178,24 +178,3 @@ describe('compressSelectors', () => {
 });
 
 
-import {applyPropertiesFilter} from '../src/cssObject.es6'
-import {curry} from '../src/utils/curry.es6'
-
-describe('applyPropertiesFilter', () => {
-  it('applies property filter', () => {
-    const fn = ()=> {
-      return {foo: 'bar'}
-    }
-    expect(applyPropertiesFilter(fn, {'.sel': {ignore: 'me'}}))
-        .toEqual({'.sel': {foo: 'bar'}})
-  })
-
-  it('can be curried', () => {
-    const fn = ()=> {
-      return {foo: 'bar'}
-    }
-    const fooBar = curry(applyPropertiesFilter)(fn)
-    expect(fooBar({'.sel': {ignore: 'me'}}))
-        .toEqual({'.sel': {foo: 'bar'}})
-  })
-})
