@@ -17,9 +17,10 @@ Slideshow introduction: https://docs.google.com/present/view?id=dfm357b6_49c4d3f
 
 ## V2.0 Changes
 
-### To Upgrade
+### To upgrade from 1.0 or before
 
 * Change `Csster.browser` to call `Csster.browserInfo()`, which returns the same thing.
+* Change `has:` macro implementations to `mixin:`.
 
 ### Other changes:
 
@@ -31,7 +32,7 @@ Slideshow introduction: https://docs.google.com/present/view?id=dfm357b6_49c4d3f
 ## Usage
 
 
-### Rails/Bundler Installation
+### Bundler (Rails) Installation
 
 Add this line to your application's Gemfile:
 
@@ -44,17 +45,21 @@ And then execute:
 Or install it yourself as:
 
     $ gem install csster
+    
+Within your `application.js`, add 
+
+    //= require csster
 
 
 ### Node NPM Install
 
-<pre>npm install csster</pre>
+    npm install csster
 
-### Manual Install for Browser Client
+### Creating Stylesheets (Brower/Client Side)
 
-All code is packaged into a single Javascript file download, [csster.js](http://ndpsoftware.com/csster/csster.js). There are no external dependencies. The project itself is hosted on [GitHub](http://github.com/ndp/csster).
+All code is packaged into a single Javascript file download, [csster.js](http://ndpsoftware.com/csster/csster.js). There are no external dependencies.
 
-```
+```javascript
 require('csster.js'); // however you manage dependencies
 
 Csster.style({
@@ -63,12 +68,11 @@ Csster.style({
     color: 'red'
   }
 });
-
-...
 ```
 
-Result, inserted in DOM automatically at the bottom of the &lt;head&gt; element:
-<pre>
+The result is inserted in DOM automatically at the bottom of the &lt;head&gt; element:
+
+```html
 ...
 &lt;style type="text/stylesheet"&gt;
 h1 {
@@ -78,7 +82,7 @@ color: red;
 &lt;/style&gt;
 &lt;/head&gt;
 ...
-</pre>
+```
 
 ### Format of CSS Rules
 
@@ -213,9 +217,9 @@ Csster is built as an extensible system.
 Use <code>Csster.addPropertyNames</code> to add any non-standard property names you'd like to be considered valid. The build-in tool rejects non-standard property names, although by default popular "-moz" and "-webkit" properties are added.
 
 ### Pre-process rules
-Functions called before properties are processed stored in <code>Csster.propertyPreprocessors</code>. Callback is provided a hash of properties to values, which it modifies in any way it wants. This is used to interpret macros.
+<del>Functions called before properties are processed stored in <code>Csster.propertyPreprocessors</code>. Callback is provided a hash of properties to values, which it modifies in any way it wants. This is used to interpret macros.</del>
 
-### Post-processing
+<del>### Post-processing
 Functions called after rules are processed stored in <code>Csster.rulesPostProcessors</code>. Called with an array of processed rules. Can be used to eliminate duplicates, modify selectors, etc. Standard list simplifies overly complex selectors with multiple IDs.
 
 A convenient built-in function is <code>compressSelectors</code>. Using this processor, rules with multiple '#'s are simplified. For example, '#a #b #c' becomes '#c'. Usually this is what you will want, so include it with <code>Csster.rulePostProcessors.push(Csster.compressSelectors);</code>.
@@ -237,6 +241,7 @@ This is used to write custom browser overrides. For example, this one makes opac
     }
   });
 </pre>
+</del>
 
 ### Inserting into the DOM
 Function that outputs a set of rules into the DOM is <code>Csster.insertCss</code> and can be replaced if desired.
