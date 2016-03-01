@@ -1,4 +1,4 @@
-// Csster version 1.1.0; Copyright (c) Andrew J. Peterson / ndpsoftware.com. All Rights Reserved
+// Csster version 1.1.1; Copyright (c) Andrew J. Peterson / ndpsoftware.com. All Rights Reserved
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -144,6 +144,15 @@
 
 	var applyMacros = (0, _curry.curry)(_cssObject.applyPropertiesFilter)(_macroProcessor.macroProcessor);
 
+	// @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
+	var objectToRulesArray = function objectToRulesArray(o) {
+	  var result = [];
+	  for (var key in o) {
+	    result.push({ sel: key, props: o[key] });
+	  }
+	  return result;
+	};
+
 	var pipeline = [];
 	pipeline.push(applyMacros);
 	pipeline.push(_cssObject.flattenObject);
@@ -157,14 +166,6 @@
 	    o = pipeline[i](o);
 	  }
 	  return o;
-	};
-	// @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
-	var objectToRulesArray = function objectToRulesArray(o) {
-	  var result = [];
-	  for (var key in o) {
-	    result.push({ sel: key, props: o[key] });
-	  }
-	  return result;
 	};
 
 	;
