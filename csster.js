@@ -1,3 +1,4 @@
+// Csster version 1.1.1; Copyright (c) Andrew J. Peterson / ndpsoftware.com. All Rights Reserved
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -45,7 +46,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	module.exports = __webpack_require__(29);
+	module.exports = __webpack_require__(28);
 
 
 /***/ },
@@ -76,7 +77,7 @@
 
 	var _color = __webpack_require__(27);
 
-	var _propertyNameValidator = __webpack_require__(8);
+	var _propertyNameValidator = __webpack_require__(11);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
 
@@ -135,11 +136,11 @@
 
 	var _array = __webpack_require__(4);
 
-	var _curry = __webpack_require__(30);
+	var _curry = __webpack_require__(5);
 
-	var _cssObject = __webpack_require__(5);
+	var _cssObject = __webpack_require__(6);
 
-	var _macroProcessor = __webpack_require__(9);
+	var _macroProcessor = __webpack_require__(8);
 
 	var applyMacros = (0, _curry.curry)(_cssObject.applyPropertiesFilter)(_macroProcessor.macroProcessor);
 
@@ -321,6 +322,32 @@
 
 /***/ },
 /* 5 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.curry = curry;
+	function curry(fx) {
+	  var arity = fx.length;
+
+	  return function f1() {
+	    var args = Array.prototype.slice.call(arguments, 0);
+	    if (args.length >= arity) {
+	      return fx.apply(null, args);
+	    } else {
+	      return function f2() {
+	        var args2 = Array.prototype.slice.call(arguments, 0);
+	        return f1.apply(null, args.concat(args2));
+	      };
+	    }
+	  };
+	}
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -338,13 +365,13 @@
 
 	exports.applyPropertiesFilter = applyPropertiesFilter;
 
-	var _string = __webpack_require__(6);
+	var _string = __webpack_require__(7);
 
-	var _macroProcessor = __webpack_require__(9);
+	var _macroProcessor = __webpack_require__(8);
 
-	var _curry = __webpack_require__(30);
+	var _curry = __webpack_require__(5);
 
-	var _properties = __webpack_require__(7);
+	var _properties = __webpack_require__(10);
 
 	// Calculate "subselector", taking into account & rules and complex
 	// (comma separated) selectors.
@@ -437,7 +464,7 @@
 	var compressSelectors = exports.compressSelectors = (0, _curry.curry)(applySelectorFilter)(compressSelector);
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -460,7 +487,92 @@
 	exports.trim = trim;
 
 /***/ },
-/* 7 */
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.setMacroKeys = setMacroKeys;
+	exports.macroProcessor = macroProcessor;
+	exports.isMacroKey = isMacroKey;
+
+	var _object = __webpack_require__(9);
+
+	var _array = __webpack_require__(4);
+
+	var macroKeys = ['has', 'mixin', 'mixins'];
+	function setMacroKeys(keys) {
+	  macroKeys = keys;
+	}
+
+	function macroProcessor(properties) {
+
+	  function applyMacros(macroList) {
+
+	    var props = {};
+
+	    var macros = (0, _array.arrayFlatten)([macroList]); // support single or multiple sets of properties
+	    for (var i = 0; i < macros.length; i++) {
+	      var macro = macros[i];
+	      if (typeof macro == 'function') macro = macro();
+	      for (var mp in macro) {
+	        if (isMacroKey(mp)) {
+	          (0, _object.mergeHashInto)(props, applyMacros(macro[mp]));
+	        } else {
+	          props[mp] = macro[mp];
+	        }
+	      }
+	    }
+	    return props;
+	  }
+
+	  for (var k in properties) {
+	    if (isMacroKey(k)) {
+	      var macros = properties[k];
+	      delete properties[k];
+	      if (macros) {
+	        (0, _object.mergeHashInto)(properties, applyMacros(macros));
+	      }
+	    }
+	  }
+	  return properties;
+	}
+
+	function isMacroKey(k) {
+	  return (0, _array.includes)(macroKeys, k);
+	}
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	//  mergeHashInto(hashA, hashB, hashC...)
+	// merge all properties from B, C into hash A.
+	var mergeHashInto = function mergeHashInto(dest) {
+	  for (var _len = arguments.length, hashes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	    hashes[_key - 1] = arguments[_key];
+	  }
+
+	  for (var i = 0; i < hashes.length; i++) {
+	    for (var k in hashes[i]) {
+	      dest[k] = hashes[i][k];
+	    }
+	  }
+	  return dest;
+	};
+
+	exports.mergeHashInto = mergeHashInto;
+
+/***/ },
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -471,9 +583,9 @@
 	exports.dasherizeKeys = dasherizeKeys;
 	exports.rejectUnknownKeys = rejectUnknownKeys;
 
-	var _string = __webpack_require__(6);
+	var _string = __webpack_require__(7);
 
-	var _propertyNameValidator = __webpack_require__(8);
+	var _propertyNameValidator = __webpack_require__(11);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
 
@@ -498,7 +610,7 @@
 	}
 
 /***/ },
-/* 8 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -559,92 +671,6 @@
 	addNames(['-webkit-animation', '-webkit-animation-delay', '-webkit-animation-direction', '-webkit-animation-duration', '-webkit-animation-iteration-count', '-webkit-animation-name', '-webkit-animation-play-state', '-webkit-animation-timing-function', '-webkit-appearance', '-webkit-backface-visibility', '-webkit-background-clip', '-webkit-background-composite', '-webkit-background-origin', '-webkit-background-size', '-webkit-border-bottom-left-radius', '-webkit-border-bottom-right-radius', '-webkit-border-horizontal-spacing', '-webkit-border-image', '-webkit-border-radius', '-webkit-border-top-left-radius', '-webkit-border-top-right-radius', '-webkit-border-vertical-spacing', '-webkit-box-align', '-webkit-box-direction', '-webkit-box-flex', '-webkit-box-flex-group', '-webkit-box-lines', '-webkit-box-ordinal-group', '-webkit-box-orient', '-webkit-box-pack', '-webkit-box-reflect', '-webkit-box-shadow', '-webkit-box-sizing', '-webkit-column-break-after', '-webkit-column-break-before', '-webkit-column-break-inside', '-webkit-column-count', '-webkit-column-gap', '-webkit-column-rule', '-webkit-column-rule-color', '-webkit-column-rule-style', '-webkit-column-rule-width', '-webkit-column-width', '-webkit-columns', '-webkit-dashboard-region', '-webkit-line-break', '-webkit-margin-bottom-collapse', '-webkit-margin-collapse', '-webkit-margin-start', '-webkit-margin-top-collapse', '-webkit-marquee', '-webkit-marquee-direction', '-webkit-marquee-increment', '-webkit-marquee-repetition', '-webkit-marquee-speed', '-webkit-marquee-style', '-webkit-mask', '-webkit-mask-attachment', '-webkit-mask-box-image', '-webkit-mask-clip', '-webkit-mask-composite', '-webkit-mask-image', '-webkit-mask-origin', '-webkit-mask-position', '-webkit-mask-position-x', '-webkit-mask-position-y', '-webkit-mask-repeat', '-webkit-mask-size', '-webkit-nbsp-mode', '-webkit-padding-start', '-webkit-perspective', '-webkit-perspective-origin', '-webkit-rtl-ordering', '-webkit-tap-highlight-color', '-webkit-text-fill-color', '-webkit-text-security', '-webkit-text-size-adjust', '-webkit-text-stroke', '-webkit-text-stroke-color', '-webkit-text-stroke-width', '-webkit-touch-callout', '-webkit-transform', '-webkit-transform-origin', '-webkit-transform-origin-x', '-webkit-transform-origin-y', '-webkit-transform-origin-z', '-webkit-transform-style', '-webkit-transition', '-webkit-transition-delay', '-webkit-transition-duration', '-webkit-transition-property', '-webkit-transition-timing-function', '-webkit-user-drag', '-webkit-user-modify', '-webkit-user-select']);
 
 /***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.setMacroKeys = setMacroKeys;
-	exports.macroProcessor = macroProcessor;
-	exports.isMacroKey = isMacroKey;
-
-	var _object = __webpack_require__(10);
-
-	var _array = __webpack_require__(4);
-
-	var macroKeys = ['has', 'mixin', 'mixins'];
-	function setMacroKeys(keys) {
-	  macroKeys = keys;
-	}
-
-	function macroProcessor(properties) {
-
-	  function applyMacros(macroList) {
-
-	    var props = {};
-
-	    var macros = (0, _array.arrayFlatten)([macroList]); // support single or multiple sets of properties
-	    for (var i = 0; i < macros.length; i++) {
-	      var macro = macros[i];
-	      if (typeof macro == 'function') macro = macro();
-	      for (var mp in macro) {
-	        if (isMacroKey(mp)) {
-	          (0, _object.mergeHashInto)(props, applyMacros(macro[mp]));
-	        } else {
-	          props[mp] = macro[mp];
-	        }
-	      }
-	    }
-	    return props;
-	  }
-
-	  for (var k in properties) {
-	    if (isMacroKey(k)) {
-	      var macros = properties[k];
-	      delete properties[k];
-	      if (macros) {
-	        (0, _object.mergeHashInto)(properties, applyMacros(macros));
-	      }
-	    }
-	  }
-	  return properties;
-	}
-
-	function isMacroKey(k) {
-	  return (0, _array.includes)(macroKeys, k);
-	}
-
-/***/ },
-/* 10 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	//  mergeHashInto(hashA, hashB, hashC...)
-	// merge all properties from B, C into hash A.
-	var mergeHashInto = function mergeHashInto(dest) {
-	  for (var _len = arguments.length, hashes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	    hashes[_key - 1] = arguments[_key];
-	  }
-
-	  for (var i = 0; i < hashes.length; i++) {
-	    for (var k in hashes[i]) {
-	      dest[k] = hashes[i][k];
-	    }
-	  }
-	  return dest;
-	};
-
-	exports.mergeHashInto = mergeHashInto;
-
-/***/ },
-/* 11 */,
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -730,9 +756,9 @@
 	});
 	exports.valid = exports.format = exports.propertyNameOf = undefined;
 
-	var _string = __webpack_require__(6);
+	var _string = __webpack_require__(7);
 
-	var _propertyNameValidator = __webpack_require__(8);
+	var _propertyNameValidator = __webpack_require__(11);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
 
@@ -1387,8 +1413,7 @@
 	exports.colorizeString = colorizeString;
 
 /***/ },
-/* 28 */,
-/* 29 */
+/* 28 */
 /***/ function(module, exports) {
 
 	if (typeof jQuery != 'undefined') {
@@ -1400,32 +1425,6 @@
 	      return this;
 	    }
 	  })(jQuery);
-	}
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.curry = curry;
-	function curry(fx) {
-	  var arity = fx.length;
-
-	  return function f1() {
-	    var args = Array.prototype.slice.call(arguments, 0);
-	    if (args.length >= arity) {
-	      return fx.apply(null, args);
-	    } else {
-	      return function f2() {
-	        var args2 = Array.prototype.slice.call(arguments, 0);
-	        return f1.apply(null, args.concat(args2));
-	      };
-	    }
-	  };
 	}
 
 /***/ }
