@@ -55,7 +55,7 @@ describe("Csster > functional >", function () {
                 bogus: 'property_value'
               }
             })
-          }).toThrow('Unrecognized "bogus" property name. Selector: "div"');
+          }).toThrow('Unrecognized "bogus" property name. Context: "div"');
     });
 
     it('should throw an exception if discovers a bugus property within other valid ones', function () {
@@ -70,7 +70,7 @@ describe("Csster > functional >", function () {
                 opacityness:     0.85
               }
             })
-          }).toThrow('Unrecognized "opacityness" property name. Selector: "#tooltip"');
+          }).toThrow('Unrecognized "opacityness" property name. Context: "#tooltip"');
     });
 
     it("should output properties and sub-selectors", function () {
@@ -148,7 +148,7 @@ describe("Csster > functional >", function () {
                 }
               }
             })
-          }).toThrow('Unrecognized "bogus" property name. Selector: "div has"')
+          }).toThrow('Unrecognized "bogus" property name. Context: "div"')
     });
 
   });

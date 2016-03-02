@@ -24,13 +24,13 @@ import { rejectUnknownKeys } from '../src/properties.es6'
 
 describe('rejectUnknownKeys', () => {
   it('handles empty hashes', () => {
-    expect(rejectUnknownKeys({})).toEqual({})
+    expect(rejectUnknownKeys({}, 'none')).toEqual({})
   })
   it('handles single key', () => {
-    expect(rejectUnknownKeys({'background-color': 'blue'})).toEqual({'background-color': 'blue'})
+    expect(rejectUnknownKeys({'background-color': 'blue'}, 'none')).toEqual({'background-color': 'blue'})
   })
   it('raises', () => {
-    expect( () => rejectUnknownKeys({'foo': 'blue'}, '.bar'))
-        .toThrow('Unrecognized "foo" property name. Selector: ".bar"')
+    expect(() => rejectUnknownKeys({'foo': 'blue'}, '.bar'))
+        .toThrow('Unrecognized "foo" property name. Context: ".bar"')
   })
 })

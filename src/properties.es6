@@ -4,14 +4,21 @@ import {applyToKeys} from './utils/object.es6'
 
 export const dasherizeKeys = applyToKeys(dasherize)
 
-import * as propertyNameValidator from './propertyNameValidator.es6'
 
-export function rejectUnknownKeys(rules, selector) {
+import {curry} from './utils/curry.es6'
+const propertyKeyVisitor = curry(function (fn, rules, ctx) {
   for (let prop in rules) {
-    let error = propertyNameValidator.error(prop)
-    if (error) {
-      throw '' + error + '. Selector: "' + selector + '"'
-    }
+    fn(prop, ctx)
   }
   return rules
-}
+})
+
+
+import * as propertyNameValidator from './propertyNameValidator.es6'
+
+export const rejectUnknownKeys = propertyKeyVisitor(function (prop, ctx) {
+  let error = propertyNameValidator.error(prop)
+  if (error) {
+    throw '' + error + '. Context: "' + ctx + '"'
+  }
+})

@@ -71,7 +71,7 @@
 
 	var macros = _interopRequireWildcard(_macros);
 
-	var _array = __webpack_require__(4);
+	var _array = __webpack_require__(6);
 
 	var _browser = __webpack_require__(24);
 
@@ -125,6 +125,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.rejectUnknownPropertyKeys = exports.dasherizePropertyKeys = undefined;
 
 	exports.default = function (obj) {
 	  var rules = [];
@@ -134,15 +135,19 @@
 	  return (0, _array.arrayFlatten)(rules);
 	};
 
-	var _array = __webpack_require__(4);
+	var _object = __webpack_require__(4);
+
+	var _array = __webpack_require__(6);
 
 	var _curry = __webpack_require__(5);
 
-	var _cssObject = __webpack_require__(6);
+	var _cssObject = __webpack_require__(7);
 
-	var _macroProcessor = __webpack_require__(8);
+	var _macroProcessor = __webpack_require__(9);
 
-	var applyMacros = (0, _curry.curry)(_cssObject.applyPropertiesFilter)(_macroProcessor.macroProcessor);
+	var _properties = __webpack_require__(10);
+
+	var applyMacros = (0, _object.filterValuesRecursively)(_macroProcessor.macroProcessor);
 
 	// @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
 	var objectToRulesArray = function objectToRulesArray(o) {
@@ -153,12 +158,16 @@
 	  return result;
 	};
 
+	var dasherizePropertyKeys = exports.dasherizePropertyKeys = (0, _object.filterValuesRecursively)(_properties.dasherizeKeys);
+
+	var rejectUnknownPropertyKeys = exports.rejectUnknownPropertyKeys = (0, _object.filterValuesRecursively)(_properties.rejectUnknownKeys);
+
 	var pipeline = [];
 	pipeline.push(applyMacros);
 	pipeline.push(_cssObject.flattenObject);
 	pipeline.push(_cssObject.compressSelectors);
-	pipeline.push(_cssObject.dasherizePropertyKeys);
-	pipeline.push(_cssObject.rejectUnknownPropertyKeys);
+	pipeline.push(dasherizePropertyKeys);
+	pipeline.push(rejectUnknownPropertyKeys);
 	pipeline.push(objectToRulesArray);
 
 	var process = function process(o) {
@@ -270,6 +279,91 @@
 
 /***/ },
 /* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.filterValuesRecursively = exports.applyToKeys = exports.mergeHashInto = undefined;
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var _curry = __webpack_require__(5);
+
+	//  mergeHashInto(hashA, hashB, hashC...)
+	// merge all properties from B, C into hash A.
+	var mergeHashInto = exports.mergeHashInto = function mergeHashInto(dest) {
+	  for (var _len = arguments.length, hashes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	    hashes[_key - 1] = arguments[_key];
+	  }
+
+	  for (var i = 0; i < hashes.length; i++) {
+	    for (var k in hashes[i]) {
+	      dest[k] = hashes[i][k];
+	    }
+	  }
+	  return dest;
+	};
+
+	// Apply filter to keys of an object
+	// fn:  (key) => new key
+	// o:   object to filter
+	var applyToKeys = exports.applyToKeys = (0, _curry.curry)(function (fn, o) {
+	  var out = {};
+	  for (var k in o) {
+	    out[fn(k)] = o[k];
+	  }
+	  return out;
+	});
+
+	// Filter values of an object, recursively
+	// fn: fn(value, key) => new value
+	// o:  object to process
+	var filterValuesRecursively = exports.filterValuesRecursively = (0, _curry.curry)(function (fn, o) {
+	  var out = {};
+	  for (var k in o) {
+	    var v = o[k];
+	    var newValue = fn(v, k);
+
+	    if ((typeof newV === 'undefined' ? 'undefined' : _typeof(newV)) === 'object') {
+	      out[k] = filterValuesRecursively(fn, newValue);
+	    } else {
+	      out[k] = newValue;
+	    }
+	  }
+	  return out;
+	});
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.curry = curry;
+	function curry(fx) {
+	  var arity = fx.length;
+
+	  return function f1() {
+	    var args = Array.prototype.slice.call(arguments, 0);
+	    if (args.length >= arity) {
+	      return fx.apply(null, args);
+	    } else {
+	      return function f2() {
+	        var args2 = Array.prototype.slice.call(arguments, 0);
+	        return f1.apply(null, args.concat(args2));
+	      };
+	    }
+	  };
+	}
+
+/***/ },
+/* 6 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -321,33 +415,7 @@
 	exports.includes = includes;
 
 /***/ },
-/* 5 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.curry = curry;
-	function curry(fx) {
-	  var arity = fx.length;
-
-	  return function f1() {
-	    var args = Array.prototype.slice.call(arguments, 0);
-	    if (args.length >= arity) {
-	      return fx.apply(null, args);
-	    } else {
-	      return function f2() {
-	        var args2 = Array.prototype.slice.call(arguments, 0);
-	        return f1.apply(null, args.concat(args2));
-	      };
-	    }
-	  };
-	}
-
-/***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -355,7 +423,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.compressSelectors = exports.rejectUnknownPropertyKeys = exports.dasherizePropertyKeys = exports.flattenObject = undefined;
+	exports.compressSelectors = exports.flattenObject = undefined;
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; }; /*
 	                                                                                                                                                                                                                                                   A Javascript object tha represents "CSS" rules. It:
@@ -363,15 +431,11 @@
 	                                                                                                                                                                                                                                                   * keys can be CSS properties and values CSS property values
 	                                                                                                                                                                                                                                                   */
 
-	exports.applyPropertiesFilter = applyPropertiesFilter;
+	var _string = __webpack_require__(8);
 
-	var _string = __webpack_require__(7);
+	var _macroProcessor = __webpack_require__(9);
 
-	var _macroProcessor = __webpack_require__(8);
-
-	var _curry = __webpack_require__(5);
-
-	var _properties = __webpack_require__(10);
+	var _object = __webpack_require__(4);
 
 	// Calculate "subselector", taking into account & rules and complex
 	// (comma separated) selectors.
@@ -424,32 +488,6 @@
 	  return out;
 	};
 
-	function applyPropertiesFilter(fn, o) {
-	  var out = {};
-	  for (var selector in o) {
-	    out[selector] = fn(o[selector], selector);
-	    for (var p in o[selector]) {
-	      if (_typeof(o[selector][p]) === 'object') {
-	        out[selector][p] = applyPropertiesFilter(fn, o[selector][p]);
-	      }
-	    }
-	  }
-	  return out;
-	}
-
-	var applySelectorFilter = function applySelectorFilter(filterFn, o) {
-	  var out = {};
-	  for (var selector in o) {
-	    var newSelector = filterFn(selector);
-	    out[newSelector] = o[selector];
-	  }
-	  return out;
-	};
-
-	var dasherizePropertyKeys = exports.dasherizePropertyKeys = (0, _curry.curry)(applyPropertiesFilter)(_properties.dasherizeKeys);
-
-	var rejectUnknownPropertyKeys = exports.rejectUnknownPropertyKeys = (0, _curry.curry)(applyPropertiesFilter)(_properties.rejectUnknownKeys);
-
 	/**
 	 * TODO UPDATE DOCS
 	 */
@@ -461,10 +499,10 @@
 	  return sel;
 	};
 
-	var compressSelectors = exports.compressSelectors = (0, _curry.curry)(applySelectorFilter)(compressSelector);
+	var compressSelectors = exports.compressSelectors = (0, _object.applyToKeys)(compressSelector);
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -487,7 +525,7 @@
 	exports.trim = trim;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -499,9 +537,9 @@
 	exports.macroProcessor = macroProcessor;
 	exports.isMacroKey = isMacroKey;
 
-	var _object = __webpack_require__(9);
+	var _object = __webpack_require__(4);
 
-	var _array = __webpack_require__(4);
+	var _array = __webpack_require__(6);
 
 	var macroKeys = ['has', 'mixin', 'mixins'];
 	function setMacroKeys(keys) {
@@ -546,32 +584,6 @@
 	}
 
 /***/ },
-/* 9 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	//  mergeHashInto(hashA, hashB, hashC...)
-	// merge all properties from B, C into hash A.
-	var mergeHashInto = function mergeHashInto(dest) {
-	  for (var _len = arguments.length, hashes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	    hashes[_key - 1] = arguments[_key];
-	  }
-
-	  for (var i = 0; i < hashes.length; i++) {
-	    for (var k in hashes[i]) {
-	      dest[k] = hashes[i][k];
-	    }
-	  }
-	  return dest;
-	};
-
-	exports.mergeHashInto = mergeHashInto;
-
-/***/ },
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -580,10 +592,13 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.dasherizeKeys = dasherizeKeys;
-	exports.rejectUnknownKeys = rejectUnknownKeys;
+	exports.rejectUnknownKeys = exports.dasherizeKeys = undefined;
 
-	var _string = __webpack_require__(7);
+	var _string = __webpack_require__(8);
+
+	var _object = __webpack_require__(4);
+
+	var _curry = __webpack_require__(5);
 
 	var _propertyNameValidator = __webpack_require__(11);
 
@@ -591,23 +606,21 @@
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	function dasherizeKeys(rules) {
-	  var out = {};
-	  for (var prop in rules) {
-	    out[(0, _string.dasherize)(prop)] = rules[prop];
-	  }
-	  return out;
-	}
+	var dasherizeKeys = exports.dasherizeKeys = (0, _object.applyToKeys)(_string.dasherize);
 
-	function rejectUnknownKeys(rules, selector) {
+	var propertyKeyVisitor = (0, _curry.curry)(function (fn, rules, ctx) {
 	  for (var prop in rules) {
-	    var error = propertyNameValidator.error(prop);
-	    if (error) {
-	      throw '' + error + '. Selector: "' + selector + '"';
-	    }
+	    fn(prop, ctx);
 	  }
 	  return rules;
-	}
+	});
+
+	var rejectUnknownKeys = exports.rejectUnknownKeys = propertyKeyVisitor(function (prop, ctx) {
+	  var error = propertyNameValidator.error(prop);
+	  if (error) {
+	    throw '' + error + '. Context: "' + ctx + '"';
+	  }
+	});
 
 /***/ },
 /* 11 */
@@ -623,7 +636,7 @@
 	exports.validate = validate;
 	exports.error = error;
 
-	var _array = __webpack_require__(4);
+	var _array = __webpack_require__(6);
 
 	var validNames = {};
 
@@ -756,7 +769,7 @@
 	});
 	exports.valid = exports.format = exports.propertyNameOf = undefined;
 
-	var _string = __webpack_require__(7);
+	var _string = __webpack_require__(8);
 
 	var _propertyNameValidator = __webpack_require__(11);
 
@@ -905,33 +918,31 @@
 	      '-moz-border-radius': radius,
 	      'border-radius': radius,
 	      '-webkit-border-radius': radius
-	      //            behavior: 'url(src/border-radius.htc)',
-	      //            position: 'relative',zoom: '1'
 	    };
 	  } else {
-	      var rules = {};
-	      if (side == 'tl' || side == 'top' || side == 'left') {
-	        rules['-moz-border-radius-topleft'] = radius;
-	        rules['-webkit-border-top-left-radius'] = radius;
-	        rules['border-top-left-radius'] = radius;
-	      }
-	      if (side == 'tr' || side == 'top' || side == 'right') {
-	        rules['-webkit-border-top-right-radius'] = radius;
-	        rules['-moz-border-radius-topright'] = radius;
-	        rules['border-top-right-radius'] = radius;
-	      }
-	      if (side == 'bl' || side == 'bottom' || side == 'left') {
-	        rules['-webkit-border-bottom-left-radius'] = radius;
-	        rules['-moz-border-radius-bottomleft'] = radius;
-	        rules['border-bottom-left-radius'] = radius;
-	      }
-	      if (side == 'br' || side == 'bottom' || side == 'right') {
-	        rules['-webkit-border-bottom-right-radius'] = radius;
-	        rules['-moz-border-radius-bottomright'] = radius;
-	        rules['border-bottom-right-radius'] = radius;
-	      }
-	      return rules;
+	    var rules = {};
+	    if (side == 'tl' || side == 'top' || side == 'left') {
+	      rules['-moz-border-radius-topleft'] = radius;
+	      rules['-webkit-border-top-left-radius'] = radius;
+	      rules['border-top-left-radius'] = radius;
 	    }
+	    if (side == 'tr' || side == 'top' || side == 'right') {
+	      rules['-webkit-border-top-right-radius'] = radius;
+	      rules['-moz-border-radius-topright'] = radius;
+	      rules['border-top-right-radius'] = radius;
+	    }
+	    if (side == 'bl' || side == 'bottom' || side == 'left') {
+	      rules['-webkit-border-bottom-left-radius'] = radius;
+	      rules['-moz-border-radius-bottomleft'] = radius;
+	      rules['border-bottom-left-radius'] = radius;
+	    }
+	    if (side == 'br' || side == 'bottom' || side == 'right') {
+	      rules['-webkit-border-bottom-right-radius'] = radius;
+	      rules['-moz-border-radius-bottomright'] = radius;
+	      rules['border-bottom-right-radius'] = radius;
+	    }
+	    return rules;
+	  }
 	}
 
 /***/ },
@@ -1027,7 +1038,7 @@
 
 	var _browser = __webpack_require__(24);
 
-	var _array = __webpack_require__(4);
+	var _array = __webpack_require__(6);
 
 	function linearGradient(startingPoint, color1, color2, etc) {
 	  var prefix = '',
@@ -1222,7 +1233,7 @@
 	});
 	exports.colorizeString = exports.hslToHexColor = undefined;
 
-	var _array = __webpack_require__(4);
+	var _array = __webpack_require__(6);
 
 	var HTML4_COLORS = {
 	  'black': '#000000',
