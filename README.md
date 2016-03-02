@@ -263,6 +263,18 @@ Function that outputs a set of rules into the DOM is <code>Csster.insertCss</cod
 5. Create new Pull Request
 
 
+## Releasing
+
+1. Make changes
+2. Update `bin/build.sh#2` `VERSION=` code.
+3. `bin/build.sh`
+4. `rake build`
+5. `rake checkin`
+6. `rake push...`
+7. `rake release`
+8. `npm publish`
+
+
 ### TDD
 
 The design was driven by [the specs](http://ndpsoftware.com/csster/spec_runner.html).
