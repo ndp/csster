@@ -8,5 +8,5 @@ const formatProperties = function (props) {
 // .sel is the selector
 // .props in an object holding CSS property rules
 export const format = function (rule) {
-  return rule.sel + ' { ' + formatProperties(rule.props) + '}\r'
+  return rule.sel + ' { ' + formatProperties(rule.props) + " }\n"
 }

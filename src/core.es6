@@ -1,23 +1,18 @@
-if (!window.Csster) {
-  window.Csster = {}
+// This still isn't the right away to export for browser usage.
+export const Csster = {}
+if (typeof window !== 'undefined') {
+  window.Csster = Csster
 }
 
-import buildRules from './buildRules.es6'
-import stringifyRules from './stringifyRules.es6'
+import {buildCss} from './buildCss.es6'
+Csster.buildCss = buildCss
+
 import insertCss from './insertCss.es6'
+Csster.insertCss  = insertCss
 
-Csster.buildCss = function (o) {
-  const rules = buildRules(o)
-  const css   = stringifyRules(rules)
-  return css;
-}
+import {compose} from './utils/fn.es6'
+Csster.style = compose(insertCss, buildCss)
 
-Csster.style = function (o) {
-  insertCss(Csster.buildCss(o))
-};
-
-
-// Make available various utilities
 import * as macros from './macros/macros.es6'
 Csster.macros = macros
 
@@ -33,9 +28,4 @@ colorizeString()
 
 import * as propertyNameValidator from './propertyNameValidator.es6'
 Csster.addPropertyNames = propertyNameValidator.addNames
-
-Csster.insertCss  = insertCss
-Csster.buildRules = buildRules
-
-
 

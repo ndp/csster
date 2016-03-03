@@ -15,8 +15,8 @@ export function setConfig(key, value) {
  */
 export function addNames(...propertyNames) {
   const names = arrayFlatten([propertyNames]);
-  for (var i = 0; i < names.length; i++) {
-    validNames[names[i]] = true;
+  for (let name of names) {
+    validNames[name] = true;
   }
 }
 

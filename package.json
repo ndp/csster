@@ -7,7 +7,9 @@
     "color"
   ],
   "scripts": {
-    "test": "./node_modules/.bin/jasmine"
+    "dev": "webpack --watch --color --progress -v --display-error-details #--optimize-minimize",
+    "test": "./node_modules/.bin/jasmine",
+    "build": "./bin/build.sh"
   },
   "licenses": [
     {

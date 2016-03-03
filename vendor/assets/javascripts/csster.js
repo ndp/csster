@@ -46,7 +46,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	module.exports = __webpack_require__(28);
+	module.exports = __webpack_require__(29);
 
 
 /***/ },
@@ -55,29 +55,30 @@
 
 	'use strict';
 
-	var _buildRules = __webpack_require__(2);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Csster = undefined;
 
-	var _buildRules2 = _interopRequireDefault(_buildRules);
+	var _buildCss = __webpack_require__(2);
 
-	var _stringifyRules = __webpack_require__(12);
-
-	var _stringifyRules2 = _interopRequireDefault(_stringifyRules);
-
-	var _insertCss = __webpack_require__(17);
+	var _insertCss = __webpack_require__(18);
 
 	var _insertCss2 = _interopRequireDefault(_insertCss);
 
-	var _macros = __webpack_require__(18);
+	var _fn = __webpack_require__(6);
+
+	var _macros = __webpack_require__(19);
 
 	var macros = _interopRequireWildcard(_macros);
 
-	var _array = __webpack_require__(6);
+	var _array = __webpack_require__(7);
 
-	var _browser = __webpack_require__(24);
+	var _browser = __webpack_require__(25);
 
-	var _color = __webpack_require__(27);
+	var _color = __webpack_require__(28);
 
-	var _propertyNameValidator = __webpack_require__(11);
+	var _propertyNameValidator = __webpack_require__(12);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
 
@@ -85,19 +86,17 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	if (!window.Csster) {
-	  window.Csster = {};
+	// This still isn't the right away to export for browser usage.
+	var Csster = exports.Csster = {};
+	if (typeof window !== 'undefined') {
+	  window.Csster = Csster;
 	}
 
-	Csster.buildCss = function (o) {
-	  var rules = (0, _buildRules2.default)(o);
-	  var css = (0, _stringifyRules2.default)(rules);
-	  return css;
-	};
+	Csster.buildCss = _buildCss.buildCss;
 
-	Csster.style = function (o) {
-	  (0, _insertCss2.default)(Csster.buildCss(o));
-	};
+	Csster.insertCss = _insertCss2.default;
+
+	Csster.style = (0, _fn.compose)(_insertCss2.default, _buildCss.buildCss);
 
 	// Make available various utilities
 
@@ -112,11 +111,35 @@
 
 	Csster.addPropertyNames = propertyNameValidator.addNames;
 
-	Csster.insertCss = _insertCss2.default;
-	Csster.buildRules = _buildRules2.default;
-
 /***/ },
 /* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.buildCss = undefined;
+
+	var _buildRules = __webpack_require__(3);
+
+	var _buildRules2 = _interopRequireDefault(_buildRules);
+
+	var _stringifyRules = __webpack_require__(13);
+
+	var _stringifyRules2 = _interopRequireDefault(_stringifyRules);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var buildCss = exports.buildCss = function buildCss(o) {
+	  var rules = (0, _buildRules2.default)(o);
+	  var css = (0, _stringifyRules2.default)(rules);
+	  return css;
+	};
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -129,22 +152,22 @@
 	exports.default = function (obj) {
 	  var rules = [];
 	  (0, _array.arrayEach)((0, _array.arrayFlatten)([obj]), function (o) {
-	    rules.push(process(o));
+	    rules.push(objectToRulesArray(process(o)));
 	  });
 	  return (0, _array.arrayFlatten)(rules);
 	};
 
-	var _object = __webpack_require__(4);
+	var _object = __webpack_require__(5);
 
-	var _array = __webpack_require__(6);
+	var _array = __webpack_require__(7);
 
-	var _curry = __webpack_require__(5);
+	var _fn = __webpack_require__(6);
 
-	var _cssObject = __webpack_require__(7);
+	var _cssObject = __webpack_require__(8);
 
-	var _macroProcessor = __webpack_require__(9);
+	var _macroProcessor = __webpack_require__(10);
 
-	var _properties = __webpack_require__(10);
+	var _properties = __webpack_require__(11);
 
 	var applyMacros = (0, _object.filterValuesRecursively)(_macroProcessor.macroProcessor);
 
@@ -161,48 +184,13 @@
 
 	var rejectUnknownPropertyKeys = exports.rejectUnknownPropertyKeys = (0, _object.filterValuesRecursively)(_properties.rejectUnknownKeys);
 
-	var pipeline = [];
-	pipeline.push(applyMacros);
-	pipeline.push(_cssObject.flattenObject);
-	pipeline.push(_cssObject.compressSelectors);
-	pipeline.push(dasherizePropertyKeys);
-	pipeline.push(rejectUnknownPropertyKeys);
-	pipeline.push(objectToRulesArray);
-
-	var process = function process(o) {
-	  var _iteratorNormalCompletion = true;
-	  var _didIteratorError = false;
-	  var _iteratorError = undefined;
-
-	  try {
-	    for (var _iterator = pipeline[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	      var p = _step.value;
-
-	      o = p(o);
-	    }
-	  } catch (err) {
-	    _didIteratorError = true;
-	    _iteratorError = err;
-	  } finally {
-	    try {
-	      if (!_iteratorNormalCompletion && _iterator.return) {
-	        _iterator.return();
-	      }
-	    } finally {
-	      if (_didIteratorError) {
-	        throw _iteratorError;
-	      }
-	    }
-	  }
-
-	  return o;
-	};
+	var process = (0, _fn.compose)(rejectUnknownPropertyKeys, dasherizePropertyKeys, _cssObject.compressSelectors, _cssObject.flattenObject, applyMacros);
 
 	;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -299,7 +287,7 @@
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -311,7 +299,7 @@
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-	var _curry = __webpack_require__(5);
+	var _fn = __webpack_require__(6);
 
 	//  mergeHashInto(hashA, hashB, hashC...)
 	// merge all properties from B, C into hash A.
@@ -331,7 +319,7 @@
 	// Apply filter to keys of an object
 	// fn:  (key) => new key
 	// o:   object to filter
-	var applyToKeys = exports.applyToKeys = (0, _curry.curry)(function (fn, o) {
+	var applyToKeys = exports.applyToKeys = (0, _fn.curry)(function (fn, o) {
 	  var out = {};
 	  for (var k in o) {
 	    out[fn(k)] = o[k];
@@ -342,7 +330,7 @@
 	// Filter values of an object, recursively
 	// fn: fn(value, key) => new value
 	// o:  object to process
-	var filterValuesRecursively = exports.filterValuesRecursively = (0, _curry.curry)(function (fn, o) {
+	var filterValuesRecursively = exports.filterValuesRecursively = (0, _fn.curry)(function (fn, o) {
 	  var out = {};
 	  for (var k in o) {
 	    var v = o[k];
@@ -358,7 +346,7 @@
 	});
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -367,6 +355,10 @@
 	  value: true
 	});
 	exports.curry = curry;
+	// Slightly functional support within Javascript. See more
+	// complete libraries for better support.
+
+	// Curry the given function
 	function curry(fx) {
 	  var arity = fx.length;
 
@@ -383,8 +375,22 @@
 	  };
 	}
 
+	// Directly compose given functions. This does not use the .map style
+	// that is more common.
+	// Taken from http://scott.sauyet.com/Javascript/Talk/Compose/2013-05-22/#slide-17
+	var compose = exports.compose = function compose() {
+	  var funcs = arguments;
+	  return function () {
+	    var args = arguments;
+	    for (var i = funcs.length; i-- > 0;) {
+	      args = [funcs[i].apply(this, args)];
+	    }
+	    return args[0];
+	  };
+	};
+
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -436,7 +442,7 @@
 	exports.includes = includes;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -452,11 +458,11 @@
 	                                                                                                                                                                                                                                                   * keys can be CSS properties and values CSS property values
 	                                                                                                                                                                                                                                                   */
 
-	var _string = __webpack_require__(8);
+	var _string = __webpack_require__(9);
 
-	var _macroProcessor = __webpack_require__(9);
+	var _macroProcessor = __webpack_require__(10);
 
-	var _object = __webpack_require__(4);
+	var _object = __webpack_require__(5);
 
 	// Calculate "subselector", taking into account & rules and complex
 	// (comma separated) selectors.
@@ -523,7 +529,7 @@
 	var compressSelectors = exports.compressSelectors = (0, _object.applyToKeys)(compressSelector);
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -546,7 +552,7 @@
 	exports.trim = trim;
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -558,9 +564,9 @@
 	exports.macroProcessor = macroProcessor;
 	exports.isMacroKey = isMacroKey;
 
-	var _object = __webpack_require__(4);
+	var _object = __webpack_require__(5);
 
-	var _array = __webpack_require__(6);
+	var _array = __webpack_require__(7);
 
 	var macroKeys = ['has', 'mixin', 'mixins'];
 	function setMacroKeys(keys) {
@@ -605,7 +611,7 @@
 	}
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -615,13 +621,13 @@
 	});
 	exports.rejectUnknownKeys = exports.dasherizeKeys = undefined;
 
-	var _string = __webpack_require__(8);
+	var _string = __webpack_require__(9);
 
-	var _object = __webpack_require__(4);
+	var _object = __webpack_require__(5);
 
-	var _curry = __webpack_require__(5);
+	var _fn = __webpack_require__(6);
 
-	var _propertyNameValidator = __webpack_require__(11);
+	var _propertyNameValidator = __webpack_require__(12);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
 
@@ -629,7 +635,7 @@
 
 	var dasherizeKeys = exports.dasherizeKeys = (0, _object.applyToKeys)(_string.dasherize);
 
-	var propertyKeyVisitor = (0, _curry.curry)(function (fn, rules, ctx) {
+	var propertyKeyVisitor = (0, _fn.curry)(function (fn, rules, ctx) {
 	  for (var prop in rules) {
 	    fn(prop, ctx);
 	  }
@@ -644,7 +650,7 @@
 	});
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -657,7 +663,7 @@
 	exports.validate = validate;
 	exports.error = error;
 
-	var _array = __webpack_require__(6);
+	var _array = __webpack_require__(7);
 
 	var validNames = {};
 
@@ -705,7 +711,7 @@
 	addNames(['-webkit-animation', '-webkit-animation-delay', '-webkit-animation-direction', '-webkit-animation-duration', '-webkit-animation-iteration-count', '-webkit-animation-name', '-webkit-animation-play-state', '-webkit-animation-timing-function', '-webkit-appearance', '-webkit-backface-visibility', '-webkit-background-clip', '-webkit-background-composite', '-webkit-background-origin', '-webkit-background-size', '-webkit-border-bottom-left-radius', '-webkit-border-bottom-right-radius', '-webkit-border-horizontal-spacing', '-webkit-border-image', '-webkit-border-radius', '-webkit-border-top-left-radius', '-webkit-border-top-right-radius', '-webkit-border-vertical-spacing', '-webkit-box-align', '-webkit-box-direction', '-webkit-box-flex', '-webkit-box-flex-group', '-webkit-box-lines', '-webkit-box-ordinal-group', '-webkit-box-orient', '-webkit-box-pack', '-webkit-box-reflect', '-webkit-box-shadow', '-webkit-box-sizing', '-webkit-column-break-after', '-webkit-column-break-before', '-webkit-column-break-inside', '-webkit-column-count', '-webkit-column-gap', '-webkit-column-rule', '-webkit-column-rule-color', '-webkit-column-rule-style', '-webkit-column-rule-width', '-webkit-column-width', '-webkit-columns', '-webkit-dashboard-region', '-webkit-line-break', '-webkit-margin-bottom-collapse', '-webkit-margin-collapse', '-webkit-margin-start', '-webkit-margin-top-collapse', '-webkit-marquee', '-webkit-marquee-direction', '-webkit-marquee-increment', '-webkit-marquee-repetition', '-webkit-marquee-speed', '-webkit-marquee-style', '-webkit-mask', '-webkit-mask-attachment', '-webkit-mask-box-image', '-webkit-mask-clip', '-webkit-mask-composite', '-webkit-mask-image', '-webkit-mask-origin', '-webkit-mask-position', '-webkit-mask-position-x', '-webkit-mask-position-y', '-webkit-mask-repeat', '-webkit-mask-size', '-webkit-nbsp-mode', '-webkit-padding-start', '-webkit-perspective', '-webkit-perspective-origin', '-webkit-rtl-ordering', '-webkit-tap-highlight-color', '-webkit-text-fill-color', '-webkit-text-security', '-webkit-text-size-adjust', '-webkit-text-stroke', '-webkit-text-stroke-color', '-webkit-text-stroke-width', '-webkit-touch-callout', '-webkit-transform', '-webkit-transform-origin', '-webkit-transform-origin-x', '-webkit-transform-origin-y', '-webkit-transform-origin-z', '-webkit-transform-style', '-webkit-transition', '-webkit-transition-delay', '-webkit-transition-duration', '-webkit-transition-property', '-webkit-transition-timing-function', '-webkit-user-drag', '-webkit-user-modify', '-webkit-user-select']);
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -720,10 +726,10 @@
 	  }, '');
 	};
 
-	var _rule = __webpack_require__(13);
+	var _rule = __webpack_require__(14);
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -733,7 +739,7 @@
 	});
 	exports.format = undefined;
 
-	var _propertyEntry = __webpack_require__(14);
+	var _propertyEntry = __webpack_require__(15);
 
 	var propertyEntry = _interopRequireWildcard(_propertyEntry);
 
@@ -753,7 +759,7 @@
 	};
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -763,11 +769,11 @@
 	});
 	exports.format = undefined;
 
-	var _propertyName = __webpack_require__(15);
+	var _propertyName = __webpack_require__(16);
 
 	var propertyName = _interopRequireWildcard(_propertyName);
 
-	var _propertyValue = __webpack_require__(16);
+	var _propertyValue = __webpack_require__(17);
 
 	var propertyValue = _interopRequireWildcard(_propertyValue);
 
@@ -780,7 +786,7 @@
 	exports.format = format;
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -790,9 +796,9 @@
 	});
 	exports.valid = exports.format = exports.propertyNameOf = undefined;
 
-	var _string = __webpack_require__(8);
+	var _string = __webpack_require__(9);
 
-	var _propertyNameValidator = __webpack_require__(11);
+	var _propertyNameValidator = __webpack_require__(12);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
 
@@ -814,7 +820,7 @@
 	var valid = exports.valid = propertyNameOf;
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -833,7 +839,7 @@
 	exports.format = format;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -858,7 +864,7 @@
 	};
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -868,31 +874,31 @@
 	});
 	exports.imageReplacement = exports.clearfix = exports.linearGradient = exports.verticalCentering = exports.horizontalCentering = exports.boxShadow = exports.roundedCorners = undefined;
 
-	var _roundedCorners = __webpack_require__(19);
+	var _roundedCorners = __webpack_require__(20);
 
 	var _roundedCorners2 = _interopRequireDefault(_roundedCorners);
 
-	var _boxShadow = __webpack_require__(20);
+	var _boxShadow = __webpack_require__(21);
 
 	var _boxShadow2 = _interopRequireDefault(_boxShadow);
 
-	var _horizontalCentering = __webpack_require__(21);
+	var _horizontalCentering = __webpack_require__(22);
 
 	var _horizontalCentering2 = _interopRequireDefault(_horizontalCentering);
 
-	var _verticalCentering = __webpack_require__(22);
+	var _verticalCentering = __webpack_require__(23);
 
 	var _verticalCentering2 = _interopRequireDefault(_verticalCentering);
 
-	var _linearGradient = __webpack_require__(23);
+	var _linearGradient = __webpack_require__(24);
 
 	var _linearGradient2 = _interopRequireDefault(_linearGradient);
 
-	var _clearfix = __webpack_require__(25);
+	var _clearfix = __webpack_require__(26);
 
 	var _clearfix2 = _interopRequireDefault(_clearfix);
 
-	var _imageReplacement = __webpack_require__(26);
+	var _imageReplacement = __webpack_require__(27);
 
 	var _imageReplacement2 = _interopRequireDefault(_imageReplacement);
 
@@ -910,7 +916,7 @@
 	                                                        */
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -967,7 +973,7 @@
 	}
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1007,7 +1013,7 @@
 	}
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1027,7 +1033,7 @@
 	}
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1047,7 +1053,7 @@
 	}
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1057,9 +1063,9 @@
 	});
 	exports.default = linearGradient;
 
-	var _browser = __webpack_require__(24);
+	var _browser = __webpack_require__(25);
 
-	var _array = __webpack_require__(6);
+	var _array = __webpack_require__(7);
 
 	function linearGradient(startingPoint, color1, color2, etc) {
 	  var prefix = '',
@@ -1131,7 +1137,7 @@
 	//        return l
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -1173,7 +1179,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1183,7 +1189,7 @@
 	});
 	exports.default = clearfix;
 
-	var _browser = __webpack_require__(24);
+	var _browser = __webpack_require__(25);
 
 	function clearfix() {
 	  var css = {
@@ -1206,7 +1212,7 @@
 	}
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1244,7 +1250,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1254,7 +1260,7 @@
 	});
 	exports.colorizeString = exports.hslToHexColor = undefined;
 
-	var _array = __webpack_require__(6);
+	var _array = __webpack_require__(7);
 
 	var HTML4_COLORS = {
 	  'black': '#000000',
@@ -1445,7 +1451,7 @@
 	exports.colorizeString = colorizeString;
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports) {
 
 	if (typeof jQuery != 'undefined') {
