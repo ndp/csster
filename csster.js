@@ -1430,6 +1430,7 @@
 
 	// Directly compose given functions. This does not use the .map style
 	// that is more common.
+	// Taken from http://scott.sauyet.com/Javascript/Talk/Compose/2013-05-22/#slide-17
 	var compose = exports.compose = function compose() {
 	  var funcs = arguments;
 	  return function () {
