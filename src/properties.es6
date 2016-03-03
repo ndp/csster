@@ -5,7 +5,7 @@ import {applyToKeys} from './utils/object.es6'
 export const dasherizeKeys = applyToKeys(dasherize)
 
 
-import {curry} from './utils/curry.es6'
+import {curry} from './utils/fn.es6'
 const propertyKeyVisitor = curry(function (fn, rules, ctx) {
   for (let prop in rules) {
     fn(prop, ctx)

@@ -1,6 +1,6 @@
 import { filterValuesRecursively } from './utils/object.es6'
 import { arrayEach, arrayFlatten    } from './utils/array.es6'
-import {curry} from './utils/curry.es6'
+import {curry} from './utils/fn.es6'
 
 import {flattenObject, compressSelectors } from './cssObject.es6'
 import {macroProcessor} from './filters/macroProcessor.es6'
@@ -24,25 +24,14 @@ import { rejectUnknownKeys } from './properties.es6'
 export const rejectUnknownPropertyKeys = filterValuesRecursively(rejectUnknownKeys)
 
 
-const pipeline = []
-pipeline.push(applyMacros)
-pipeline.push(flattenObject)
-pipeline.push(compressSelectors)
-pipeline.push(dasherizePropertyKeys)
-pipeline.push(rejectUnknownPropertyKeys)
-pipeline.push(objectToRulesArray)
+import {compose} from './utils/fn.es6'
 
-const process = function (o) {
-  for (let i = 0; i < pipeline.length; i++) {
-    o = pipeline[i](o)
-  }
-  return o
-}
+const process = compose(rejectUnknownPropertyKeys, dasherizePropertyKeys, compressSelectors, flattenObject, applyMacros)
 
 export default function (obj) {
-  var rules = [];
+  const rules = [];
   arrayEach(arrayFlatten([obj]), function (o) {
-    rules.push(process(o));
+    rules.push(objectToRulesArray(process(o)));
   });
   return arrayFlatten(rules);
 };

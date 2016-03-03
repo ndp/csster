@@ -96,8 +96,7 @@
 	};
 
 	Csster.style = function (o) {
-	  var css = Csster.buildCss(o);
-	  (0, _insertCss2.default)(css);
+	  (0, _insertCss2.default)(Csster.buildCss(o));
 	};
 
 	// Make available various utilities
@@ -171,9 +170,31 @@
 	pipeline.push(objectToRulesArray);
 
 	var process = function process(o) {
-	  for (var i = 0; i < pipeline.length; i++) {
-	    o = pipeline[i](o);
+	  var _iteratorNormalCompletion = true;
+	  var _didIteratorError = false;
+	  var _iteratorError = undefined;
+
+	  try {
+	    for (var _iterator = pipeline[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	      var p = _step.value;
+
+	      o = p(o);
+	    }
+	  } catch (err) {
+	    _didIteratorError = true;
+	    _iteratorError = err;
+	  } finally {
+	    try {
+	      if (!_iteratorNormalCompletion && _iterator.return) {
+	        _iterator.return();
+	      }
+	    } finally {
+	      if (_didIteratorError) {
+	        throw _iteratorError;
+	      }
+	    }
 	  }
+
 	  return o;
 	};
 

@@ -13,8 +13,7 @@ Csster.buildCss = function (o) {
 }
 
 Csster.style = function (o) {
-  const css = Csster.buildCss(o)
-  insertCss(css)
+  insertCss(Csster.buildCss(o))
 };
 
 
