@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Csster by ndp</title>
     <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="javascripts/respond.js"></script>
     <!--[if lt IE 9]>
@@ -39,7 +39,7 @@
         </div>
 
         <h1>
-<a name="csster" class="anchor" href="#csster"><span class="octicon octicon-link"></span></a>Csster</h1>
+<a id="csster" class="anchor" href="#csster" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Csster</h1>
 
 <p>Concisely generate CSS style rules within Javascript.  Features:</p>
 
@@ -51,13 +51,15 @@
 <li>built-in macros for common CSS idioms like <em>clearfix</em>, <em>rounded corners</em>, <em>drop shadows</em>.</li>
 <li>extension points for custom behavior or cross-browser support.</li>
 <li>and all the plain old Javascript behavior: functions, data structures, looping, Math operations, etc.</li>
-</ul><p>Slideshow introduction: <a href="https://docs.google.com/present/view?id=dfm357b6_49c4d3fpdm&amp;interval=15">https://docs.google.com/present/view?id=dfm357b6_49c4d3fpdm&amp;interval=15</a></p>
+</ul>
+
+<p>Slideshow introduction: <a href="https://docs.google.com/present/view?id=dfm357b6_49c4d3fpdm&amp;interval=15">https://docs.google.com/present/view?id=dfm357b6_49c4d3fpdm&amp;interval=15</a></p>
 
 <h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
 <h3>
-<a name="railsbundler-installation" class="anchor" href="#railsbundler-installation"><span class="octicon octicon-link"></span></a>Rails/Bundler Installation</h3>
+<a id="bundler-rails-installation" class="anchor" href="#bundler-rails-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bundler (Rails) Installation</h3>
 
 <p>Add this line to your application's Gemfile:</p>
 
@@ -74,45 +76,45 @@
 <pre><code>$ gem install csster
 </code></pre>
 
+<p>Within your <code>application.js</code>, add </p>
+
+<pre><code>//= require csster
+</code></pre>
+
 <h3>
-<a name="node-npm-install" class="anchor" href="#node-npm-install"><span class="octicon octicon-link"></span></a>Node NPM Install</h3>
+<a id="node-npm-install" class="anchor" href="#node-npm-install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Node NPM Install</h3>
 
-<pre>npm install csster</pre>
+<pre><code>npm install csster
+</code></pre>
 
 <h3>
-<a name="manual-install-for-browser-client" class="anchor" href="#manual-install-for-browser-client"><span class="octicon octicon-link"></span></a>Manual Install for Browser Client</h3>
+<a id="creating-stylesheets-browerclient-side" class="anchor" href="#creating-stylesheets-browerclient-side" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating Stylesheets (Brower/Client Side)</h3>
 
-<p>All code is packaged into a single Javascript file download, <a href="http://ndpsoftware.com/csster/csster.js">csster.js</a>. There are no external dependencies. The project itself is hosted on <a href="http://github.com/ndp/csster">GitHub</a>.</p>
+<p>All code is packaged into a single Javascript file download, <a href="http://ndpsoftware.com/csster/csster.js">csster.js</a>. There are no external dependencies.</p>
 
-<pre>
-require('csster.js'); // however you manage dependencies
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>csster.js<span class="pl-pds">'</span></span>); <span class="pl-c">// however you manage dependencies</span>
 
-Csster.style({
-  h1: {
-    fontSize: 18,
-    color: 'red'
+<span class="pl-smi">Csster</span>.<span class="pl-c1">style</span>({
+  h1<span class="pl-k">:</span> {
+    fontSize<span class="pl-k">:</span> <span class="pl-c1">18</span>,
+    color<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>red<span class="pl-pds">'</span></span>
   }
-});
+});</pre></div>
 
-...
-</pre>
+<p>The result is inserted in DOM automatically at the bottom of the &lt;head&gt; element:</p>
 
-<p>Result, inserted in DOM automatically at the bottom of the &lt;head&gt; element:</p>
-
-<pre>
-...
-&lt;style type="text/stylesheet"&gt;
+<div class="highlight highlight-text-html-basic"><pre>...
+<span class="pl-c1">&amp;lt;</span>style type="text/stylesheet"<span class="pl-c1">&amp;gt;</span>
 h1 {
 font-size: 18px;
 color: red;
 }
-&lt;/style&gt;
-&lt;/head&gt;
-...
-</pre>
+<span class="pl-c1">&amp;lt;</span>/style<span class="pl-c1">&amp;gt;</span>
+<span class="pl-c1">&amp;lt;</span>/head<span class="pl-c1">&amp;gt;</span>
+...</pre></div>
 
 <h3>
-<a name="format-of-css-rules" class="anchor" href="#format-of-css-rules"><span class="octicon octicon-link"></span></a>Format of CSS Rules</h3>
+<a id="format-of-css-rules" class="anchor" href="#format-of-css-rules" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Format of CSS Rules</h3>
 
 <p>The <em>style</em> method accepts CSS rules passed either as arrays or hashes, arrays just being
 a way to order the hashes. For example:</p>
@@ -135,8 +137,10 @@ a way to order the hashes. For example:</p>
 <li>property names are automatically converted to hyphenated format from camelcase, so in many cases you can omit the quotation marks. ('float' needs to quoted since it's a reserved word.)</li>
 <li>all raw numbers are assumed to be "pixels" (or "px"), and rendered as such.</li>
 <li>any sort of selectors are allowed... they are just passed through to the stylesheet.</li>
-</ul><h4>
-<a name="nesting" class="anchor" href="#nesting"><span class="octicon octicon-link"></span></a>Nesting</h4>
+</ul>
+
+<h4>
+<a id="nesting" class="anchor" href="#nesting" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Nesting</h4>
 
 <p>Csster supports nesting of rules to keep things more concise:</p>
 
@@ -163,17 +167,19 @@ Instead of the default "any descendent" space character being inserted, no space
 <p>Combined rules (with commas) are expanded as expected, so nested rules with commas have their parents expanded.</p>
 
 <h4>
-<a name="functions" class="anchor" href="#functions"><span class="octicon octicon-link"></span></a>Functions</h4>
+<a id="functions" class="anchor" href="#functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Functions</h4>
 
 <p>Most manipulations will fall into Javascript's language support, as far as any math or looping. Use Javascript to write necessary functions.</p>
 
-<p>function/color.js contains SASS-like color functions:</p>
+<p>functions/color.es6 contains SASS-like color functions mixed into the base String object:</p>
 
 <ul>
 <li> <code>"#ab342c".darken(%)</code> -- make color darker by given percent</li>
 <li> <code>"#ab342c".lighten(%)</code> -- make color lighter by given percent</li>
 <li> <code>"#ab342c".saturate(%)</code>  -- make color more saturated by given percent. To <em>desaturate</em>, use negative values for the percent. Note that <code>"#ab342c".saturate(-100)</code> renders in grayscale.</li>
-</ul><p>There are also color conversion routines if you want to build your own manipulation.</p>
+</ul>
+
+<p>There are also color conversion routines if you want to build your own manipulation.</p>
 
 <ul>
 <li> <code>"#ab342c".toRGB()</code>
@@ -182,10 +188,12 @@ Instead of the default "any descendent" space character being inserted, no space
 </li>
 <li> <code>Csster.hslToHexColor(h,s,l)</code>
 </li>
-</ul><p>Opacity is currently not supported by the color model.</p>
+</ul>
+
+<p>Opacity is currently not supported by the color model.</p>
 
 <h4>
-<a name="macros-using-has-key" class="anchor" href="#macros-using-has-key"><span class="octicon octicon-link"></span></a>Macros using "has" key</h4>
+<a id="macros-using-has-key" class="anchor" href="#macros-using-has-key" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Macros using "has" key</h4>
 
 <p>There are a host of pre-made macros that may be useful:</p>
 
@@ -206,7 +214,9 @@ Instead of the default "any descendent" space character being inserted, no space
 </li>
 <li>
 <code>clearfix()</code> -- standard clearfix</li>
-</ul><p>To "mix these in", use the "has" key:</p>
+</ul>
+
+<p>To "mix these in", use the "has" key:</p>
 
 <pre>
 {
@@ -235,7 +245,7 @@ that returns a hash of values, for example:</p>
 <p>A macro's properties will be overwritten by properties within including selector (or later included macros), similar to how the cascade takes the last defined value.</p>
 
 <h2>
-<a name="jquery-integration" class="anchor" href="#jquery-integration"><span class="octicon octicon-link"></span></a>jQuery Integration</h2>
+<a id="jquery-integration" class="anchor" href="#jquery-integration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jQuery Integration</h2>
 
 <p>If jQuery is loaded first, Csster provides a "csster" method:</p>
 
@@ -253,33 +263,31 @@ And be careful, since not all jQuery selectors are valid CSS selectors--
 nothing is done to convert or report unsupported selectors (just like regular CSS).</p>
 
 <h2>
-<a name="extending-csster" class="anchor" href="#extending-csster"><span class="octicon octicon-link"></span></a>Extending Csster</h2>
+<a id="extending-csster" class="anchor" href="#extending-csster" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Extending Csster</h2>
 
 <p>Csster is built as an extensible system.</p>
 
 <h3>
-<a name="adding-custom-property-names" class="anchor" href="#adding-custom-property-names"><span class="octicon octicon-link"></span></a>Adding Custom Property Names</h3>
+<a id="adding-custom-property-names" class="anchor" href="#adding-custom-property-names" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Adding Custom Property Names</h3>
 
 <p>Use <code>Csster.addPropertyNames</code> to add any non-standard property names you'd like to be considered valid. The build-in tool rejects non-standard property names, although by default popular "-moz" and "-webkit" properties are added.</p>
 
 <h3>
-<a name="pre-process-rules" class="anchor" href="#pre-process-rules"><span class="octicon octicon-link"></span></a>Pre-process rules</h3>
+<a id="pre-process-rules" class="anchor" href="#pre-process-rules" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Pre-process rules</h3>
 
-<p>Functions called before properties are processed stored in <code>Csster.propertyPreprocessors</code>. Callback is provided a hash of properties to values, which it modifies in any way it wants. This is used to interpret macros.</p>
+<del>Functions called before properties are processed stored in <code>Csster.propertyPreprocessors</code>. Callback is provided a hash of properties to values, which it modifies in any way it wants. This is used to interpret macros.</del>
 
-<h3>
-<a name="post-processing" class="anchor" href="#post-processing"><span class="octicon octicon-link"></span></a>Post-processing</h3>
+<del>### Post-processing
+Functions called after rules are processed stored in <code>Csster.rulesPostProcessors</code>. Called with an array of processed rules. Can be used to eliminate duplicates, modify selectors, etc. Standard list simplifies overly complex selectors with multiple IDs.
 
-<p>Functions called after rules are processed stored in <code>Csster.rulesPostProcessors</code>. Called with an array of processed rules. Can be used to eliminate duplicates, modify selectors, etc. Standard list simplifies overly complex selectors with multiple IDs.</p>
+A convenient built-in function is <code>compressSelectors</code>. Using this processor, rules with multiple '#'s are simplified. For example, '#a #b #c' becomes '#c'. Usually this is what you will want, so include it with <code>Csster.rulePostProcessors.push(Csster.compressSelectors);</code>.
 
-<p>A convenient built-in function is <code>compressSelectors</code>. Using this processor, rules with multiple '#'s are simplified. For example, '#a #b #c' becomes '#c'. Usually this is what you will want, so include it with <code>Csster.rulePostProcessors.push(Csster.compressSelectors);</code>.</p>
-
-<p>This is used to write custom browser overrides. For example, this one makes opacity work for IE:</p>
+This is used to write custom browser overrides. For example, this one makes opacity work for IE:
 
 <pre>
   Csster.rulesPostProcessors.push(function ieOpacity(rules) {
     // http://www.smashingmagazine.com/2010/04/28/css3-solutions-for-internet-explorer/
-    if (Csster.browser.msie) {
+    if (Csster.browserInfo().msie) {
       for (var i = 0; i &lt; rules.length; i++) {
         var rule = rules[i];
         var value = rule.props['opacity']
@@ -291,14 +299,47 @@ nothing is done to convert or report unsupported selectors (just like regular CS
     }
   });
 </pre>
+</del>
 
 <h3>
-<a name="inserting-into-the-dom" class="anchor" href="#inserting-into-the-dom"><span class="octicon octicon-link"></span></a>Inserting into the DOM</h3>
+<a id="inserting-into-the-dom" class="anchor" href="#inserting-into-the-dom" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Inserting into the DOM</h3>
 
-<p>Function that outputs a set of rules into the DOM is <code>Csster.insertStylesheet</code> and can be replaced if desired.</p>
+<p>Function that outputs a set of rules into the DOM is <code>Csster.insertCss</code> and can be replaced if desired.</p>
 
 <h2>
-<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+<a id="v20-changes" class="anchor" href="#v20-changes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>V2.0 Changes</h2>
+
+<h3>
+<a id="to-upgrade-from-10-or-before" class="anchor" href="#to-upgrade-from-10-or-before" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>To upgrade from 1.0 or before</h3>
+
+<ul>
+<li>Change <code>Csster.browser</code> to call <code>Csster.browserInfo()</code>, which returns the same thing.</li>
+<li>Change <code>has:</code> macro implementations to <code>mixin:</code>.</li>
+</ul>
+
+<h3>
+<a id="other-changes" class="anchor" href="#other-changes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Other changes:</h3>
+
+<ul>
+<li>use ES6 for implementation and provide a more compressed and clean script.</li>
+<li>add ability to turn off property name validation.</li>
+<li>add ability to warn about unknown browser extensions for property names.</li>
+</ul>
+
+<h2>
+<a id="links" class="anchor" href="#links" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Links</h2>
+
+<ul>
+<li><a href="http://ndpsoftware.com/csster/demo.html">Demo of the color functions and macros</a></li>
+<li><a href="http://ndpsoftware.com/csster/demo_chart.html">Demo of using to build a chart</a></li>
+<li><a href="http://ndpsoft.blogspot.com/2010/09/introducing-csster.html">Blog post</a></li>
+</ul>
+
+<h2>
+<a id="development" class="anchor" href="#development" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Development</h2>
+
+<h3>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h3>
 
 <ol>
 <li>Fork it</li>
@@ -306,25 +347,41 @@ nothing is done to convert or report unsupported selectors (just like regular CS
 <li>Commit your changes (<code>git commit -am 'Add some feature'</code>)</li>
 <li>Push to the branch (<code>git push origin my-new-feature</code>)</li>
 <li>Create new Pull Request</li>
-</ol><h2>
-<a name="links" class="anchor" href="#links"><span class="octicon octicon-link"></span></a>Links</h2>
+</ol>
 
-<ul>
-<li><a href="http://ndpsoftware.com/csster/demo.html">Demo of the color functions and macros</a></li>
-<li><a href="http://ndpsoftware.com/csster/demo_chart.html">Demo of using to build a chart</a></li>
-<li><a href="http://ndpsoft.blogspot.com/2010/09/introducing-csster.html">Blog post</a></li>
-</ul><h2>
-<a name="tdd" class="anchor" href="#tdd"><span class="octicon octicon-link"></span></a>TDD</h2>
+<h2>
+<a id="releasing" class="anchor" href="#releasing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Releasing</h2>
+
+<ol>
+<li>Make changes</li>
+<li>Update <code>bin/build.sh#2</code> <code>VERSION=</code> code.</li>
+<li><code>bin/build.sh</code></li>
+<li><code>rake build</code></li>
+<li><code>rake checkin</code></li>
+<li><code>rake push...</code></li>
+<li><code>rake release</code></li>
+<li><code>npm publish</code></li>
+</ol>
+
+<h3>
+<a id="tdd" class="anchor" href="#tdd" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TDD</h3>
 
 <p>The design was driven by <a href="http://ndpsoftware.com/csster/spec_runner.html">the specs</a>.</p>
 
+<h3>
+<a id="building" class="anchor" href="#building" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Building</h3>
+
+<p><code>./bin/build.sh</code></p>
+
 <h2>
-<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>Todo</h2>
+<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Todo</h2>
 
 <ul>
 <li>decompile existing stylesheets</li>
-</ul><h2>
-<a name="motivation" class="anchor" href="#motivation"><span class="octicon octicon-link"></span></a>Motivation</h2>
+</ul>
+
+<h2>
+<a id="motivation" class="anchor" href="#motivation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Motivation</h2>
 
 <p>This project comes from my frustration of trying to build standalone Javascript widgets. Web
 projects always involve the combination of HTML DOM, CSS and Javascript. It's often simpler to
@@ -339,14 +396,14 @@ tool completely unrelated to your component, written in some other language. Wou
 a unified approach be nice?</p>
 
 <h2>
-<a name="similar-projects" class="anchor" href="#similar-projects"><span class="octicon octicon-link"></span></a>Similar projects</h2>
+<a id="similar-projects" class="anchor" href="#similar-projects" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Similar projects</h2>
 
 <p><a href="http://revnode.com/oss/css/">http://revnode.com/oss/css/</a></p>
 
 <h2>
-<a name="legal" class="anchor" href="#legal"><span class="octicon octicon-link"></span></a>Legal</h2>
+<a id="legal" class="anchor" href="#legal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Legal</h2>
 
-<p>Copyright (c) 2010-2012 Andrew J. Peterson
+<p>Copyright (c) 2010-2016 Andrew J. Peterson
 <a href="https://github.com/ndp/csster/raw/master/LICENSE">Apache License</a></p>
       </section>
 
