@@ -10,7 +10,7 @@ export const mergeHashInto = (dest, ...hashes) => {
 }
 
 
-import {curry} from './curry.es6'
+import {curry} from './fn.es6'
 
 // Apply filter to keys of an object
 // fn:  (key) => new key

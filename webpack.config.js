@@ -6,7 +6,7 @@ module.exports = {
   ],
   output: {
     path: __dirname,
-    filename: "csster.js"
+    filename: "csster.js",
   },
   resolveLoader: {
     modulesDirectories: [

@@ -3,7 +3,6 @@
  * can be deeply nested, implying subselections
  * keys can be CSS properties and values CSS property values
  */
-
 import {trim} from '../src/utils/string.es6'
 
 

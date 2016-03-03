@@ -1,4 +1,3 @@
-// Csster version 1.1.1; Copyright (c) Andrew J. Peterson / ndpsoftware.com. All Rights Reserved
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -55,17 +54,18 @@
 
 	'use strict';
 
-	var _buildRules = __webpack_require__(2);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Csster = undefined;
 
-	var _buildRules2 = _interopRequireDefault(_buildRules);
-
-	var _stringifyRules = __webpack_require__(12);
-
-	var _stringifyRules2 = _interopRequireDefault(_stringifyRules);
+	var _buildCss = __webpack_require__(29);
 
 	var _insertCss = __webpack_require__(17);
 
 	var _insertCss2 = _interopRequireDefault(_insertCss);
+
+	var _fn = __webpack_require__(5);
 
 	var _macros = __webpack_require__(18);
 
@@ -85,22 +85,17 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	if (!window.Csster) {
-	  window.Csster = {};
+	// This still isn't the right away to export for browser usage.
+	var Csster = exports.Csster = {};
+	if (typeof window !== 'undefined') {
+	  window.Csster = Csster;
 	}
 
-	Csster.buildCss = function (o) {
-	  var rules = (0, _buildRules2.default)(o);
-	  var css = (0, _stringifyRules2.default)(rules);
-	  return css;
-	};
+	Csster.buildCss = _buildCss.buildCss;
 
-	Csster.style = function (o) {
-	  var css = Csster.buildCss(o);
-	  (0, _insertCss2.default)(css);
-	};
+	Csster.insertCss = _insertCss2.default;
 
-	// Make available various utilities
+	Csster.style = (0, _fn.compose)(_insertCss2.default, _buildCss.buildCss);
 
 	Csster.macros = macros;
 
@@ -112,9 +107,6 @@
 	(0, _color.colorizeString)();
 
 	Csster.addPropertyNames = propertyNameValidator.addNames;
-
-	Csster.insertCss = _insertCss2.default;
-	Csster.buildRules = _buildRules2.default;
 
 /***/ },
 /* 2 */
@@ -130,7 +122,7 @@
 	exports.default = function (obj) {
 	  var rules = [];
 	  (0, _array.arrayEach)((0, _array.arrayFlatten)([obj]), function (o) {
-	    rules.push(process(o));
+	    rules.push(objectToRulesArray(process(o)));
 	  });
 	  return (0, _array.arrayFlatten)(rules);
 	};
@@ -139,7 +131,7 @@
 
 	var _array = __webpack_require__(6);
 
-	var _curry = __webpack_require__(5);
+	var _fn = __webpack_require__(5);
 
 	var _cssObject = __webpack_require__(7);
 
@@ -162,20 +154,7 @@
 
 	var rejectUnknownPropertyKeys = exports.rejectUnknownPropertyKeys = (0, _object.filterValuesRecursively)(_properties.rejectUnknownKeys);
 
-	var pipeline = [];
-	pipeline.push(applyMacros);
-	pipeline.push(_cssObject.flattenObject);
-	pipeline.push(_cssObject.compressSelectors);
-	pipeline.push(dasherizePropertyKeys);
-	pipeline.push(rejectUnknownPropertyKeys);
-	pipeline.push(objectToRulesArray);
-
-	var process = function process(o) {
-	  for (var i = 0; i < pipeline.length; i++) {
-	    o = pipeline[i](o);
-	  }
-	  return o;
-	};
+	var process = (0, _fn.compose)(rejectUnknownPropertyKeys, dasherizePropertyKeys, _cssObject.compressSelectors, _cssObject.flattenObject, applyMacros);
 
 	;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
@@ -290,7 +269,7 @@
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-	var _curry = __webpack_require__(5);
+	var _fn = __webpack_require__(5);
 
 	//  mergeHashInto(hashA, hashB, hashC...)
 	// merge all properties from B, C into hash A.
@@ -310,7 +289,7 @@
 	// Apply filter to keys of an object
 	// fn:  (key) => new key
 	// o:   object to filter
-	var applyToKeys = exports.applyToKeys = (0, _curry.curry)(function (fn, o) {
+	var applyToKeys = exports.applyToKeys = (0, _fn.curry)(function (fn, o) {
 	  var out = {};
 	  for (var k in o) {
 	    out[fn(k)] = o[k];
@@ -321,7 +300,7 @@
 	// Filter values of an object, recursively
 	// fn: fn(value, key) => new value
 	// o:  object to process
-	var filterValuesRecursively = exports.filterValuesRecursively = (0, _curry.curry)(function (fn, o) {
+	var filterValuesRecursively = exports.filterValuesRecursively = (0, _fn.curry)(function (fn, o) {
 	  var out = {};
 	  for (var k in o) {
 	    var v = o[k];
@@ -346,6 +325,10 @@
 	  value: true
 	});
 	exports.curry = curry;
+	// Slightly functional support within Javascript. See more
+	// complete libraries for better support.
+
+	// Curry the given function
 	function curry(fx) {
 	  var arity = fx.length;
 
@@ -361,6 +344,20 @@
 	    }
 	  };
 	}
+
+	// Directly compose given functions. This does not use the .map style
+	// that is more common.
+	// Taken from http://scott.sauyet.com/Javascript/Talk/Compose/2013-05-22/#slide-17
+	var compose = exports.compose = function compose() {
+	  var funcs = arguments;
+	  return function () {
+	    var args = arguments;
+	    for (var i = funcs.length; i-- > 0;) {
+	      args = [funcs[i].apply(this, args)];
+	    }
+	    return args[0];
+	  };
+	};
 
 /***/ },
 /* 6 */
@@ -430,6 +427,7 @@
 	                                                                                                                                                                                                                                                   * can be deeply nested, implying subselections
 	                                                                                                                                                                                                                                                   * keys can be CSS properties and values CSS property values
 	                                                                                                                                                                                                                                                   */
+
 
 	var _string = __webpack_require__(8);
 
@@ -598,7 +596,7 @@
 
 	var _object = __webpack_require__(4);
 
-	var _curry = __webpack_require__(5);
+	var _fn = __webpack_require__(5);
 
 	var _propertyNameValidator = __webpack_require__(11);
 
@@ -608,7 +606,7 @@
 
 	var dasherizeKeys = exports.dasherizeKeys = (0, _object.applyToKeys)(_string.dasherize);
 
-	var propertyKeyVisitor = (0, _curry.curry)(function (fn, rules, ctx) {
+	var propertyKeyVisitor = (0, _fn.curry)(function (fn, rules, ctx) {
 	  for (var prop in rules) {
 	    fn(prop, ctx);
 	  }
@@ -657,8 +655,29 @@
 	  }
 
 	  var names = (0, _array.arrayFlatten)([propertyNames]);
-	  for (var i = 0; i < names.length; i++) {
-	    validNames[names[i]] = true;
+	  var _iteratorNormalCompletion = true;
+	  var _didIteratorError = false;
+	  var _iteratorError = undefined;
+
+	  try {
+	    for (var _iterator = names[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	      var name = _step.value;
+
+	      validNames[name] = true;
+	    }
+	  } catch (err) {
+	    _didIteratorError = true;
+	    _iteratorError = err;
+	  } finally {
+	    try {
+	      if (!_iteratorNormalCompletion && _iterator.return) {
+	        _iterator.return();
+	      }
+	    } finally {
+	      if (_didIteratorError) {
+	        throw _iteratorError;
+	      }
+	    }
 	  }
 	}
 
@@ -728,7 +747,7 @@
 	// .sel is the selector
 	// .props in an object holding CSS property rules
 	var format = exports.format = function format(rule) {
-	  return rule.sel + ' { ' + formatProperties(rule.props) + '}\r';
+	  return rule.sel + ' { ' + formatProperties(rule.props) + " }\n";
 	};
 
 /***/ },
@@ -1437,6 +1456,31 @@
 	    }
 	  })(jQuery);
 	}
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.buildCss = undefined;
+
+	var _buildRules = __webpack_require__(2);
+
+	var _buildRules2 = _interopRequireDefault(_buildRules);
+
+	var _stringifyRules = __webpack_require__(12);
+
+	var _stringifyRules2 = _interopRequireDefault(_stringifyRules);
+
+	var _fn = __webpack_require__(5);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var buildCss = exports.buildCss = (0, _fn.compose)(_stringifyRules2.default, _buildRules2.default);
 
 /***/ }
 /******/ ]);
