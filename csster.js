@@ -1,4 +1,4 @@
-// Csster version 1.1.1; Copyright (c) Andrew J. Peterson / ndpsoftware.com. All Rights Reserved
+// Csster version 1.2.0; Copyright (c) Andrew J. Peterson / ndpsoftware.com. All Rights Reserved
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
