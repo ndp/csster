@@ -53,7 +53,7 @@ describe('macroProcessor', () => {
   })
 
   it("expands a 'has' property", () => {
-    var props = {
+    const props = {
       has:    borderRadius(5),
       height: '235px'
     };
@@ -62,7 +62,7 @@ describe('macroProcessor', () => {
   })
 
   it("expands multiple values within a 'has' properties", () => {
-    var props = {
+    const props = {
       has:    [borderRadius(5), colorRed()],
       height: '235px'
     };
@@ -71,7 +71,7 @@ describe('macroProcessor', () => {
   })
 
   it('expands "has" within a "has" within a "has" properties', () => {
-    var props = {
+    const props = {
       div: {has: {mixin: {mixins: {height: '235px'}}}}
     };
     expect(macroProcessor(props)).toEqual({div: {height: "235px"}})
@@ -82,10 +82,23 @@ describe('macroProcessor', () => {
       setMacro('roundedCorners', (size) => {
         return {borderRadius: size}
       })
-      var props = {
+      const props = {
         div: {roundedCorners: 5}
       };
       expect(macroProcessor(props)).toEqual({div: {borderRadius: 5}})
+    })
+
+    it('can accept multiple values', () => {
+      setMacro('pos', (x, y) => {
+        return {backgroundPosition: '' + x + 'px ' + y + 'px'}
+      })
+
+
+      const props = {
+        div: {pos: [5, 10]}
+      }
+
+      expect(macroProcessor(props)).toEqual({div: {backgroundPosition: '5px 10px'}})
     })
   })
 

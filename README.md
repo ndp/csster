@@ -94,7 +94,8 @@ Note that
 
 #### Nesting
 Csster supports nesting of rules to keep things more concise:
-<pre>
+
+```javascript
 {
     ul: {
       margin: 5,
@@ -106,7 +107,7 @@ Csster supports nesting of rules to keep things more concise:
       }
     }
 }
-</pre>
+```
 
 The "li" property in this case might be a selector or might be a property name. A list of valid
 property names is used to identify properties right now, and otherwise it's considered a sub-selector.
@@ -156,23 +157,27 @@ There are a host of pre-made macros that may be useful:
 * `verticalCentering(height)` and `horizontalCentering(width)` -- center using the top 50% / margin-top -width/2 technique. See http://stackoverflow.com/questions/148251/css-centering-tricks
 * `clearfix()` -- standard clearfix
 
-To "mix these in", use the "has" key:
+To "mix these in", use the `has`, `mixin` or `mixins` key:
 
-<pre>
-{
-    'div#featured_box': {
-      backgroundColor: '#394c89',
-      has: roundedCorner(5)
+    {
+        'div#featured_box': {
+          backgroundColor: '#394c89',
+          has: roundedCorner(5)
+        }
     }
-}
-</pre>
 
 Multiple macros can be included by making that a list, eg. `has: [roundedCorners(5), dropShadow()]`.
 
-It's all Javascript, so macros and more complex functions are easy to write. To mix in a set of values, create a function
+You can also make these _pseudo selectors_ using the `Csster.setMacro` method. For example,
+
+    Csster.setMacro('roundedCorners', (px) => { return { borderRadius: px } })
+
+
+It's all Javascript, so macros and more complex functions are easy to write. 
+To mix in a set of values, create a function
 that returns a hash of values, for example:
 
-<pre>
+```javascript
     function roundedCorners(radius) {
         return {
             '-webkit-border-radius': radius,
@@ -180,7 +185,7 @@ that returns a hash of values, for example:
             'border-radius': radius
         }
     }
-</pre>
+```
 
 A macro's properties will be overwritten by properties within including selector (or later included macros), similar to how the cascade takes the last defined value.
 

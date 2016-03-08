@@ -104,6 +104,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var macros = _interopRequireWildcard(_macros);
 
+	var _macroProcessor = __webpack_require__(12);
+
 	var _array = __webpack_require__(9);
 
 	var _browser = __webpack_require__(27);
@@ -126,6 +128,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  insertCss: _insertCss2.default,
 	  style: style,
 	  macros: macros,
+	  setMacro: _macroProcessor.setMacro,
 	  arrayFlatten: _array.arrayFlatten,
 	  browserInfo: _browser.browserInfo,
 	  hslToHexColor: _color.hslToHexColor,
@@ -656,8 +659,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	// Simplest macro just inlines
-	function inLineIt(value) {
+	function inLineIt() {
 	  var expanded = {};
+
+	  for (var _len = arguments.length, value = Array(_len), _key = 0; _key < _len; _key++) {
+	    value[_key] = arguments[_key];
+	  }
+
 	  (0, _array.map)(function (val) {
 	    if (typeof val == 'function') val = val();
 	    (0, _object.mergeHashInto)(expanded, val);
@@ -673,8 +681,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  for (var key in o) {
 	    var value = o[key];
 	    if (isMacroKey(key)) {
-	      var expanded = macroKeys[key](value);
-	      (0, _object.mergeHashInto)(result, macroProcessor(expanded)); // Recurse
+	      var expanded = macroKeys[key].apply(null, (0, _array.isArray)(value) ? value : [value]);
+	      (0, _object.mergeHashInto)(result, process(expanded)); // Recurse
 	    } else {
 	        result[key] = value;
 	      }

@@ -1,5 +1,5 @@
 import { mergeHashInto, filterObjectsRecursively } from '../utils/object.es6'
-import { includes, map, arrayFlatten } from '../utils/array.es6'
+import { includes, map, arrayFlatten, isArray } from '../utils/array.es6'
 
 let macroKeys = {
   'has': inLineIt,
@@ -17,7 +17,7 @@ export function isMacroKey(k) {
 
 
 // Simplest macro just inlines
-function inLineIt(value) {
+function inLineIt(...value) {
   const expanded = {}
   map((val) => {
     if (typeof val == 'function') val = val()
@@ -34,8 +34,8 @@ function process(o) {
   for (let key in o) {
     const value = o[key];
     if (isMacroKey(key)) {
-      const expanded = macroKeys[key](value)
-      mergeHashInto(result, macroProcessor(expanded)) // Recurse
+      const expanded = macroKeys[key].apply(null, isArray(value) ? value : [value] )
+      mergeHashInto(result, process(expanded)) // Recurse
     } else {
       result[key] = value
     }
