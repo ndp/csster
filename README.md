@@ -59,23 +59,29 @@ The result is inserted in DOM automatically at the bottom of the &lt;head&gt; el
 
 ```html
 ...
-&lt;style type="text/stylesheet"&gt;
+<style type="text/stylesheet">
 h1 {
 font-size: 18px;
 color: red;
 }
-&lt;/style&gt;
-&lt;/head&gt;
+</style>
+</head>
 ...
 ```
 
+### Node Usage
+
+`Csster.buildCss` accepts arrays or hashes of rules and returns a text string of the Css rules.
+The caller is responsible for writing to the browser.
+
+
 ### Format of CSS Rules
 
-The *style* method accepts CSS rules passed either as arrays or hashes, arrays just being
+The `Csster.style` method accepts CSS rules passed either as arrays or hashes, arrays just being
 a way to order the hashes. For example:
 
-<pre>
-{
+```javascript
+Csster.style({
     ul: {
       margin: 5,
       padding: 0,
@@ -84,12 +90,12 @@ a way to order the hashes. For example:
       paddingLeft: 20px
     }
 }
-</pre>
+```
 
 Note that
 
-* property names are automatically converted to hyphenated format from camelcase, so in many cases you can omit the quotation marks. ('float' needs to quoted since it's a reserved word.)
-* all raw numbers are assumed to be "pixels" (or "px"), and rendered as such.
+* property names are automatically converted to hyphenated format from camelCase, so in many cases you can omit the quotation marks. (`float` needs to quoted since it's a reserved word.)
+* most raw numbers are assumed to be "pixels" (or "px"), and rendered as such. A heuristic helps in this, skipping `opacity`, `z-index`, etc.
 * any sort of selectors are allowed... they are just passed through to the stylesheet.
 
 #### Nesting
@@ -112,17 +118,15 @@ Csster supports nesting of rules to keep things more concise:
 The "li" property in this case might be a selector or might be a property name. A list of valid
 property names is used to identify properties right now, and otherwise it's considered a sub-selector.
 
-Csster supports SASS's "&" operator, to indicate that the selector should be combined with the parent selector.
+Csster supports SASS's `&` operator, to indicate that the selector should be combined with the parent selector.
 Instead of the default "any descendent" space character being inserted, no space is inserted.
 
 Combined rules (with commas) are expanded as expected, so nested rules with commas have their parents expanded.
 
 
-
-
 #### Functions
 Most manipulations will fall into Javascript's language support, as far as any math or looping. 
-Use Javascript to write necessary functions.
+Use Javascript to write necessary functions!
 
 
 #### Colors
@@ -168,14 +172,18 @@ To "mix these in", use the `has`, `mixin` or `mixins` key:
 
 Multiple macros can be included by making that a list, eg. `has: [roundedCorners(5), dropShadow()]`.
 
-You can also make these _pseudo selectors_ using the `Csster.setMacro` method. For example,
+#### Macros using specific property names
+
+You can also make these _pseudo properties_ using the `Csster.setMacro` method. For example,
 
     Csster.setMacro('roundedCorners', (px) => { return { borderRadius: px } })
+    ...
+    Csster.style({ div: roundedCorners: 5 })
 
+#### Writing Macros
 
 It's all Javascript, so macros and more complex functions are easy to write. 
-To mix in a set of values, create a function
-that returns a hash of values, for example:
+To mix in a set of values, create a function that returns a hash of values, for example:
 
 ```javascript
     function roundedCorners(radius) {
@@ -187,7 +195,7 @@ that returns a hash of values, for example:
     }
 ```
 
-A macro's properties will be overwritten by properties within including selector (or later included macros), similar to how the cascade takes the last defined value.
+A macro's properties will be overwritten  similar to how the cascade takes the last defined value: later ones override earlier ones.
 
 
 ## Verification
