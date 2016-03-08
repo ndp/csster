@@ -20,17 +20,19 @@ describe('dasherizeKeys', () => {
 })
 
 
-import { rejectUnknownKeys } from '../src/properties.es6'
+import { rejectUnknownPropertyKeys } from '../src/properties.es6'
 
-describe('rejectUnknownKeys', () => {
+describe('rejectUnknownPropertyKeys', () => {
   it('handles empty hashes', () => {
-    expect(rejectUnknownKeys({}, 'none')).toEqual({})
+    expect(rejectUnknownPropertyKeys({ 'none': {} })).toEqual({ 'none': {} })
   })
+
   it('handles single key', () => {
-    expect(rejectUnknownKeys({'background-color': 'blue'}, 'none')).toEqual({'background-color': 'blue'})
+    expect(rejectUnknownPropertyKeys({none: {'background-color': 'blue'}})).toEqual({none: {'background-color': 'blue'}})
   })
+
   it('raises', () => {
-    expect(() => rejectUnknownKeys({'foo': 'blue'}, '.bar'))
+    expect(() => rejectUnknownPropertyKeys({'.bar': {'foo': 'blue'}}))
         .toThrow('Unrecognized "foo" property name. Context: ".bar"')
   })
 })

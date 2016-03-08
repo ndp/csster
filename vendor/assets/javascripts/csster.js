@@ -104,6 +104,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var macros = _interopRequireWildcard(_macros);
 
+	var _macroProcessor = __webpack_require__(12);
+
 	var _array = __webpack_require__(9);
 
 	var _browser = __webpack_require__(27);
@@ -126,13 +128,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  insertCss: _insertCss2.default,
 	  style: style,
 	  macros: macros,
+	  setMacro: _macroProcessor.setMacro,
 	  arrayFlatten: _array.arrayFlatten,
 	  browserInfo: _browser.browserInfo,
 	  hslToHexColor: _color.hslToHexColor,
-	  addPropertyNames: addPropertyNames
+	  addPropertyNames: addPropertyNames,
+	  propertyNameValidator: propertyNameValidator,
+	  colorizeString: _color.colorizeString
 	};
-
-	(0, _color.colorizeString)();
 
 /***/ },
 /* 4 */
@@ -168,12 +171,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.rejectUnknownPropertyKeys = exports.dasherizePropertyKeys = undefined;
+	exports.dasherizePropertyKeys = undefined;
 
-	exports.default = function (obj) {
+	exports.default = function (objOrArray) {
+	  var a = (0, _array.arrayFlatten)([objOrArray]);
 	  var rules = [];
-	  (0, _array.arrayEach)((0, _array.arrayFlatten)([obj]), function (o) {
-	    rules.push(objectToRulesArray(process(o)));
+	  (0, _array.arrayEach)(a, function (o) {
+	    return rules.push(objectToRulesArray(process(o)));
 	  });
 	  return (0, _array.arrayFlatten)(rules);
 	};
@@ -190,8 +194,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _properties = __webpack_require__(13);
 
-	var applyMacros = (0, _object.filterValuesRecursively)(_macroProcessor.macroProcessor);
-
 	// @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
 	var objectToRulesArray = function objectToRulesArray(o) {
 	  var result = [];
@@ -203,9 +205,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var dasherizePropertyKeys = exports.dasherizePropertyKeys = (0, _object.filterValuesRecursively)(_properties.dasherizeKeys);
 
-	var rejectUnknownPropertyKeys = exports.rejectUnknownPropertyKeys = (0, _object.filterValuesRecursively)(_properties.rejectUnknownKeys);
+	var log = function log(x) {
+	  console.log(x);return x;
+	};
 
-	var process = (0, _fn.compose)(rejectUnknownPropertyKeys, dasherizePropertyKeys, _cssObject.compressSelectors, _cssObject.flattenObject, applyMacros);
+	var process = (0, _fn.compose)(_properties.rejectUnknownPropertyKeys, dasherizePropertyKeys,
+	//compressSelectors,
+	_cssObject.flattenObject, _macroProcessor.macroProcessor);
 
 	;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
@@ -316,7 +322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.filterValuesRecursively = exports.applyToKeys = exports.mergeHashInto = undefined;
+	exports.filterObjectsRecursively = exports.filterValuesRecursively = exports.visitChildren = exports.applyToKeys = exports.mergeHashInto = undefined;
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
@@ -341,6 +347,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// fn:  (key) => new key
 	// o:   object to filter
 	var applyToKeys = exports.applyToKeys = (0, _fn.curry)(function (fn, o) {
+	  if ((typeof o === 'undefined' ? 'undefined' : _typeof(o)) !== 'object') return o;
 	  var out = {};
 	  for (var k in o) {
 	    out[fn(k)] = o[k];
@@ -348,19 +355,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return out;
 	});
 
+	var visitChildren = exports.visitChildren = (0, _fn.curry)(function (fn, o) {
+	  if ((typeof o === 'undefined' ? 'undefined' : _typeof(o)) == 'object') {
+	    for (var key1 in o) {
+	      if (_typeof(o[key1]) == 'object') {
+	        fn(o[key1], key1);
+	      }
+	    }
+	  }
+	  return o;
+	});
+
 	// Filter values of an object, recursively
 	// fn: fn(value, key) => new value
 	// o:  object to process
 	var filterValuesRecursively = exports.filterValuesRecursively = (0, _fn.curry)(function (fn, o) {
-	  var out = {};
-	  for (var k in o) {
-	    var v = o[k];
-	    var newValue = fn(v, k);
+	  if ((typeof o === 'undefined' ? 'undefined' : _typeof(o)) !== 'object') return o;
 
-	    if ((typeof newV === 'undefined' ? 'undefined' : _typeof(newV)) === 'object') {
-	      out[k] = filterValuesRecursively(fn, newValue);
-	    } else {
-	      out[k] = newValue;
+	  var out = {};
+	  for (var key in o) {
+	    var newValue = fn(o[key], key);
+	    if ((typeof newValue === 'undefined' ? 'undefined' : _typeof(newValue)) == 'object') {
+	      newValue = filterValuesRecursively(fn, newValue);
+	    }
+	    out[key] = newValue;
+	  }
+	  return out;
+	});
+
+	// Filter values of an object, recursively
+	// fn: fn(value, key) => new value
+	// o:  object to process
+	var filterObjectsRecursively = exports.filterObjectsRecursively = (0, _fn.curry)(function (fn, o) {
+	  var out = fn(o);
+	  for (var key in out) {
+	    if (_typeof(out[key]) == 'object') {
+	      out[key] = filterObjectsRecursively(fn, out[key]);
 	    }
 	  }
 	  return out;
@@ -456,11 +486,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return false;
 	}
 
+	function map(fn, obj) {
+	  var result = [];
+	  if (isArray(obj)) {
+	    for (var i = 0; i < obj.length;) {
+	      result.push(fn(obj[i], i++));
+	    }
+	  } else {
+	    result = fn(obj);
+	  }
+	  return result;
+	}
+
 	exports.isArray = isArray;
 	exports.arrayEach = arrayEach;
 	exports.arrayInject = arrayInject;
 	exports.arrayFlatten = arrayFlatten;
 	exports.includes = includes;
+	exports.map = map;
 
 /***/ },
 /* 10 */
@@ -552,23 +595,31 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 11 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	// S T R I N G s
-	var dasherize = function dasherize(s) {
+	exports.trim = exports.dasherize = undefined;
+
+	var _fn = __webpack_require__(8);
+
+	var onString = (0, _fn.curry)(function (fn, s) {
+	  if (typeof s === 'string') return fn(s);else return s;
+	}); // S T R I N G s
+
+
+	var dasherize = onString(function (s) {
 	  return s.replace(/([A-Z])/g, function ($1) {
 	    return "-" + $1.toLowerCase();
 	  });
-	};
+	});
 
-	var trim = function trim(text) {
+	var trim = onString(function (text) {
 	  return (text || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "");
-	};
+	});
 
 	exports.dasherize = dasherize;
 	exports.trim = trim;
@@ -582,55 +633,64 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.setMacroKeys = setMacroKeys;
-	exports.macroProcessor = macroProcessor;
+	exports.macroProcessor = undefined;
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	exports.setMacro = setMacro;
 	exports.isMacroKey = isMacroKey;
 
 	var _object = __webpack_require__(7);
 
 	var _array = __webpack_require__(9);
 
-	var macroKeys = ['has', 'mixin', 'mixins'];
-	function setMacroKeys(keys) {
-	  macroKeys = keys;
-	}
+	var macroKeys = {
+	  'has': inLineIt,
+	  'mixin': inLineIt,
+	  'mixins': inLineIt
+	};
 
-	function macroProcessor(properties) {
-
-	  function applyMacros(macroList) {
-
-	    var props = {};
-
-	    var macros = (0, _array.arrayFlatten)([macroList]); // support single or multiple sets of properties
-	    for (var i = 0; i < macros.length; i++) {
-	      var macro = macros[i];
-	      if (typeof macro == 'function') macro = macro();
-	      for (var mp in macro) {
-	        if (isMacroKey(mp)) {
-	          (0, _object.mergeHashInto)(props, applyMacros(macro[mp]));
-	        } else {
-	          props[mp] = macro[mp];
-	        }
-	      }
-	    }
-	    return props;
-	  }
-
-	  for (var k in properties) {
-	    if (isMacroKey(k)) {
-	      var macros = properties[k];
-	      delete properties[k];
-	      if (macros) {
-	        (0, _object.mergeHashInto)(properties, applyMacros(macros));
-	      }
-	    }
-	  }
-	  return properties;
+	function setMacro(key, fn) {
+	  macroKeys[key] = fn;
 	}
 
 	function isMacroKey(k) {
-	  return (0, _array.includes)(macroKeys, k);
+	  return !!macroKeys[k];
 	}
+
+	// Simplest macro just inlines
+	function inLineIt() {
+	  var expanded = {};
+
+	  for (var _len = arguments.length, value = Array(_len), _key = 0; _key < _len; _key++) {
+	    value[_key] = arguments[_key];
+	  }
+
+	  (0, _array.map)(function (val) {
+	    if (typeof val == 'function') val = val();
+	    (0, _object.mergeHashInto)(expanded, val);
+	  }, value);
+	  return expanded;
+	}
+
+	function process(o) {
+
+	  if ((typeof o === 'undefined' ? 'undefined' : _typeof(o)) !== 'object') return o;
+
+	  var result = {};
+	  for (var key in o) {
+	    var value = o[key];
+	    if (isMacroKey(key)) {
+	      var expanded = macroKeys[key].apply(null, (0, _array.isArray)(value) ? value : [value]);
+	      (0, _object.mergeHashInto)(result, process(expanded)); // Recurse
+	    } else {
+	        result[key] = value;
+	      }
+	  }
+	  return result;
+	}
+
+	var macroProcessor = exports.macroProcessor = (0, _object.filterObjectsRecursively)(process);
 
 /***/ },
 /* 13 */
@@ -641,33 +701,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.rejectUnknownKeys = exports.dasherizeKeys = undefined;
+	exports.rejectUnknownPropertyKeys = exports.dasherizeKeys = undefined;
 
 	var _string = __webpack_require__(11);
 
 	var _object = __webpack_require__(7);
 
-	var _fn = __webpack_require__(8);
-
 	var _propertyNameValidator = __webpack_require__(14);
 
 	var propertyNameValidator = _interopRequireWildcard(_propertyNameValidator);
+
+	var _object2 = __webpack_require__(7);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	var dasherizeKeys = exports.dasherizeKeys = (0, _object.applyToKeys)(_string.dasherize);
 
-	var propertyKeyVisitor = (0, _fn.curry)(function (fn, rules, ctx) {
+	var rejectUnknownPropertyKeys = exports.rejectUnknownPropertyKeys = (0, _object2.visitChildren)(function (rules, selector) {
 	  for (var prop in rules) {
-	    fn(prop, ctx);
-	  }
-	  return rules;
-	});
-
-	var rejectUnknownKeys = exports.rejectUnknownKeys = propertyKeyVisitor(function (prop, ctx) {
-	  var error = propertyNameValidator.error(prop);
-	  if (error) {
-	    throw '' + error + '. Context: "' + ctx + '"';
+	    var error = propertyNameValidator.error(prop);
+	    if (error) {
+	      throw '' + error + '. Context: "' + selector + '"';
+	    }
 	  }
 	});
 
@@ -682,7 +737,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.setConfig = setConfig;
 	exports.addNames = addNames;
-	exports.validate = validate;
 	exports.error = error;
 
 	var _array = __webpack_require__(9);
@@ -697,9 +751,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  config[key] = value;
 	}
 
-	/**
-	 * Add more valid properties to the list of valid property names.
-	 */
 	function addNames() {
 	  for (var _len = arguments.length, propertyNames = Array(_len), _key = 0; _key < _len; _key++) {
 	    propertyNames[_key] = arguments[_key];
@@ -730,10 +781,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  }
-	}
-
-	function validate(name) {
-	  return !error(name) ? name : null;
 	}
 
 	function error(name) {
@@ -792,11 +839,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return Object.keys(props).reduce(function (s, p) {
 	    return s + propertyEntry.format(p, props[p]);
 	  }, '');
-	};
-
-	// Rule: object with `sel` and `props` keys.
+	}; // Rule: object with `sel` and `props` keys.
 	// .sel is the selector
 	// .props in an object holding CSS property rules
+
 	var format = exports.format = function format(rule) {
 	  return rule.sel + ' { ' + formatProperties(rule.props) + " }\n";
 	};
@@ -808,7 +854,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	exports.format = undefined;
 
@@ -822,11 +868,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	var format = function format(name, value) {
-	  return propertyName.format(name) + ": " + propertyValue.format(value, name) + ";\r";
+	var format = exports.format = function format(name, value) {
+	    return propertyName.format(name) + ": " + propertyValue.format(value, name) + ";\r";
 	};
-
-	exports.format = format;
 
 /***/ },
 /* 18 */
@@ -853,7 +897,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var propertyNameOf = exports.propertyNameOf = function propertyNameOf(p) {
 	  var name = (0, _string.dasherize)(p);
-	  return propertyNameValidator.validate(name);
+	  return !propertyNameValidator.error(name) ? name : null;
 	};
 
 	var format = exports.format = function format(name) {
@@ -872,14 +916,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var format = function format(value, name) {
-	  if (value && typeof value == 'number' && name != 'z-index' && name != 'opacity' && name != 'zoom') {
-	    return '' + value + 'px';
-	  }
-	  return value;
-	};
 
-	exports.format = format;
+	var unitlessProperties = ['z-index', 'opacity', 'zoom'];
+
+	var format = exports.format = function format(value, name) {
+	  var appendPx = value && typeof value == 'number' && unitlessProperties.indexOf(name) == -1;
+	  return '' + value + (appendPx ? 'px' : '');
+	};
 
 /***/ },
 /* 20 */

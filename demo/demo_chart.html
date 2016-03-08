@@ -7,132 +7,132 @@
     <script src="../csster.js" type="text/javascript"></script>
     <script type="text/javascript">
 
-        $.fn.bubbleChart = function (options) {
+      $.fn.bubbleChart = function (options) {
 
-            Csster.style({
-                'table.bubble_chart': {
-                    position: 'relative',
-                    padding: 10,
-                    td: {
-                        div: {
-                            has: Csster.macros.roundedCorners(15),
-                            height: 30,
-                            width: 30,
-                            overflow: 'hidden',
-                            backgroundColor: 'white',
-                            verticalAlign: 'middle',
-                            textAlign: 'center'
-                        }
+        Csster.style({
+          'table.bubble_chart': {
+            position: 'relative',
+            padding:  10,
+            td:       {
+              div: {
+                has:             Csster.macros.roundedCorners(15),
+                height:          30,
+                width:           30,
+                overflow:        'hidden',
+                backgroundColor: 'white',
+                verticalAlign:   'middle',
+                textAlign:       'center'
+              }
 
-                    },
-                    thead: {
-                        td: {
-                            zIndex: 100,
-                            padding: '0 0 20px 0',
-                            color: 'white',
-                            fontSize: 9,
-                            fontFamily: 'verdana',
-                            textAlign: 'center',
-                            div: {
-                                marginLeft: 18
-                            }
-                        }
-
-                    },
-                    tbody: {
-                        td: {
-                            verticalAlign: 'bottom'
-                        }
-                    },
-
-                    th: {
-                        color: 'white',
-                        fontSize: 9,
-                        fontFamily: 'verdana'
-                    }
+            },
+            thead:    {
+              td: {
+                zIndex:     100,
+                padding:    '0 0 20px 0',
+                color:      'white',
+                fontSize:   9,
+                fontFamily: 'verdana',
+                textAlign:  'center',
+                div:        {
+                  marginLeft: 18
                 }
+              }
 
-            });
+            },
+            tbody:    {
+              td: {
+                verticalAlign: 'bottom'
+              }
+            },
 
-            var $this = $(this);
-            var $graph = $('<table><thead><tr></tr><tr></tr></thead><tbody><tr></tr></tbody><tfoot><tr></tr></tfoot></table>').addClass('bubble_chart').appendTo($this);
-            var $tfoot = $graph.find('tfoot tr');
-            var $tbody = $graph.find('tbody tr');
-            $graph.css('backgroundColor', 'black');
-            var count = 0;
-            for (d in options.data) count++;
-            $graph.css('width', count * 30);
-
-            var $thead = $graph.find('thead tr:last');
-            for (var cat in options.colors) {
-                var $div = $('<div>').css('backgroundColor', options.colors[cat] || 'gray');
-                $('<td colspan="2">').text(cat).append($div).appendTo($thead);
+            th: {
+              color:      'white',
+              fontSize:   9,
+              fontFamily: 'verdana'
             }
+          }
 
-            for (var k in options.data) {
-                var bucket = options.data[k];
-                $('<th>').text(k).appendTo($tfoot);
-                var $td = $('<td>').appendTo($tbody);
-                var items = Csster.arrayFlatten([bucket]);
-                for (var i = items.length - 1; i >= 0; i--) {
-                    $('<div>').attr('title', items[i]).css('backgroundColor', options.colors[items[i]] || 'gray').appendTo($td);
-                }
+        });
 
-            }
-        };
+        var $this  = $(this);
+        var $graph = $('<table><thead><tr></tr><tr></tr></thead><tbody><tr></tr></tbody><tfoot><tr></tr></tfoot></table>').addClass('bubble_chart').appendTo($this);
+        var $tfoot = $graph.find('tfoot tr');
+        var $tbody = $graph.find('tbody tr');
+        $graph.css('backgroundColor', 'black');
+        var count  = 0;
+        for (d in options.data) count++;
+        $graph.css('width', count * 30);
 
-        $(function () {
+        var $thead = $graph.find('thead tr:last');
+        for (var cat in options.colors) {
+          var $div = $('<div>').css('backgroundColor', options.colors[cat] || 'gray');
+          $('<td colspan="2">').text(cat).append($div).appendTo($thead);
+        }
+
+        for (var k in options.data) {
+          var bucket = options.data[k];
+          $('<th>').text(k).appendTo($tfoot);
+          var $td    = $('<td>').appendTo($tbody);
+          var items  = Csster.arrayFlatten([bucket]);
+          for (var i = items.length - 1; i >= 0; i--) {
+            $('<div>').attr('title', items[i]).css('backgroundColor', options.colors[items[i]] || 'gray').appendTo($td);
+          }
+
+        }
+      };
+
+      $(function () {
 
 
-            $('div').bubbleChart({
-                data: {
+        $('div').bubbleChart({
+          data:      {
 //                '1983-1984': 'Basic',
 //                1985: 'Fortran',
 //                '1986-1989': 'C',
 //                '1990-1992': 'C++',
-                    1993: 'Obj.Pascal',
-                    1994: 'Obj.Pascal',
-                    1995: 'Obj.Pascal',
-                    1996: 'Obj.Pascal',
-                    1997: 'Obj.Pascal',
-                    1998: 'Obj.Pascal',
-                    1999: 'Obj.Pascal',
-                    2000: ['PHP', 'C++'],
-                    2001: ['SQL', 'PHP', 'C++'],
-                    2002: ['Java', 'SQL', 'CSS', 'PHP', 'C++', 'TCL/tk'],
-                    2003: ['Java', 'SQL', 'CSS', 'Perl', 'PHP'],
-                    2004: ['Java', 'SQL', 'CSS', 'Perl', 'XML/XSLT'],
-                    2005: ['Java', 'SQL', 'CSS', 'Javascript', 'Perl', 'XML/XSLT'],
-                    2006: ['Java', 'SQL', 'CSS', 'Javascript', 'Perl', 'XML/XSLT'],
-                    2007: ['Java', 'SQL', 'CSS', 'Javascript', 'XML/XSLT'],
-                    2008: ['Ruby', 'Java', 'SQL', 'CSS', 'Javascript', 'XML/XSLT'],
-                    2009: ['Ruby', 'Java', 'SQL', 'CSS', 'Javascript', 'XML/XSLT'],
-                    2010: ['Ruby', 'Javascript', 'SQL', 'CSS', 'XML/XSLT'],
-                    2011: ['Ruby', 'Javascript', 'SQL', 'CSS'],
-                    2012: ['Ruby', 'Javascript', 'SQL', 'CSS'],
-                    2013: ['Ruby', 'Javascript', 'SQL', 'CSS'],
-                    2014: ['Ruby', 'Javascript', 'SQL', 'CSS'],
-                    2015: ['Ruby', 'Javascript', 'SQL', 'CSS']
-                }, colors: {
-                    'C': 'LightSkyBlue',
-                    'C++': 'DarkBlue',
-                    'PHP': '#669', // from PHP.net
-                    'Java': '#0c60ae',  // blue from the logo
+            1993: 'Obj.Pascal',
+            1994: 'Obj.Pascal',
+            1995: 'Obj.Pascal',
+            1996: 'Obj.Pascal',
+            1997: 'Obj.Pascal',
+            1998: 'Obj.Pascal',
+            1999: 'Obj.Pascal',
+            2000: ['PHP', 'C++'],
+            2001: ['SQL', 'PHP', 'C++'],
+            2002: ['Java', 'SQL', 'CSS', 'PHP', 'C++', 'TCL/tk'],
+            2003: ['Java', 'SQL', 'CSS', 'Perl', 'PHP'],
+            2004: ['Java', 'SQL', 'CSS', 'Perl', 'XML/XSLT'],
+            2005: ['Java', 'SQL', 'CSS', 'Javascript', 'Perl', 'XML/XSLT'],
+            2006: ['Java', 'SQL', 'CSS', 'Javascript', 'Perl', 'XML/XSLT'],
+            2007: ['Java', 'SQL', 'CSS', 'Javascript', 'XML/XSLT'],
+            2008: ['Ruby', 'Java', 'SQL', 'CSS', 'Javascript', 'XML/XSLT'],
+            2009: ['Ruby', 'Java', 'SQL', 'CSS', 'Javascript', 'XML/XSLT'],
+            2010: ['Ruby', 'Javascript', 'SQL', 'CSS', 'XML/XSLT'],
+            2011: ['Ruby', 'Javascript', 'SQL', 'CSS'],
+            2012: ['Ruby', 'Javascript', 'SQL', 'CSS'],
+            2013: ['Ruby', 'Javascript', 'SQL', 'CSS'],
+            2014: ['Ruby', 'Javascript', 'SQL', 'CSS'],
+            2015: ['Ruby', 'Javascript', 'SQL', 'CSS']
+          }, colors: {
+            'C':    'LightSkyBlue',
+            'C++':  'DarkBlue',
+            'PHP':  '#669', // from PHP.net
+            'Java': '#0c60ae',  // blue from the logo
 
-                    'Javascript': 'MediumVioletRed',
-                    'Ruby': '#b61414', // from ruby crystal icon
+            'Javascript': 'MediumVioletRed',
+            'Ruby':       '#b61414', // from ruby crystal icon
 
-                    'Obj.Pascal': 'MediumPurple',
-                    'Perl': 'Wheat',
-                    'SQL': '#e97b00', // from Mysql.org site
-                    'XML/XSLT': 'olive',
-                    'CSS': 'Gold',
-                    'Other': 'gray'
-                }
-            });
-
-
+            'Obj.Pascal': 'MediumPurple',
+            'Perl':       'Wheat',
+            'SQL':        '#e97b00', // from Mysql.org site
+            'XML/XSLT':   'olive',
+            'CSS':        'Gold',
+            'Other':      'gray'
+          }
         });
+
+
+      });
     </script>
 </head>
 <body>

@@ -17,33 +17,30 @@ describe('property name validator', function () {
   describe('adding a valid property', function () {
 
     it('should allow adding a single property using parameters', function () {
-      expect(subject.validate('foo')).toBeFalsy();
       expect(subject.error('foo')).toEqual('Unrecognized "foo" property name');
       subject.addNames('foo');
-      expect(subject.validate('foo')).toEqual('foo');
       expect(subject.error('foo')).toEqual(null);
     });
 
     it('should allow adding multiple properties passed as parameters', function () {
-      expect(subject.validate('blip')).toBeFalsy();
-      expect(subject.validate('blop')).toBeFalsy();
+      expect(subject.error('blop')).toEqual('Unrecognized "blop" property name')
       subject.addNames('blip', 'blop');
-      expect(subject.validate('blip')).toEqual('blip');
-      expect(subject.validate('blop')).toEqual('blop');
+      expect(subject.error('blip')).toEqual(null);
+      expect(subject.error('blop')).toEqual(null);
     });
     it('should allow adding a multiple properties using an array', function () {
-      expect(subject.validate('bar')).toBeFalsy();
-      expect(subject.validate('baz')).toBeFalsy();
+      expect(subject.error('bar')).toEqual('Unrecognized "bar" property name')
+      expect(subject.error('baz')).toEqual('Unrecognized "baz" property name')
       subject.addNames(['bar', 'baz']);
-      expect(subject.validate('bar')).toEqual('bar');
-      expect(subject.validate('baz')).toEqual('baz');
+      expect(subject.error('bar')).toEqual(null);
+      expect(subject.error('baz')).toEqual(null);
     });
   });
 
   describe('turning off validation', () => {
     beforeEach(() => subject.setConfig('strictNames', false))
     it('should allow unknown', function () {
-      expect(subject.validate('dummy')).toEqual('dummy');
+      expect(subject.error('dummy')).toEqual(null);
     });
   })
 

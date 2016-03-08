@@ -8,7 +8,7 @@ Concisely generate CSS style rules within Javascript.  Features:
 
 * standard "object literal"/JSON format with good editor support
 * nesting to DRY up stylesheets
-* color functions like <code>darken</code> and <code>saturate</code>
+* color functions like `darken` and `saturate`
 * built-in macros for common CSS idioms like *clearfix*, *rounded corners*, *drop shadows*.
 * extension points for custom behavior or cross-browser support.
 * and all the plain old Javascript behavior: functions, data structures, looping, Math operations, etc.
@@ -94,7 +94,8 @@ Note that
 
 #### Nesting
 Csster supports nesting of rules to keep things more concise:
-<pre>
+
+```javascript
 {
     ul: {
       margin: 5,
@@ -106,7 +107,7 @@ Csster supports nesting of rules to keep things more concise:
       }
     }
 }
-</pre>
+```
 
 The "li" property in this case might be a selector or might be a property name. A list of valid
 property names is used to identify properties right now, and otherwise it's considered a sub-selector.
@@ -120,19 +121,27 @@ Combined rules (with commas) are expanded as expected, so nested rules with comm
 
 
 #### Functions
-Most manipulations will fall into Javascript's language support, as far as any math or looping. Use Javascript to write necessary functions.
+Most manipulations will fall into Javascript's language support, as far as any math or looping. 
+Use Javascript to write necessary functions.
 
-functions/color.es6 contains SASS-like color functions mixed into the base String object:
 
-*  <code>"#ab342c".darken(%)</code> -- make color darker by given percent
-*  <code>"#ab342c".lighten(%)</code> -- make color lighter by given percent
-*  <code>"#ab342c".saturate(%)</code>  -- make color more saturated by given percent. To *desaturate*, use negative values for the percent. Note that <code>"#ab342c".saturate(-100)</code> renders in grayscale.
+#### Colors
+
+Color conversion functions are included. The easiest way to enable this is to call:
+ 
+    Csster.colorizeString()
+    
+Now the `String` prototype will include SASS-like color functions:
+
+*  `"#ab342c".darken(%)` -- make color darker by given percent
+*  `"#ab342c".lighten(%)` -- make color lighter by given percent
+*  `"#ab342c".saturate(%)`  -- make color more saturated by given percent. To *desaturate*, use negative values for the percent. Note that `"#ab342c".saturate(-100)` renders in grayscale.
 
 There are also color conversion routines if you want to build your own manipulation.
 
-*  <code>"#ab342c".toRGB()</code>
-*  <code>"#ab342c".toHSL()</code>
-*  <code>Csster.hslToHexColor(h,s,l)</code>
+*  `"#ab342c".toRGB()`
+*  `"#ab342c".toHSL()`
+*  `Csster.hslToHexColor(h,s,l)`
 
 Opacity is currently not supported by the color model.
 
@@ -140,31 +149,35 @@ Opacity is currently not supported by the color model.
 
 There are a host of pre-made macros that may be useful:
 
-* <code>roundedCorners(radius)</code> -- add rounded corners on all sides
-* <code>roundedCorners(side, radius)</code> -- add rounded corners on specified side: <code>'top'</code>, <code>'left'</code>, <code>'bottom'</code> or <code>'right'</code>
-* <code>roundedCorners(corner, radius)</code> -- add rounded corners to a specified corner: <code>'tl'</code>, <code>'tr'</code>, <code>'bl'</code> or <code>'br'</code>
-* <code>imageReplacement(width, height, img, imgXPosition=0, imgYPosition=0)</code> -- phark image replacement with optional background image offset.
-* <code>boxShadow([xoffset, yoffset], radius, color)</code>
-* <code>verticalCentering(height)</code> and <code>horizontalCentering(width)</code> -- center using the top 50% / margin-top -width/2 technique. See http://stackoverflow.com/questions/148251/css-centering-tricks
-* <code>clearfix()</code> -- standard clearfix
+* `roundedCorners(radius)` -- add rounded corners on all sides
+* `roundedCorners(side, radius)` -- add rounded corners on specified side: `'top'`, `'left'`, `'bottom'` or `'right'`
+* `roundedCorners(corner, radius)` -- add rounded corners to a specified corner: `'tl'`, `'tr'`, `'bl'` or `'br'`
+* `imageReplacement(width, height, img, imgXPosition=0, imgYPosition=0)` -- phark image replacement with optional background image offset.
+* `boxShadow([xoffset, yoffset], radius, color)`
+* `verticalCentering(height)` and `horizontalCentering(width)` -- center using the top 50% / margin-top -width/2 technique. See http://stackoverflow.com/questions/148251/css-centering-tricks
+* `clearfix()` -- standard clearfix
 
-To "mix these in", use the "has" key:
+To "mix these in", use the `has`, `mixin` or `mixins` key:
 
-<pre>
-{
-    'div#featured_box': {
-      backgroundColor: '#394c89',
-      has: roundedCorner(5)
+    {
+        'div#featured_box': {
+          backgroundColor: '#394c89',
+          has: roundedCorner(5)
+        }
     }
-}
-</pre>
 
-Multiple macros can be included by making that a list, eg. <code>has: [roundedCorners(5), dropShadow()]</code>.
+Multiple macros can be included by making that a list, eg. `has: [roundedCorners(5), dropShadow()]`.
 
-It's all Javascript, so macros and more complex functions are easy to write. To mix in a set of values, create a function
+You can also make these _pseudo selectors_ using the `Csster.setMacro` method. For example,
+
+    Csster.setMacro('roundedCorners', (px) => { return { borderRadius: px } })
+
+
+It's all Javascript, so macros and more complex functions are easy to write. 
+To mix in a set of values, create a function
 that returns a hash of values, for example:
 
-<pre>
+```javascript
     function roundedCorners(radius) {
         return {
             '-webkit-border-radius': radius,
@@ -172,21 +185,32 @@ that returns a hash of values, for example:
             'border-radius': radius
         }
     }
-</pre>
+```
 
 A macro's properties will be overwritten by properties within including selector (or later included macros), similar to how the cascade takes the last defined value.
+
+
+## Verification
+
+By default, property names are validated against recent HTML specs. At this stage
+of history, this is largely a matter of style. To turn this off, use:
+
+    Csster.propertyNameValidator.setConfig('strictNames', false)
+
+By default, any browser extension property (such as `-moz-boo`) is allowed. To
+restrict this, turn on the validation:
+
+    Csster.propertyNameValidator.setConfig('anyBrowserExtension', false)
 
 
 ## jQuery Integration
 
 If jQuery is loaded first, Csster provides a "csster" method:
 
-<pre>
-   $('.sidebar').csster({ border: '5px solid green', padding: 10 });
-</pre>
+    $('.sidebar').csster({ border: '5px solid green', padding: 10 });
 
 As expected, this adds a rule to the document with the ".sidebar" selector.
-In general, this can be called identically to the <code>css()</code> function.
+In general, this can be called identically to the `css()` function.
 This is useful is the DOM on the page is dynamic and when a rule is more efficient than applying
 a style repeatedly to all the DOM nodes.
 
@@ -199,15 +223,15 @@ nothing is done to convert or report unsupported selectors (just like regular CS
 Csster is built as an extensible system.
 
 ### Adding Custom Property Names
-Use <code>Csster.addPropertyNames</code> to add any non-standard property names you'd like to be considered valid. The build-in tool rejects non-standard property names, although by default popular "-moz" and "-webkit" properties are added.
+Use `Csster.addPropertyNames` to add any non-standard property names you'd like to be considered valid. The build-in tool rejects non-standard property names, although by default popular "-moz" and "-webkit" properties are added.
 
 ### Pre-process rules
-<del>Functions called before properties are processed stored in <code>Csster.propertyPreprocessors</code>. Callback is provided a hash of properties to values, which it modifies in any way it wants. This is used to interpret macros.</del>
+<del>Functions called before properties are processed stored in `Csster.propertyPreprocessors`. Callback is provided a hash of properties to values, which it modifies in any way it wants. This is used to interpret macros.</del>
 
 <del>### Post-processing
-Functions called after rules are processed stored in <code>Csster.rulesPostProcessors</code>. Called with an array of processed rules. Can be used to eliminate duplicates, modify selectors, etc. Standard list simplifies overly complex selectors with multiple IDs.
+Functions called after rules are processed stored in `Csster.rulesPostProcessors`. Called with an array of processed rules. Can be used to eliminate duplicates, modify selectors, etc. Standard list simplifies overly complex selectors with multiple IDs.
 
-A convenient built-in function is <code>compressSelectors</code>. Using this processor, rules with multiple '#'s are simplified. For example, '#a #b #c' becomes '#c'. Usually this is what you will want, so include it with <code>Csster.rulePostProcessors.push(Csster.compressSelectors);</code>.
+A convenient built-in function is `compressSelectors`. Using this processor, rules with multiple '#'s are simplified. For example, '#a #b #c' becomes '#c'. Usually this is what you will want, so include it with `Csster.rulePostProcessors.push(Csster.compressSelectors);`.
 
 This is used to write custom browser overrides. For example, this one makes opacity work for IE:
 
@@ -229,7 +253,7 @@ This is used to write custom browser overrides. For example, this one makes opac
 </del>
 
 ### Inserting into the DOM
-Function that outputs a set of rules into the DOM is <code>Csster.insertCss</code> and can be replaced if desired.
+Function that outputs a set of rules into the DOM is `Csster.insertCss` and can be replaced if desired.
 
 ## V2.0 Changes
 
@@ -269,10 +293,10 @@ Function that outputs a set of rules into the DOM is <code>Csster.insertCss</cod
 2. Update `bin/build.sh#2` `VERSION=` code.
 3. `bin/build.sh`
 4. `rake build`
-5. `rake checkin`
+5. `git checkin...`
 6. `rake push...`
-7. `rake release`
-8. `npm publish`
+7. `rake release` # Ruby Gem
+8. `npm publish`  # Node module
 
 
 ### TDD

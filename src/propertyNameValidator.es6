@@ -10,18 +10,11 @@ export function setConfig(key, value) {
   config[key] = value
 }
 
-/**
- * Add more valid properties to the list of valid property names.
- */
 export function addNames(...propertyNames) {
   const names = arrayFlatten([propertyNames]);
   for (let name of names) {
     validNames[name] = true;
   }
-}
-
-export function validate(name) {
-  return !error(name) ? name : null
 }
 
 export function error(name) {
