@@ -36,6 +36,17 @@ function includes(values, value) {
   return false
 }
 
+function map(fn, obj) {
+  let result = []
+  if (isArray(obj)) {
+    for (let i = 0; i < obj.length;) {
+      result.push(fn(obj[i], i++))
+    }
+  } else {
+    result = fn(obj)
+  }
+  return result
+}
 
 
 export {
@@ -43,5 +54,6 @@ export {
     arrayEach,
     arrayInject,
     arrayFlatten,
-    includes
+    includes,
+    map
 }
