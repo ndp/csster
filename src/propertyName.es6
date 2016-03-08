@@ -1,4 +1,4 @@
-import { dasherize }from './utils/string.es6'
+import { dasherize } from './utils/string.es6'
 import * as propertyNameValidator from './propertyNameValidator.es6'
 
 /*
@@ -7,7 +7,7 @@ import * as propertyNameValidator from './propertyNameValidator.es6'
  */
 export const propertyNameOf = function (p) {
   const name = dasherize(p);
-  return propertyNameValidator.validate(name)
+  return !propertyNameValidator.error(name) ? name : null
 }
 
 

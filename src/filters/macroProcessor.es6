@@ -1,49 +1,49 @@
-import {mergeHashInto} from '../utils/object.es6'
-import {arrayFlatten} from '../utils/array.es6'
+import { mergeHashInto, filterObjectsRecursively } from '../utils/object.es6'
+import { includes, map, arrayFlatten } from '../utils/array.es6'
 
-let macroKeys = ['has', 'mixin', 'mixins']
-export function setMacroKeys(keys) {
-  macroKeys = keys
+let macroKeys = {
+  'has': inLineIt,
+  'mixin': inLineIt,
+  'mixins': inLineIt
 }
 
-
-export function macroProcessor(properties) {
-
-  function applyMacros(macroList) {
-
-    const props  = {};
-
-    const macros = arrayFlatten([macroList]); // support single or multiple sets of properties
-    for (let i = 0; i < macros.length; i++) {
-      let macro = macros[i]
-      if (typeof macro == 'function') macro = macro()
-      for (let mp in macro) {
-        if (isMacroKey(mp)) {
-          mergeHashInto(props, applyMacros(macro[mp]));
-        } else {
-          props[mp] = macro[mp];
-        }
-      }
-    }
-    return props;
-  }
-
-  for (let k in properties) {
-    if (isMacroKey(k)) {
-      const macros = properties[k];
-      delete properties[k]
-      if (macros) {
-        mergeHashInto(properties, applyMacros(macros));
-      }
-    }
-  }
-  return properties
+export function setMacro(key, fn) {
+  macroKeys[key] = fn
 }
-
-
-import { includes } from '../utils/array.es6'
 
 export function isMacroKey(k) {
-  return includes(macroKeys, k)
+  return !!macroKeys[k]
 }
+
+
+// Simplest macro just inlines
+function inLineIt(value) {
+  const expanded = {}
+  map((val) => {
+    if (typeof val == 'function') val = val()
+    mergeHashInto(expanded, val);
+  }, value)
+  return expanded
+}
+
+function process(o) {
+
+  if (typeof o !== 'object') return o
+
+  const result = {}
+  for (let key in o) {
+    const value = o[key];
+    if (isMacroKey(key)) {
+      const expanded = macroKeys[key](value)
+      mergeHashInto(result, macroProcessor(expanded)) // Recurse
+    } else {
+      result[key] = value
+    }
+  }
+  return result
+}
+
+export const macroProcessor = filterObjectsRecursively(process)
+
+
 

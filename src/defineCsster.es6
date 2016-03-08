@@ -19,8 +19,9 @@ export const Csster = {
   browserInfo,
   hslToHexColor,
   addPropertyNames,
+  propertyNameValidator,
+  colorizeString
 }
 
-colorizeString()
 
 

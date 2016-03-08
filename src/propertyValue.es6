@@ -1,10 +1,9 @@
 
-const format = (value, name) => {
-  if (value && typeof value == 'number' &&
-      name != 'z-index' && name != 'opacity' && name != 'zoom') {
-    return '' + value + 'px';
-  }
-  return value
+
+const unitlessProperties = ['z-index', 'opacity', 'zoom']
+
+export const format = (value, name) => {
+  var appendPx = value && typeof value == 'number' && unitlessProperties.indexOf(name) == -1
+  return '' + value + (appendPx ? 'px' : '');
 }
 
-export {format}

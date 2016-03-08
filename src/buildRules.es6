@@ -1,11 +1,9 @@
 import { filterValuesRecursively } from './utils/object.es6'
 import { arrayEach, arrayFlatten    } from './utils/array.es6'
-import {compose} from './utils/fn.es6'
+import { compose } from './utils/fn.es6'
 
-import {flattenObject, compressSelectors } from './cssObject.es6'
-import {macroProcessor} from './filters/macroProcessor.es6'
-
-const applyMacros = filterValuesRecursively(macroProcessor)
+import { flattenObject, compressSelectors } from './cssObject.es6'
+import { macroProcessor } from './filters/macroProcessor.es6'
 
 // @param cssRule { selector: { prop1: value, prop2: value, subselector: { prop3: value}}
 const objectToRulesArray = function (o) {
@@ -19,22 +17,20 @@ const objectToRulesArray = function (o) {
 import { dasherizeKeys } from './properties.es6'
 export const dasherizePropertyKeys = filterValuesRecursively(dasherizeKeys)
 
-import { rejectUnknownKeys } from './properties.es6'
-export const rejectUnknownPropertyKeys = filterValuesRecursively(rejectUnknownKeys)
+import { rejectUnknownPropertyKeys } from './properties.es6'
 
-
+const log = (x) => {console.log(x); return x}
 
 const process = compose(
     rejectUnknownPropertyKeys,
     dasherizePropertyKeys,
-    compressSelectors,
+    //compressSelectors,
     flattenObject,
-    applyMacros)
+    macroProcessor)
 
-export default function (obj) {
+export default function (objOrArray) {
+  const a     = arrayFlatten([objOrArray])
   const rules = [];
-  arrayEach(arrayFlatten([obj]), function (o) {
-    rules.push(objectToRulesArray(process(o)));
-  });
+  arrayEach(a, (o) => rules.push(objectToRulesArray(process(o))));
   return arrayFlatten(rules);
 };
