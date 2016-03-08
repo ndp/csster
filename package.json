@@ -1,7 +1,7 @@
 {
   "name": "csster",
   "description": "Csster: Write CSS in JS or Coffeescript, with macros, color math, etc.",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "keywords": [
     "css",
     "color"
