@@ -75,7 +75,7 @@ color: red;
 The caller is responsible for writing to the browser.
 
 
-### Format of CSS Rules
+### Building CSS Rules
 
 The `Csster.style` method accepts CSS rules passed either as arrays or hashes, arrays just being
 a way to order the hashes. For example:
@@ -87,7 +87,7 @@ Csster.style({
       padding: 0,
     }
     'ul li:first': {
-      paddingLeft: 20px
+      paddingLeft: '20px'
     }
 }
 ```
@@ -125,13 +125,16 @@ Combined rules (with commas) are expanded as expected, so nested rules with comm
 
 
 #### Functions
-Most manipulations will fall into Javascript's language support, as far as any math or looping. 
-Use Javascript to write necessary functions!
+Most manipulations you'll want don't require any special syntax. They will fall into 
+Javascript's language support, as far as any math or looping. 
+Use Javascript to write necessary functions! Include them directly in the 
+CSS rule definitions.
 
 
 #### Colors
 
-Color conversion functions are included. The easiest way to enable this is to call:
+Colors can be particularly brittle in CSS, so color conversion functions are included. 
+The easiest way to enable this is to call:
  
     Csster.colorizeString()
     
@@ -149,7 +152,12 @@ There are also color conversion routines if you want to build your own manipulat
 
 Opacity is currently not supported by the color model.
 
-#### Macros using "has" key
+### Macros
+
+Although the Javascript language probably offers enough flexibility for most of what you 
+want, macros are also a core part of Csster.
+
+#### Pre-build Macros
 
 There are a host of pre-made macros that may be useful:
 
@@ -160,6 +168,8 @@ There are a host of pre-made macros that may be useful:
 * `boxShadow([xoffset, yoffset], radius, color)`
 * `verticalCentering(height)` and `horizontalCentering(width)` -- center using the top 50% / margin-top -width/2 technique. See http://stackoverflow.com/questions/148251/css-centering-tricks
 * `clearfix()` -- standard clearfix
+
+#### Using macros with the "has" or "mixin" key
 
 To "mix these in", use the `has`, `mixin` or `mixins` key:
 
@@ -172,11 +182,14 @@ To "mix these in", use the `has`, `mixin` or `mixins` key:
 
 Multiple macros can be included by making that a list, eg. `has: [roundedCorners(5), dropShadow()]`.
 
-#### Macros using specific property names
+#### Macros fake property names
 
 You can also make these _pseudo properties_ using the `Csster.setMacro` method. For example,
 
     Csster.setMacro('roundedCorners', (px) => { return { borderRadius: px } })
+    
+As you might expect, this defines a property that is rendered with the given function. Therefore:
+
     ...
     Csster.style({ div: roundedCorners: 5 })
 
@@ -200,8 +213,14 @@ A macro's properties will be overwritten  similar to how the cascade takes the l
 
 ## Verification
 
-By default, property names are validated against recent HTML specs. At this stage
-of history, this is largely a matter of style. To turn this off, use:
+By default, property names are validated against recent HTML specs. 
+The build-in tool rejects non-standard property names, 
+although by default popular "-moz" and "-webkit" properties are added.
+Use `Csster.addPropertyNames` to supplement property names it might not
+consider valid.
+
+At this time of history, though, validation is not necessarily what you want.
+To turn this off, use:
 
     Csster.propertyNameValidator.setConfig('strictNames', false)
 
@@ -213,7 +232,7 @@ restrict this, turn on the validation:
 
 ## jQuery Integration
 
-If jQuery is loaded first, Csster provides a "csster" method:
+If jQuery is loaded before Csster, it provides a "csster" plugin:
 
     $('.sidebar').csster({ border: '5px solid green', padding: 10 });
 
@@ -228,38 +247,6 @@ nothing is done to convert or report unsupported selectors (just like regular CS
 
 ## Extending Csster
 
-Csster is built as an extensible system.
-
-### Adding Custom Property Names
-Use `Csster.addPropertyNames` to add any non-standard property names you'd like to be considered valid. The build-in tool rejects non-standard property names, although by default popular "-moz" and "-webkit" properties are added.
-
-### Pre-process rules
-<del>Functions called before properties are processed stored in `Csster.propertyPreprocessors`. Callback is provided a hash of properties to values, which it modifies in any way it wants. This is used to interpret macros.</del>
-
-<del>### Post-processing
-Functions called after rules are processed stored in `Csster.rulesPostProcessors`. Called with an array of processed rules. Can be used to eliminate duplicates, modify selectors, etc. Standard list simplifies overly complex selectors with multiple IDs.
-
-A convenient built-in function is `compressSelectors`. Using this processor, rules with multiple '#'s are simplified. For example, '#a #b #c' becomes '#c'. Usually this is what you will want, so include it with `Csster.rulePostProcessors.push(Csster.compressSelectors);`.
-
-This is used to write custom browser overrides. For example, this one makes opacity work for IE:
-
-<pre>
-  Csster.rulesPostProcessors.push(function ieOpacity(rules) {
-    // http://www.smashingmagazine.com/2010/04/28/css3-solutions-for-internet-explorer/
-    if (Csster.browserInfo().msie) {
-      for (var i = 0; i &lt; rules.length; i++) {
-        var rule = rules[i];
-        var value = rule.props['opacity']
-        if (value) {
-          value = Math.round(value * 100.0);
-          rules[i].props['filter'] = 'progid:DXImageTransform.Microsoft.Alpha(opacity=' + value + ')';
-        }
-      }
-    }
-  });
-</pre>
-</del>
-
 ### Inserting into the DOM
 Function that outputs a set of rules into the DOM is `Csster.insertCss` and can be replaced if desired.
 
@@ -273,6 +260,7 @@ Function that outputs a set of rules into the DOM is `Csster.insertCss` and can 
 ### Other changes:
 
 * use ES6 for implementation and provide a more compressed and clean script.
+* fake-property-based macros
 * add ability to turn off property name validation.
 * add ability to warn about unknown browser extensions for property names.
 
