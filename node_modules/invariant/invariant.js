@@ -1,10 +1,8 @@
 /**
- * Copyright 2013-2015, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) 2013-present, Facebook, Inc.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 'use strict';
@@ -20,10 +18,10 @@
  * will remain to ensure logic does not differ in production.
  */
 
-var __DEV__ = process.env.NODE_ENV !== 'production';
+var NODE_ENV = process.env.NODE_ENV;
 
 var invariant = function(condition, format, a, b, c, d, e, f) {
-  if (__DEV__) {
+  if (NODE_ENV !== 'production') {
     if (format === undefined) {
       throw new Error('invariant requires an error message argument');
     }

@@ -1,82 +1,112 @@
 'use strict';
-var path = require('path');
-var minimist = require('minimist');
-var objectAssign = require('object-assign');
-var camelcaseKeys = require('camelcase-keys');
-var decamelize = require('decamelize');
-var mapObj = require('map-obj');
-var trimNewlines = require('trim-newlines');
-var redent = require('redent');
-var readPkgUp = require('read-pkg-up');
-var loudRejection = require('loud-rejection');
-var normalizePackageData = require('normalize-package-data');
+const path = require('path');
+const buildMinimistOptions = require('minimist-options');
+const yargs = require('yargs-parser');
+const camelcaseKeys = require('camelcase-keys');
+const decamelizeKeys = require('decamelize-keys');
+const trimNewlines = require('trim-newlines');
+const redent = require('redent');
+const readPkgUp = require('read-pkg-up');
+const loudRejection = require('loud-rejection');
+const normalizePackageData = require('normalize-package-data');
 
-// get the uncached parent
+// Prevent caching of this module so module.parent is always accurate
 delete require.cache[__filename];
-var parentDir = path.dirname(module.parent.filename);
+const parentDir = path.dirname(module.parent.filename);
 
-module.exports = function (opts, minimistOpts) {
+module.exports = (helpMessage, options) => {
 	loudRejection();
 
-	if (Array.isArray(opts) || typeof opts === 'string') {
-		opts = {help: opts};
+	if (typeof helpMessage === 'object' && !Array.isArray(helpMessage)) {
+		options = helpMessage;
+		helpMessage = '';
 	}
 
-	opts = objectAssign({
+	options = Object.assign({
 		pkg: readPkgUp.sync({
 			cwd: parentDir,
 			normalize: false
-		}).pkg,
-		argv: process.argv.slice(2)
-	}, opts);
+		}).pkg || {},
+		argv: process.argv.slice(2),
+		inferType: false,
+		input: 'string',
+		help: helpMessage,
+		autoHelp: true,
+		autoVersion: true,
+		booleanDefault: false
+	}, options);
 
-	minimistOpts = objectAssign({}, minimistOpts);
+	const minimistFlags = options.flags && typeof options.booleanDefault !== 'undefined' ? Object.keys(options.flags).reduce(
+		(flags, flag) => {
+			if (flags[flag].type === 'boolean' && !Object.prototype.hasOwnProperty.call(flags[flag], 'default')) {
+				flags[flag].default = options.booleanDefault;
+			}
 
-	minimistOpts.default = mapObj(minimistOpts.default || {}, function (key, value) {
-		return [decamelize(key, '-'), value];
-	});
+			return flags;
+		},
+		options.flags
+	) : options.flags;
 
-	if (Array.isArray(opts.help)) {
-		opts.help = opts.help.join('\n');
+	let minimistoptions = Object.assign({
+		arguments: options.input
+	}, minimistFlags);
+
+	minimistoptions = decamelizeKeys(minimistoptions, '-', {exclude: ['stopEarly', '--']});
+
+	if (options.inferType) {
+		delete minimistoptions.arguments;
 	}
 
-	var pkg = typeof opts.pkg === 'string' ? require(path.join(parentDir, opts.pkg)) : opts.pkg;
-	var argv = minimist(opts.argv, minimistOpts);
-	var help = redent(trimNewlines(opts.help || ''), 2);
+	minimistoptions = buildMinimistOptions(minimistoptions);
+
+	if (minimistoptions['--']) {
+		minimistoptions.configuration = Object.assign({}, minimistoptions.configuration, {'populate--': true});
+	}
+
+	const {pkg} = options;
+	const argv = yargs(options.argv, minimistoptions);
+	let help = redent(trimNewlines((options.help || '').replace(/\t+\n*$/, '')), 2);
 
 	normalizePackageData(pkg);
 
 	process.title = pkg.bin ? Object.keys(pkg.bin)[0] : pkg.name;
 
-	var description = opts.description;
+	let {description} = options;
 	if (!description && description !== false) {
-		description = pkg.description;
+		({description} = pkg);
 	}
 
-	help = (description ? '\n  ' + description + '\n' : '') + (help ? '\n' + help : '\n');
+	help = (description ? `\n  ${description}\n` : '') + (help ? `\n${help}\n` : '\n');
 
-	var showHelp = function (code) {
+	const showHelp = code => {
 		console.log(help);
-		process.exit(code || 0);
+		process.exit(typeof code === 'number' ? code : 2);
 	};
 
-	if (argv.version && opts.version !== false) {
-		console.log(typeof opts.version === 'string' ? opts.version : pkg.version);
+	const showVersion = () => {
+		console.log(typeof options.version === 'string' ? options.version : pkg.version);
 		process.exit();
+	};
+
+	if (argv.version && options.autoVersion) {
+		showVersion();
 	}
 
-	if (argv.help && opts.help !== false) {
-		showHelp();
+	if (argv.help && options.autoHelp) {
+		showHelp(0);
 	}
 
-	var _ = argv._;
+	const input = argv._;
 	delete argv._;
 
+	const flags = camelcaseKeys(argv, {exclude: ['--', /^\w$/]});
+
 	return {
-		input: _,
-		flags: camelcaseKeys(argv),
-		pkg: pkg,
-		help: help,
-		showHelp: showHelp
+		input,
+		flags,
+		pkg,
+		help,
+		showHelp,
+		showVersion
 	};
 };

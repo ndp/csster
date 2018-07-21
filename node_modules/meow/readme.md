@@ -7,7 +7,7 @@
 
 ## Features
 
-- Parses arguments using [minimist](https://github.com/substack/minimist)
+- Parses arguments
 - Converts flags to [camelCase](https://github.com/sindresorhus/camelcase)
 - Outputs version when `--version`
 - Outputs description and supplied help text when `--help`
@@ -18,35 +18,38 @@
 ## Install
 
 ```
-$ npm install --save meow
+$ npm install meow
 ```
 
 
 ## Usage
 
 ```
-$ ./foo-app.js unicorns --rainbow-cake
+$ ./foo-app.js unicorns --rainbow
 ```
 
 ```js
 #!/usr/bin/env node
 'use strict';
 const meow = require('meow');
-const foo = require('./');
+const foo = require('.');
 
 const cli = meow(`
 	Usage
 	  $ foo <input>
 
 	Options
-	  -r, --rainbow  Include a rainbow
+	  --rainbow, -r  Include a rainbow
 
 	Examples
 	  $ foo unicorns --rainbow
 	  🌈 unicorns 🌈
 `, {
-	alias: {
-		r: 'rainbow'
+	flags: {
+		rainbow: {
+			type: 'boolean',
+			alias: 'r'
+		}
 	}
 });
 /*
@@ -65,76 +68,160 @@ foo(cli.input[0], cli.flags);
 
 ### meow(options, [minimistOptions])
 
-Returns an object with:
+Returns an `Object` with:
 
-- `input` *(array)* - Non-flag arguments
-- `flags` *(object)* - Flags converted to camelCase
-- `pkg` *(object)* - The `package.json` object
-- `help` *(object)* - The help text used with `--help`
-- `showHelp([code=0])` *(function)* - Show the help text and exit with `code`
+- `input` *(Array)* - Non-flag arguments
+- `flags` *(Object)* - Flags converted to camelCase
+- `pkg` *(Object)* - The `package.json` object
+- `help` *(string)* - The help text used with `--help`
+- `showHelp([code=2])` *(Function)* - Show the help text and exit with `code`
+- `showVersion()` *(Function)* - Show the version text and exit
 
 #### options
 
-Type: `object`, `array`, `string`
+Type: `Object` `Array` `string`
 
 Can either be a string/array that is the `help` or an options object.
 
+##### flags
+
+Type: `Object`
+
+Define argument flags.
+
+The key is the flag name and the value is an object with any of:
+
+- `type`: Type of value. (Possible values: `string` `boolean`)
+- `alias`: Usually used to define a short flag alias.
+- `default`: Default value when the flag is not specified.
+
+Example:
+
+```js
+flags: {
+	unicorn: {
+		type: 'string',
+		alias: 'u',
+		default: 'rainbow'
+	}
+}
+```
+
+
 ##### description
 
-Type: `string`, `boolean`
+Type: `string` `boolean`<br>
 Default: The package.json `"description"` property
 
-A description to show above the help text.
+Description to show above the help text.
 
 Set it to `false` to disable it altogether.
 
 ##### help
 
-Type: `string`, `boolean`
+Type: `string` `boolean`
 
 The help text you want shown.
 
 The input is reindented and starting/ending newlines are trimmed which means you can use a [template literal](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/template_strings) without having to care about using the correct amount of indent.
 
-<del>If it's an array each item will be a line.</del>  
-*(Still supported, but you should use a template literal instead.)*
-
 The description will be shown above your help text automatically.
-
-Set it to `false` to disable it altogether.
 
 ##### version
 
-Type: `string`, `boolean`  
+Type: `string` `boolean`<br>
 Default: The package.json `"version"` property
 
 Set a custom version output.
 
-Set it to `false` to disable it altogether.
+##### autoHelp
+
+Type: `boolean`<br>
+Default: `true`
+
+Automatically show the help text when the `--help` flag is present. Useful to set this value to `false` when a CLI manages child CLIs with their own help text.
+
+##### autoVersion
+
+Type: `boolean`<br>
+Default: `true`
+
+Automatically show the version text when the `--version` flag is present. Useful to set this value to `false` when a CLI manages child CLIs with their own version text.
 
 ##### pkg
 
-Type: `string`, `object`  
+Type: `Object`<br>
 Default: Closest package.json upwards
 
-Relative path to package.json or as an object.
+package.json as an `Object`.
+
+*You most likely don't need this option.*
 
 ##### argv
 
-Type: `array`  
+Type: `Array`<br>
 Default: `process.argv.slice(2)`
 
 Custom arguments object.
 
-#### minimistOptions
+##### inferType
 
-Type: `object`  
-Default: `{}`
+Type: `boolean`<br>
+Default: `false`
 
-Minimist [options](https://github.com/substack/minimist#var-argv--parseargsargs-opts).
+Infer the argument type.
 
-Keys passed to the minimist `default` option are [decamelized](https://github.com/sindresorhus/decamelize), so you can for example pass in `fooBar: 'baz'` and have it be the default for the `--foo-bar` flag.
+By default, the argument `5` in `$ foo 5` becomes a string. Enabling this would infer it as a number.
 
+##### booleanDefault
+
+Type: `boolean` `null` `undefined`<br>
+Default: `false`
+
+Value of `boolean` flags not defined in `argv`.
+If set to `undefined` the flags not defined in `argv` will be excluded from the result.
+The `default` value set in `boolean` flags take precedence over `booleanDefault`.
+
+Example:
+
+```js
+const cli = meow(`
+	Usage
+	  $ foo
+
+	Options
+	  --rainbow, -r  Include a rainbow
+	  --unicorn, -r  Include a unicorn
+
+	Examples
+	  $ foo
+	  🌈 unicorns 🌈
+`, {
+	booleanDefault: undefined,
+	flags: {
+		rainbow: {
+			type: 'boolean',
+			default: true
+			alias: 'r'
+		},
+		unicorn: {
+			type: 'boolean',
+			default: false
+			alias: 'u'
+		},
+		cake: {
+			type: 'boolean',
+			alias: 'c'
+		}
+	}
+});
+/*
+{
+	flags: {rainbow: true, unicorn: false},
+	…
+}
+*/
+```
 
 ## Promises
 
@@ -147,13 +234,13 @@ See [`chalk`](https://github.com/chalk/chalk) if you want to colorize the termin
 
 See [`get-stdin`](https://github.com/sindresorhus/get-stdin) if you want to accept input from stdin.
 
+See [`conf`](https://github.com/sindresorhus/conf) if you need to persist some data.
+
 See [`update-notifier`](https://github.com/yeoman/update-notifier) if you want update notifications.
 
-See [`configstore`](https://github.com/yeoman/configstore) if you need to persist some data.
-
-[More useful CLI utilities.](https://github.com/sindresorhus/awesome-nodejs#command-line-utilities)
+[More useful CLI utilities…](https://github.com/sindresorhus/awesome-nodejs#command-line-utilities)
 
 
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](https://sindresorhus.com)
