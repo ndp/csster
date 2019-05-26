@@ -297,6 +297,10 @@ Function that outputs a set of rules into the DOM is `Csster.insertCss` and can 
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
+### Like it or have ideas?
+
+If you like this and would like me to do more intereactions like this, send me an email... or money https://venmo.com/ndpsoft or  https://www.gofundme.com/ndp-software
+
 
 ## Releasing
 
