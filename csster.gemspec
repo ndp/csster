@@ -14,5 +14,5 @@ Gem::Specification.new do |gem|
   gem.name          = "csster"
   gem.require_paths = ["lib"]
   gem.version       = Csster::VERSION
-  gem.add_dependency "railties", "~> 3.1"
+  gem.add_dependency "railties"
 end

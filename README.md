@@ -88,7 +88,7 @@ Csster.style({
   ul: {
     margin: 5,
     padding: 0,
-  }
+  },
   'ul li:first': {
     paddingLeft: '20px'
   }
@@ -357,5 +357,5 @@ http://revnode.com/oss/css/
 
 ## Legal
 
-Copyright (c) 2010-2016 Andrew J. Peterson
+Copyright (c) 2010-2020 Andrew J. Peterson
 [Apache License](https://github.com/ndp/csster/raw/master/LICENSE)
