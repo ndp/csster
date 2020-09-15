@@ -1,7 +1,7 @@
 {
   "name": "csster",
   "description": "Csster: Write CSS in JS or Coffeescript, with macros, color math, etc.",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "keywords": [
     "css",
     "color"
@@ -27,10 +27,13 @@
     "node": "*"
   },
   "devDependencies": {
-    "babel-cli": "^6.5.1",
-    "babel-core": "^6.5.1",
-    "babel-loader": "^6.2.2",
-    "babel-preset-es2015": "^6.5.0",
-    "babel-preset-react": "^6.5.0"
-  }
+    "babel-cli": "*",
+    "babel-core": "*",
+    "babel-loader": "*",
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*",
+    "webpack": "^4.44.1",
+    "webpack-cli": "*"
+  },
+  "dependencies": {}
 }
