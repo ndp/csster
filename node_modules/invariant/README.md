@@ -4,6 +4,8 @@
 
 A mirror of Facebook's `invariant` (e.g. [React](https://github.com/facebook/react/blob/v0.13.3/src/vendor/core/invariant.js), [flux](https://github.com/facebook/flux/blob/2.0.2/src/invariant.js)).
 
+A way to provide descriptive errors in development but generic errors in production.
+
 ## Install
 
 With [npm](http://npmjs.org) do:
@@ -32,4 +34,4 @@ When used with [browserify](https://github.com/substack/node-browserify), it'll 
 
 ### Node
 
-The node version is optimized around the performance implications of accessing `process.env`. The value of `process.env.NODE_ENV` is cached, and repeatedly used instead of reading `proces.env`. See [Server rendering is slower with npm react #812](https://github.com/facebook/react/issues/812)
+The node version is optimized around the performance implications of accessing `process.env`. The value of `process.env.NODE_ENV` is cached, and repeatedly used instead of reading `process.env`. See [Server rendering is slower with npm react #812](https://github.com/facebook/react/issues/812)
