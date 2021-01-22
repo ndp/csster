@@ -29,10 +29,10 @@
   "devDependencies": {
     "babel-cli": "*",
     "babel-core": "*",
-    "babel-loader": "*",
+    "babel-loader": "8.2.2",
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",
-    "webpack": "^4.44.1",
+    "webpack": "4.46.0",
     "webpack-cli": "*"
   },
   "dependencies": {}
