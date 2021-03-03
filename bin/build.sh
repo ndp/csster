@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION="1.3.2"
+VERSION="1.3.3"
 
 webpack
 echo "// Csster version $VERSION; Copyright (c) Andrew J. Peterson / ndpsoftware.com. All Rights Reserved"|cat - csster.js > /tmp/out && mv /tmp/out csster.js
